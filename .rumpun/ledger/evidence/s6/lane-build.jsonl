@@ -1,0 +1,3 @@
+{"from": "w2", "kind": "start", "seq": 0, "text": "s6 w2 starting: process-level dual-start test for state.lock (two concurrent 'rumpun season start' subprocesses on one scratch season)"}
+{"from": "w2", "kind": "policy", "seq": 1, "text": "race assertion: two concurrent 'rumpun season start' subprocesses on one scratch s1 -> both returncode 0; final _season/state.json parses; status completed; spawned map lists alpha and beta each exactly once; both per-agent state.json files exist; 'spawned alpha' logged in exactly one of the two stderr streams"}
+{"from": "w2", "kind": "done", "seq": 2, "text": "done: test_rumpun.py 20 passed (19 kept + dual-start, 5/5 stable alone), ruff clean both files, notes.md written"}

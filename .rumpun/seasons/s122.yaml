@@ -1,0 +1,46 @@
+# seasons/s122.yaml — drafted by evolve v0 from s121; fill primary_change + evidence, then apply
+id: s122
+parent: s121
+goal: "the reconcile-and-survive pass: the assessment drought counts every usefulness convention, and the close check names what a bare repo lacks instead of dying on it"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author reconciles the assessment-due drought with the usefulness-decade series (the decade records count toward the cadence or the rule names the exception) with red-first pins; one author makes the close check survive bare environments (a repo with no src gets a named pins-lane skip, and the venv python falls back only after probing pytest importability) with red-first pins; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s121-harvest@d930aec1f3ffa149ece8a8eddaedc4ded0b4679aa48ede5106b98ba42ebe11ea"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: execute
+    baseline: "s121 best (both fable writers exited 0 at 1257.6s; the ninth assessment sealed on the adjusted counts and the campaign guide landed parser-linted; merged-tree suite 657/657; measured by the sealed harvest record s121-harvest)"
+    expected_band: "WIN if issue #38 closes with the drought rule reconciled to the decade series and the boundary pinned red-first, issues #39 and #40 close with the no-src skip named and the pytest probe gating the venv fallback (pinned red-first), and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s122 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the verb outputs read from the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: drought-reconcile
+    collab: build
+    prompt: prompts/dev/w1-drought-reconcile.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: closecheck-envs
+    collab: build
+    prompt: prompts/dev/w2-closecheck-envs.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,46 @@
+# seasons/s97.yaml — drafted by evolve v0 from s96; filled by harness 2026-09-18 (the standing assessment's first contract application + the board arc extends)
+id: s97
+parent: s96
+goal: "the s88 assessment module meets its first real seal: the campaign's second usefulness assessment composes through the module (the verdict vocabulary enforced, the s87 shape as the byte-spec), the protocol line becomes permanent in RESUME, and the board arc extends with s96 - the pinned arithmetic"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author seals the s97 assessment through the module (the fronts read from the live board state, the verdict CONTINUE with the operator fronts named), makes the protocol line permanent in RESUME, and re-runs the vocabulary refusals as a live check; one author extends the board arc with s96 and pins the assessment composition's shape adversarially (the s87 byte-shape, the AuditError refusals); fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s96-harvest@8cc938cb1bc5ceb634a505c8bff8f105182c06119026e00e7db13b016ca8e0f3"
+  primary_change:
+    type: retune
+    node: process
+    baseline: "s96 best: maintenance applied the rule instead of hope (suite 483/483) - but the assessment was sealed once by hand (s87) and never through the module that exists to make it repeatable, and the protocol the fresh agent reads doesn't name the step"
+    expected_band: "WIN if the s97 assessment seals through the module (the record parses via read_usefulness_assessment, the vocabulary refusals re-verified live) AND the protocol line is permanent in RESUME AND the board-arc epic carries s96 with the sum preserved AND the composition pins hold (the s87 byte-shape, the AuditError refusals) AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s97 commits; the assessment record is append-only history; the epic edit preserves history"
+    eval_window: "w2 pins + merged-tree full pytest + the sealed record and the protocol diff in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: assessment-seal
+    collab: build
+    prompt: prompts/dev/w1-assessment-seal.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: epics-extend-2
+    collab: build
+    prompt: prompts/dev/w2-epics-extend-2.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

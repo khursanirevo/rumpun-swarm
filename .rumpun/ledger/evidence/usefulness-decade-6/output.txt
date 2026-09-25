@@ -1,0 +1,10 @@
+verdict: PARTIALLY USEFUL
+residual: Commit 2ef7e92 delivers concrete CLI repairs, but usefulness-s114 still supplies no external workload outcome.
+residual: .rumpun/plugins/kancil-base/priors/templates/baseline-comparison.md explicitly lacks paired data showing improvement over ordinary development.
+residual: s115-harvest records WIN with both writers incomplete. DESIGN.md attributes both lanes’ checks to the close worker.
+residual: Cost accounting remains partial: s115-harvest measures writer-seconds, while cost-accounting.md identifies missing billing and operator-time data.
+residual: DESIGN.md records an s100 pause, but usefulness-s114 still treats continued operation as a front without measuring marginal benefit.
+residual: replay-matrix.md runs five scripts and skips 140, including unclassified replacements. Historical replay coverage remains incomplete.
+residual: audit-47 marks baseline and autonomy concerns resolved through issue closure. The corresponding standing contracts still acknowledge missing evidence.
+residual: Panel dissent now renders, but usefulness-s114 preserves WIN totals despite s79’s NEUTRAL and s83’s INCONCLUSIVE second opinions.
+residual: .rumpun/seasons/s116.yaml rewards another review and assessment reminder. Neither acceptance clause measures improved downstream task outcomes.

@@ -1,0 +1,125 @@
+board-arc:
+  title: the board arc
+  goal: the GitHub home, the board, the lifecycle, the map, the pulled seasons, the residuals
+  basis: >-
+    the rollup reads the last runs/<sid>/verdicts.jsonl row per member, plus
+    run-state presence. s106 rides as other (the honest unknown): run state
+    present, no verdict row, and the s106-harvest record is absent by design
+    (the one-row-per-season guard refused the harvest; the close's evidence
+    lives in the DESIGN s106 entry, the lane notes, and the usefulness-s107
+    check record). s107 carries its WIN from the s107-harvest row
+    (sha256 fed940362122390a96a8efbcb3928a291275400b9e00ecc75d6c06c00f8f9616).
+    s108 is in flight, unmembered until its close.
+  seasons:
+  - s69
+  - s70
+  - s71
+  - s72
+  - s73
+  - s74
+  - s75
+  - s76
+  - s77
+  - s78
+  - s79
+  - s80
+  - s81
+  - s82
+  - s83
+  - s84
+  - s85
+  - s86
+  - s87
+  - s88
+  - s89
+  - s90
+  - s91
+  - s92
+  - s93
+  - s94
+  - s95
+  - s96
+  - s97
+  - s98
+  - s99
+  - s100
+  - s101
+  - s102
+  - s103
+  - s104
+  - s105
+  - s106
+  - s107
+campaign:
+  title: campaign
+  goal: 'rumpun evolves itself: reflect on the ledger every season and mutate its
+    own pipeline and parameters, one evidence-cited step at a time'
+  seasons:
+  - s1
+  - s2
+  - s3
+  - s4
+  - s5
+  - s6
+  - s7
+  - s8
+  - s9
+  - s10
+  - s11
+  - s12
+  - s13
+  - s14
+  - s15
+  - s16
+  - s17
+  - s18
+  - s19
+  - s20
+  - s21
+  - s22
+  - s23
+  - s24
+  - s25
+  - s26
+  - s27
+  - s28
+  - s29
+  - s30
+  - s31
+  - s32
+  - s33
+  - s34
+  - s35
+  - s36
+  - s37
+  - s38
+  - s39
+  - s40
+  - s41
+  - s42
+  - s43
+  - s44
+  - s45
+  - s46
+  - s47
+  - s48
+  - s49
+  - s50
+  - s51
+  - s52
+  - s53
+  - s54
+  - s55
+  - s56
+  - s57
+  - s58
+  - s59
+  - s60
+  - s61
+  - s62
+  - s63
+  - s64
+  - s65
+  - s66
+  - s67
+  - s68

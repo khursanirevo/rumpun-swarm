@@ -1,0 +1,4 @@
+{"module": "engine.py state.lock", "writer": "w1", "lines": 320, "ruff": "pass", "suite": "19/19 after integration (+1 harness lock-concurrency test)", "smoke": "season list reads all six season states through the locked path; writer probe: 100/100 RMW, dual-start exactly 2 spawns", "integrated": true}
+{"module": "cli.py season list + README.md", "writer": "w3", "lines": "cli 375 / readme 190", "ruff": "pass", "smoke": "list prints s1..s6 correctly (s1/s6 no state); --serve + list documented; version bumped 0.5.0 by harness", "integrated": true}
+{"module": "lock tests + lane", "writer": "w2", "integrated": false, "cause": "tool-less spawn #2: session had no Read/Write/Bash/Task (akar glm-toolless-spawn); deliverables absent; harness applied the concurrency test"}
+{"season_meta": "3 writers glm route, completed 604s, all exit 0; w1 lane events 3 (start/policy/done), w2 0, protocol v2 held: w1 never blocked"}

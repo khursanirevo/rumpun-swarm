@@ -1,0 +1,34 @@
+s10/w1   bytes=  1810 label=clean-or-other rule=toolless hits=-
+s11/w1   bytes=  2230 label=clean-or-other rule=toolless hits=-
+s11/w2   bytes=  2311 label=clean-or-other rule=toolless hits=-
+s12/w1   bytes=  1427 label=toolless       rule=toolless hits=-
+s12/w2   bytes=  2333 label=clean-or-other rule=toolless hits=-
+s13/w1   bytes=  2709 label=clean-or-other rule=toolless hits=-
+s13/w2   bytes=  1966 label=clean-or-other rule=toolless hits=-
+s14/w1   bytes=  8465 label=toolless       rule=not-toolless hits=['tool_use', 'tool_result', 'function_call', '"Write"', '"Edit"', '"Bash"']
+s14/w2   bytes=   267 label=clean-or-other rule=not-toolless hits=-
+s2/w1    bytes=  1664 label=clean-or-other rule=toolless hits=-
+s2/w2    bytes=  1729 label=clean-or-other rule=toolless hits=-
+s2/w3    bytes=  2433 label=clean-or-other rule=toolless hits=-
+s2/w4    bytes=  1985 label=clean-or-other rule=toolless hits=-
+s3/w1    bytes=  1861 label=clean-or-other rule=toolless hits=-
+s3/w2    bytes=  2348 label=clean-or-other rule=toolless hits=-
+s3/w3    bytes=  1600 label=clean-or-other rule=toolless hits=-
+s4/w1    bytes=  3170 label=toolless       rule=toolless hits=-
+s4/w2    bytes=   518 label=clean-or-other rule=toolless hits=-
+s4/w3    bytes=   267 label=clean-or-other rule=not-toolless hits=-
+s5/w1    bytes=  1933 label=clean-or-other rule=toolless hits=-
+s5/w2    bytes=  5771 label=toolless       rule=toolless hits=-
+s5/w3    bytes=  1935 label=clean-or-other rule=toolless hits=-
+s6/w1    bytes=  9315 label=toolless       rule=toolless hits=-
+s6/w2    bytes=  2191 label=clean-or-other rule=toolless hits=-
+s6/w3    bytes=  2670 label=toolless       rule=toolless hits=-
+s7/w1    bytes= 24241 label=toolless       rule=toolless hits=-
+s7/w2    bytes=  1870 label=clean-or-other rule=toolless hits=-
+s8/w1    bytes=  2227 label=clean-or-other rule=toolless hits=-
+s8/w2    bytes=  2617 label=toolless       rule=toolless hits=-
+s9/w1    bytes=  2627 label=clean-or-other rule=toolless hits=-
+s9/w2    bytes=  1856 label=clean-or-other rule=toolless hits=-
+
+confusion: tp=7 fn=1 fp=21 tn=2
+verdict: marker+size rule FAILS

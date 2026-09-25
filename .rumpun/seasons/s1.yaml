@@ -1,0 +1,69 @@
+# musim/s1.yaml — the seed season. Fill goal/metric, then 'rumpun lint musim/s1.yaml'.
+id: s1
+parent: null          # seed season: no primary_change required
+goal: "ship build order step 3: season start / board / season stop with verified liveness, acceptance per s1 falsification criteria"
+metric: "step3_acceptance_criteria_passed"
+mode: fight           # fight | collab
+methodology:
+  approach: "seed reference pipeline"
+  evidence: []        # citations look like akar:<record-id>@<sha> once akar has records
+  pipeline:
+    - phase: analyze
+      primitive: analyze
+      agent: analyst
+      prompt: prompts/base/analyze.md
+      writes: errors.jsonl
+    - phase: rank_gaps
+      primitive: rank_gaps
+      agent: analyst
+      prompt: prompts/base/rank_gaps.md
+      reads: errors.jsonl
+      writes: gaps.yaml
+      top_n: 3
+    - phase: hypothesize
+      primitive: hypothesize
+      agent: swarm
+      prompt: prompts/base/hypothesize.md
+      reads: gaps.yaml
+      writes: hypotheses.yaml
+      per: gap
+      max_concurrent: 3
+    - phase: plan
+      primitive: plan
+      agent: planner
+      prompt: prompts/base/plan.md
+      reads: hypotheses.yaml
+      writes: experiments.yaml
+    - phase: falsify
+      primitive: falsify
+      agent: critic
+      prompt: prompts/base/falsify.md
+      reads: experiments.yaml
+      writes: falsification.yaml
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      reads: falsification.yaml
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: [falsification.yaml, results.jsonl]
+      writes: verdicts.jsonl
+benih:
+  - name: a1
+    route: glm-5.2     # resolved by route probe at spawn; placeholder until 'rumpun models'
+    lane: base-approach
+    prompt: prompts/base/execute.md
+    knowledge: full
+    budget: {minutes: 240}
+  - name: a2
+    route: fable
+    lane: alt-approach
+    prompt: prompts/base/execute.md
+    knowledge: none
+    budget: {minutes: 240}
+stop:
+  "on": [all_exited, {stall_minutes: 45}, budget_exhausted]

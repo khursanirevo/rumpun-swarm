@@ -1,0 +1,47 @@
+# musim/s40.yaml — drafted by evolve v0 from s39; filled by harness from audit-29 + the s32 live partial-write instance (operator standing order: continuous loop)
+id: s40
+parent: s39
+goal: "harvest integrity: M4 closed in full (a non-terminal season refuses harvest, so its permanent id is never consumed by a partial judgment) and the akar record lands before the verdicts row, so a failure between them cannot strand the state"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author reorders harvest (akar record first, verdicts row second) and enforces the M4 terminal refusal; one spec-first tester pins both; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-29@a284da061d37f6369e13bd25a456da925e2731980794f2ed5ee2203e8a00162d
+    - akar:s29-harvest@70b9f90eaf263c279c2ba45c9ad27f981d616b2ef164fdf6b3efb763d60caef5
+  primary_change:
+    type: retune
+    node: gate
+    baseline: "harvest writes the verdicts.jsonl season row before the akar record: s32's live instance stranded the row without its akar record and the harness repaired by hand; and M4's core (harvest accepts a RUNNING season, consumes its permanent id, then the terminal harvest refuses) was s21's acknowledged minimal form, never closed in full"
+    expected_band: "WIN if harvest of a running season raises AkarError without consuming the id or writing the verdicts row (repro) AND a mid-harvest failure (injected akar fault) leaves NO verdicts row behind (repro: the row cannot strand) AND a terminal season with its row already present still refuses a second harvest (regression) AND the suite is green (185+ tests); LOSS otherwise"
+    rollback: "git revert s40 commits; the reorder is inside harvest_season"
+    eval_window: "repro pins + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: harvest-integrity
+    collab: build
+    prompt: prompts/dev/w1-harvest-integrity.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: harvest-integrity-pins
+    collab: build
+    prompt: prompts/dev/w2-harvest-integrity-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

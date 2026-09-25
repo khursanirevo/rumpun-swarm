@@ -1,0 +1,46 @@
+# seasons/s100.yaml — drafted by evolve v0 from s99; filled by harness 2026-09-18 (the surface gate closes the 8-fire class + the second re-derivation: PAUSE or the next named thing)
+id: s100
+parent: s99
+goal: "the 8-fire class closes structurally and the loop asks its second honest question: ships-row surface naming moves from writer convention to a gate (the shift left — caught at design-writing time, not check time), and w2 re-derives the verdict after it lands — PAUSE with the machinery drafted, or the next named thing"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author designs and lands the structural repair per the code's shape (the DESIGN-entry lint or the template columns or both), verifying the s79-s95-era bad rows fail it and the reworded good rows pass; one author re-derives the verdict after the landing — PAUSE with the loop-stand line stating the paused condition and the resume triggers, or the precise next work; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s99-harvest@754096b79072ad3949ec4da91806816298a83a0bf7dff7c7de2933d47659b1a9"
+  primary_change:
+    type: fix
+    node: tooling
+    baseline: "s99 best: the front table emptied to one named item (suite floor holds) - the ships-row surface-naming class fired 8 times s63-s95, each caught one rename at a time at check time; no structural repair landed in s94-s99"
+    expected_band: "WIN if the surface gate lands (a row naming a nonexistent surface fails at design-writing time with the token named; the s79-s95-era bad shapes fail it; the reworded good rows pass) AND w2's re-derivation is honest whichever way it lands (PAUSE with the machinery drafted, or the precise next work) AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s100 commits; the gate is additive"
+    eval_window: "both pins files + merged-tree full pytest + the bad-row verifications and the verdict in the writers' notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: surface-gate
+    collab: build
+    prompt: prompts/dev/w1-surface-gate.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: rederive-pause
+    collab: build
+    prompt: prompts/dev/w2-rederive-pause.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

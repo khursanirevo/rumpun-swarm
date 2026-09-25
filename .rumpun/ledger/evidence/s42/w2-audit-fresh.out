@@ -1,0 +1,13 @@
+warning: `VIRTUAL_ENV=/mnt/data/work/rumpun/.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+Using CPython 3.13.12
+Creating virtual environment at: .venv
+   Building rumpun @ file:///mnt/data/work/rumpun/.rumpun/rimba/s42/w2/scratch
+      Built rumpun @ file:///mnt/data/work/rumpun/.rumpun/rimba/s42/w2/scratch
+Installed 7 packages in 11ms
+INFO fresh corpus matrix -> /mnt/data/work/rumpun/.rumpun/rimba/s42/w2/scratch/replay-matrix.md
+INFO appended akar record audit-32 -> /mnt/data/work/rumpun/.rumpun/rimba/s42/w2/scratch/.rumpun/akar/2026-09-15_audit-32.md
+INFO reflection audit -> /mnt/data/work/rumpun/.rumpun/rimba/s42/w2/scratch/.rumpun/akar/2026-09-15_audit-32.md
+candidate: usefulness residual: Reported locking repairs, citation checks, regression tooling, and reduced rendering provide specific utility. Independent artifact checks remain absent here. (usefulness-decade-1)
+candidate: usefulness residual: The ledger establishes 24 WIN, eight LOSS, and two missing verdicts, not 34 completed improvements. (usefulness-decade-1)
+candidate: usefulness residual: Recorded verdicts establish what evaluators wrote. They do not independently establish implementation correctness or practical value. (usefulness-decade-1)
+exit=0

@@ -1,0 +1,47 @@
+# musim/s28.yaml — drafted by evolve v0 from s27; filled by harness from audit-16 (fourth consecutive zero-candidate audit) + the documentation gap (README at v0.9.0 truth vs v0.11.0 reality)
+id: s28
+parent: s27
+goal: "operator truth: the README describes the current verb surface, the self-evolution loop, and the corpus gate, verified claim-by-claim against behavior; DESIGN gains the review-arc record"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author rewrites the README to current truth (every verb, the audit/reflection loop, the corpus gate, the tools); one author writes DESIGN section 16 (the external-review arc s17-s24 and the consolidation seasons) and verifies every README claim against real behavior; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-16@f4ad2416ba43ff9e8f3f8652f1976b591a2cfa9f1c0375de842ed7ae709b8fd2
+    - akar:s27-harvest@bdba177c44e66784ed6b475ea10b25f1d3e0293f0ca5d88b210e239b59288680
+  primary_change:
+    type: add
+    node: docs
+    baseline: "README documents v0.9.0 (pre-audit, pre-direct, pre-corpus, pre-render-tool, pre-self-evolution loop) while pyproject is 0.11.0; DESIGN sections end at the consolidation seasons without the review arc; an operator reading README cannot learn that the tool audits itself, gates regressions, or renders its own dashboard"
+    expected_band: "WIN if the README states the current version and documents every implemented verb plus the audit loop and both tools AND w2's claim-by-claim verification finds zero false claims (each claim checked against behavior, results recorded) AND DESIGN section 16 records the review arc with season citations AND the suite is green (133+ tests); LOSS otherwise"
+    rollback: "git revert s28 commits; documentation only"
+    eval_window: "claim-by-claim verification record + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: readme-truth
+    collab: build
+    prompt: prompts/dev/w1-readme-sync.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: design-arc
+    collab: build
+    prompt: prompts/dev/w2-design-arc.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

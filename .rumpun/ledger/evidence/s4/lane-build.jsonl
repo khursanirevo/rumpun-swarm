@@ -1,0 +1,1 @@
+{"from": "w2", "kind": "start", "seq": 0, "text": "w2 up: extending tests/test_rumpun.py with terminated-marker snap tests + lane concurrency test; waiting for w1 kind=policy"}

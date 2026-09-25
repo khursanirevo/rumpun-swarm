@@ -1,0 +1,46 @@
+# seasons/s76.yaml — drafted by evolve v0 from s75; filled by harness 2026-09-17 (the audit feeds the board; issue #1 closes through sync)
+id: s76
+parent: s75
+goal: "the board becomes the backlog: audit-43's residual candidates land as board issues through argv-pinned builders, and issue #1 - the campaign's oldest open loop - closes through the lifecycle, commented with the sealed evidence that its ask (panel tooling) is met"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author files audit-43's candidates as issues, item-adds them to project 1, dry-runs and then runs board --sync to comment and close issue #1 with the sealed panel-s70-verdict evidence, verifying live; one author pins the feed (candidates_from_audit, audit_issue_argv, sync_season dry-run over fixtures); fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s75-harvest@e6ccd2f7aa6c506e0b229ffacfd8c257338ca8e4d7570d1bab3510a5e8c39ca2"
+  primary_change:
+    type: rewire
+    node: tooling
+    baseline: "s75 best: the board exists with issue #1 on it and the panel shows on the board (suite 334/334) - but the audit's residual candidates live only in the local ledger, and issue #1 stays open although its ask (panel tooling) is met and verified"
+    expected_band: "WIN if audit-43's candidates are board issues (filed and item-added, verified live) AND issue #1 closes through the lifecycle with the sealed evidence commented AND the feed pins hold (candidates_from_audit, audit_issue_argv, sync dry-run over fixtures) AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s76 commits; the issues close/reopen via gh; the feed builders are additive"
+    eval_window: "w2 pins + merged-tree full pytest + the issue urls and sync output in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: board-feed
+    collab: build
+    prompt: prompts/dev/w1-board-feed.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: audit-feed-pins
+    collab: build
+    prompt: prompts/dev/w2-audit-feed-pins.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

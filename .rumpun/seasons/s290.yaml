@@ -1,0 +1,57 @@
+# seasons/s290.yaml — the steady state resumes; filled from the template at the s289 close
+id: s290
+parent: s289
+goal: "the steady-state cycle repeating: the light lanes re-run current and the rehearsals re-confirm fresh, the maintenance cadence holding while the operator reviews the parked s68 seam fix"
+metric: "light-lane re-proofs"
+mode: fight
+methodology:
+  approach: "one author re-runs the light lanes (the guards fresh, one bounded glm-5.3 probe re-confirmed) naming any drift; one author re-runs the rehearsals fresh naming any drift; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s289-harvest@ce19f39077fb305e252bfab150f6c3018c6a5f591841c9923dc2ecd9ae240595"
+  primary_change:
+    type: retune          # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: execute
+    baseline: "s290 best (both fable writers exited 0; guards 290 passed fresh across 144 pinned files, rehearsals 12/12 fresh, probe re-confirmed, drift none; measured by the sealed harvest record s282-harvest)"
+    expected_band: "WIN if the steady-state cycle's lanes re-run green (the guards green, one bounded probe re-confirmed, the records landed) and the merged-tree full suite is green or carries only the disclosed known reds; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s283 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the re-confirmations read from the writers notes.md"
+  pipeline:
+    - phase: lint-sweep
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: sweep.jsonl
+    - phase: route-probes
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: probes.jsonl
+    - phase: rehearsals
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      reads: [sweep.jsonl, probes.jsonl]
+      writes: rehearsals.jsonl
+    - phase: decision-gate
+      primitive: evaluate
+      agents: writers
+      prompt: prompts/base/evaluate.md
+      reads: rehearsals.jsonl
+      writes: gate-report.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: light-lanes-143
+    collab: build
+    prompt: prompts/dev/w1-light-lanes-70.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: rehearsals-142
+    collab: build
+    prompt: prompts/dev/w2-rehearsals-69.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 30}, budget_exhausted]

@@ -1,0 +1,13 @@
+{"experiment_id": "E1_spawn_exit", "metric": "exit_files_code_0", "observed": "2 of 2 agents exited code 0, season completed", "seconds": 1, "verdict": "PASS"}
+{"experiment_id": "E2_crash_detect", "metric": "crash_detected_seconds", "observed": "kill -9 pid 623346; status showed crashed", "seconds": 4, "verdict": "PASS"}
+{"experiment_id": "E3_stop", "metric": "stop_exit_code", "observed": "stop exit 0, status stopped_operator, agent not alive", "seconds": 4, "verdict": "PASS"}
+{"experiment_id": "E4_stall", "metric": "stall_stop_seconds", "observed": "season auto-stopped stopped_stall; stale suite log lines contaminate stderr, state file from clean run", "seconds": 60, "verdict": "PASS", "note": "stale suite overlap observed; threshold 75"}
+{"experiment_id": "E5_budget", "metric": "budget_stop_seconds", "observed": "season auto-stopped stopped_budget; same stderr contamination note", "seconds": 61, "verdict": "PASS", "note": "stale suite overlap observed; threshold 75"}
+{"experiment_id": "E6_routes_resolve", "metric": "routes_constructed_ok", "observed": "4 of 4 markers: glm claude -p, env-strip ANTHROPIC_BASE_URL, --model <model>, -m gpt-5.6-sol; no execution", "verdict": "PASS"}
+{"experiment_id": "E7_regression", "metric": "lint_graph_pass", "observed": "repo lint pass, repo graph pass, fresh scaffold init+lint pass", "verdict": "PASS"}
+{"defects_found_during_execute": [
+  "per-agent state.json was never written at spawn: watcher saw no agents and spun forever (fixed: written after Popen)",
+  "_finalize KeyError 'name': spawned map values carry no name key (fixed: iterate items)",
+  "zombie children unreaped: /proc entry persists so killed agents read as running until a false stall (fixed: state Z reads as gone)",
+  "terminated-by-season agents label as crashed in final snaps (open finding: needs a kill marker; P36 board should distinguish)"
+]}

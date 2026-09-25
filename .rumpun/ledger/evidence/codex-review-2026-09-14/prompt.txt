@@ -1,0 +1,23 @@
+You are an independent code reviewer. Review this repository read-only: you are
+reviewing 13 seasons of self-evolved code written by AI agents and integrated by
+a harness. Be skeptical and concrete.
+
+Scope (read all of these):
+- src/rumpun/: engine.py, audit.py, evolve.py, collab.py, cli.py, report.py,
+  akar.py, harvest.py, lint.py, routes.py, scaffold.py, yamlio.py, __main__.py
+- tests/test_rumpun.py
+- DESIGN.md sections 13-15 (operator experience + self-evolution) for intent
+
+Look for, in priority order:
+1. Correctness bugs (off-by-one, wrong state transitions, race conditions)
+2. Concurrency: the engine spawns process groups, flocks state.lock and lane
+   locks; check lock ordering, deadlock risk, PID-reuse handling
+3. Determinism violations: report/index rendering must be byte-identical for
+   identical ledger bytes (no clock reads, no dict-order dependence)
+4. Error handling: swallowed exceptions, missing wraps, exit-code honesty
+5. API/design smells that will bite during panel-stage autonomy
+
+Output format: findings grouped by severity (critical/high/medium/low), each
+with file:line, one-paragraph explanation, and a concrete fix suggestion.
+End with the three findings you would fix first and why. Findings only -
+do not propose features.

@@ -1,0 +1,40 @@
+INFO engine under test: /tmp/s20-verify/src/rumpun/engine.py
+ERROR season h5r1: startup failed; cleaning up
+Traceback (most recent call last):
+  File "/tmp/s20-verify/src/rumpun/engine.py", line 608, in start_season
+    _validate_benih(season, routes, root, sid)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/s20-verify/src/rumpun/engine.py", line 553, in _validate_benih
+    raise EngineError(msg)
+rumpun.engine.EngineError: benih 'w2': route 'missing' not in rumpun.yaml routes; run 'rumpun models --write' first
+INFO PASS r1:raises -- EngineError: benih 'w2': route 'missing' not in rumpun.yaml routes; run 'rumpun models --write' first
+INFO PASS r1:status_failed -- status=failed
+INFO PASS r1:error_recorded -- error="EngineError: benih 'w2': route 'missing' not in rumpun.yaml routes; run 'rumpun models --write' first"
+INFO PASS r1:no_spawned -- spawned={}
+INFO PASS r1:no_live_children -- live=[]
+INFO spawned w1 (glm) pid 3299821
+ERROR season h5r2: startup failed; cleaning up
+Traceback (most recent call last):
+  File "/tmp/s20-verify/src/rumpun/engine.py", line 689, in start_season
+    _save_state(root, sid, state, state_lock)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/data/work/rumpun/.rumpun/rimba/s20/w1/scratch/repro_h5_h9.py", line 175, in crashing_save
+    raise RuntimeError("simulated crash between spawn and save")
+RuntimeError: simulated crash between spawn and save
+INFO PASS r2:raises -- raised=RuntimeError('simulated crash between spawn and save')
+INFO PASS r2:registered -- spawned_entry={'pid': 3299821, 'proc_start': 3591747}
+INFO PASS r2:child_killed -- alive=False terminated_marker=Ellipsis
+INFO PASS r2:status_failed -- status=failed error='RuntimeError: simulated crash between spawn and save'
+WARNING /mnt/data/tmp/rumpun-r2-quntiikc/rimba/h5r2/w1: pid 3299821 identity mismatch (recorded start 3591747, live None); not signaled
+INFO spawned w1 (glm) pid 3300014
+INFO spawned w2 (long) pid 3300016
+WARNING agent w1 is past its 0.02-minute budget; terminating
+INFO season h5r3 -> completed
+INFO PASS r3:season_completed -- status=completed
+INFO PASS r3:short_terminated_budget -- w1={'name': 'w1', 'route': 'glm', 'state': 'terminated', 'exit_code': None, 'started_at': 1789398802.5919187, 'seconds': 6.3, 'terminated_budget': True}
+INFO PASS r3:long_completed -- w2={'name': 'w2', 'route': 'long', 'state': 'exited', 'exit_code': 0, 'started_at': 1789398802.6049626, 'seconds': 6.3}
+INFO PASS r3:short_stopped_at_own_deadline -- w1_seconds=6.3 (own deadline 1.2 s + loop)
+WARNING /mnt/data/tmp/rumpun-r2-quntiikc/rimba/h5r2/w1: pid 3299821 identity mismatch (recorded start 3591747, live None); not signaled
+WARNING /mnt/data/tmp/rumpun-r3-mlpm64sz/rimba/h5r3/w1: pid 3300014 identity mismatch (recorded start 3591769, live None); not signaled
+WARNING /mnt/data/tmp/rumpun-r3-mlpm64sz/rimba/h5r3/w2: pid 3300016 identity mismatch (recorded start 3591771, live None); not signaled
+INFO verdicts: r1:raises=PASS, r1:status_failed=PASS, r1:error_recorded=PASS, r1:no_spawned=PASS, r1:no_live_children=PASS, r2:raises=PASS, r2:registered=PASS, r2:child_killed=PASS, r2:status_failed=PASS, r3:season_completed=PASS, r3:short_terminated_budget=PASS, r3:long_completed=PASS, r3:short_stopped_at_own_deadline=PASS

@@ -1,0 +1,80 @@
+# seasons/_steady-state.yaml — the steady-state season template (s138 w2).
+# The guide's section-4 steady state as a first-class shape: the standing
+# light lanes (the lint sweep, the route probes, the rehearsals) keep the
+# machinery warm while the operator holds the decision gate. Copy to
+# seasons/s<N>.yaml and fill every FILL field before the first lint.
+#
+# Fill-in fields:
+#   id                       — next free season id (s<N>, must match ^s\d+$)
+#   parent                   — the season whose close opened the steady state
+#   goal / metric            — the steady state's own goal and metric words
+#   approach                 — one line
+#   evidence                 — citations look like ledger:<record-id>@<sha>
+#   baseline                 — the standing surface the lanes re-prove
+#   expected_band            — the operator's decision gate in the band:
+#                              WIN/LOSS on the re-proof; anything heavier
+#                              waits for the operator's word
+#   rollback                 — how the season's changes walk back
+#   eval_window              — which artifacts decide the verdict
+#   writers[].name           — per-season writer names
+#   writers[].route          — a route in rumpun.yaml ('rumpun models' probes)
+#   writers[].budget.minutes — per-writer wall-clock budget
+id: s1                   # FILL: next free season id
+parent: s1               # FILL: the season whose close opened the steady state
+goal: "keep the campaign machinery warm while the operator holds the decision gate"  # FILL
+metric: "light-lane re-proofs"  # FILL: what a light lane re-proves
+mode: fight              # the lanes run independently
+methodology:
+  approach: "re-prove the standing three (lint sweep, route probes, rehearsals)"  # FILL
+  evidence: []           # FILL: citations look like ledger:<record-id>@<sha>
+  primary_change:
+    type: retune
+    node: execute
+    baseline: "the standing surfaces the last close left green"  # FILL: what the lanes re-prove
+    expected_band: "operator's decision gate: WIN if lanes re-prove clean; LOSS on drift"  # FILL
+    rollback: "nothing new ships; leaving the steady state is the operator's decision"  # FILL
+    eval_window: "sweep.jsonl, probes.jsonl, rehearsals.jsonl, gate-report.jsonl"  # FILL
+  pipeline:
+    - phase: lint-sweep
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: sweep.jsonl
+    - phase: route-probes
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: probes.jsonl
+    - phase: rehearsals
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      reads: [sweep.jsonl, probes.jsonl]
+      writes: rehearsals.jsonl
+    - phase: decision-gate
+      primitive: evaluate
+      agents: writers
+      prompt: prompts/base/evaluate.md
+      reads: rehearsals.jsonl
+      writes: gate-report.jsonl
+writers:
+  - name: sweep      # FILL: per-season writer names
+    route: glm-5.2   # resolved by route probe at spawn; placeholder until 'rumpun models'
+    lane: lint-sweep
+    prompt: prompts/base/execute.md
+    knowledge: full
+    budget: {minutes: 60}
+  - name: probes
+    route: fable
+    lane: route-probes
+    prompt: prompts/base/execute.md
+    knowledge: none
+    budget: {minutes: 30}
+  - name: rehearsal
+    route: glm-5.2
+    lane: rehearsals
+    prompt: prompts/base/execute.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 30}, budget_exhausted]

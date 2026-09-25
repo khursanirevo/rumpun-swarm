@@ -1,0 +1,66 @@
+# .rumpun/s114-assessment.yaml — the fifth usefulness assessment,
+# composed by the s114 w1 lane over the ledger read 2026-09-20 and sealed
+# through the module at this season's close. The s87 shape: verdict,
+# basis, fronts (name/owner/basis/next), satisfied. Every value quoted so
+# the " #" issue tokens never start YAML comments.
+
+verdict: "CONTINUE"
+
+basis: "directive seq 9 - usefulness exhaustion is the stopping criterion; since the last seal (ledger:usefulness-s107@eff9ce0ecf4f82545bb32994c1dd7963fc5126006a8be19628ae24123dce7ae4) the second-opinion loop completed its ten verdicts with the dissent marks rendering, the notes gate caught its first production gap, five closes rode the auto-continue directive (seq 17), and issues #25/#26/#27 closed; every front below names its owner and next-action"
+
+fronts:
+- name: "issues #31/#35/#36/#37, the fresh filings"
+  owner: "campaign"
+  basis: "OPEN on the live board read 2026-09-20, filed after the last assessment sealed (ledger:usefulness-s107@eff9ce0ecf4f82545bb32994c1dd7963fc5126006a8be19628ae24123dce7ae4): the season list order flip (#31) and the three no-DESIGN-convention close refusals (#35/#36/#37)"
+  next: "resolve per the issue bodies"
+
+- name: "issue #18, the cost accounting"
+  owner: "campaign"
+  basis: "OPEN by the cost template's stay-open rule: the spend line continues landing per close (ledger:s110-harvest@a05114aa0527b33d6c92ee62556684b0d829f2a909f9e36c658de11ba003811d) while the unrecordables stay unrecordable; the live board read 2026-09-20 shows OPEN"
+  next: "keep the stay-open rule applied; add spend-line slices where measurable"
+
+- name: "the forge merge decision table"
+  owner: "operator"
+  basis: "the merge-gating policy awaits the operator's word (RESUME open items, read 2026-09-20; the newest directive seq 17 is the auto-continue, not the forge)"
+  next: "the operator decides; a season then implements the gate"
+
+- name: "the decade-6 usefulness audit"
+  owner: "operator, then campaign"
+  basis: "due per ledger:audit-44@181b6a6b079dcea180f2e0a505e318eb296c50a6373cadf90ac6f71a76b91b63 (F7); the credits gate lifted (the 2026-09-20 panel sweep sealed panel-s69-3/s79-2/s83-2/s84-2 over gpt-6-astra) while the review itself has not run (no usefulness-decade-6 record; ledger read 2026-09-20)"
+  next: "run it now that the route answers"
+
+- name: "the auto-continue directive (seq 17)"
+  owner: "operator"
+  basis: "standing 2026-09-20; five completed closes rode it (s108, s110, s111, s112, s113) with one INVALID restart between (ledger:s109-harvest@c6f5f63055dc2edef32516634ec9d7b4945ddf6c6e6f636159601f23e2e69b8e); the audit-47 residual (no demonstrated stopping rule) stands and the directive's stop conditions are the recorded answer"
+  next: "it remains the loop's standing instruction; the operator revisits on the decade-6 review"
+
+- name: "the competition arc"
+  owner: "operator"
+  basis: "it runs in the operator's own project; the ledger is silent; the arc's data reaching the board is a named resume trigger"
+  next: "no campaign action; the arc's data lands when it lands"
+
+satisfied:
+- "issue #13 retired live at s87 (ledger:s87-harvest@29a326aa6007f37a444467d3d6ef49231165ff7bef1d2a9dd9e6ea6d2e02bda6)"
+- "issue #17 closed on the repro-backed closure: the akar H6 race fixed, red-before green-after (ledger:s91-harvest@ab4144d7b2aaa162fea78dd445ce5021ada36e086c669c03e380d363543140a6)"
+- "the standing assessment module landed and wired through cli (ledger:s88-harvest@0a7dcf11066de7222b1431271f8be1c0ad1e6fc4e182fafe7622f6d5fb4a1e17)"
+- "the pack re-synced with the four new priors and #18's first slice landed (ledger:s96-harvest@8cc938cb1bc5ceb634a505c8bff8f105182c06119026e00e7db13b016ca8e0f3)"
+- "the module's first contract application: the s97 record sealed through the module and read back whole (ledger:usefulness-s97@9e1c93e1908eef1a928c0af4b99424788c98b280e491bebcebe67babc105642b)"
+- "the module's second contract application: the s98 record sealed through the module and read back whole (ledger:usefulness-s98@81b4b6935aa6d0752f3f6aa8f600e4031e86a1ae02e2df1993d57be5ddcb2e0f)"
+- "the module's third contract application, backfilled here: the s99 record sealed through the module and read back whole (ledger:usefulness-s99@18fcd775f555fc4f2a027bc5a4cd5a78e9c634e3745492af6b112f2aed71b7dd)"
+- "the module's fourth application: the s101 record sealed through the module, the close protocol running per completion through the pause (ledger:usefulness-s101@db4cbfb66e3b66e2103272970c9f8735f107f54df0ddadca151c756afca34ce1)"
+- "the honest re-derivation: the front table emptied to one named item, the pause condition precise (ledger:s99-harvest@754096b79072ad3949ec4da91806816298a83a0bf7dff7c7de2933d47659b1a9)"
+- "the surface gate landed: the 8-fire class closed structurally, the loop paused honestly (ledger:s100-harvest@7e08adac6e2837d1ce74e755f38ec472a2317bfa79cb329b582ab3cf5bd2e3ff)"
+- "the board resolved clean per the operator's resolve-all directive (seq 16): the live board read 2026-09-18 12:56Z shows #5/#11/#12/#14-#16 CLOSED; #5 closed as delivered, the standard held at every closure since s80 (ledger:s80-harvest@ed4d22e4ed5ceac72915986cf688404f18d91cb8299eb5567db242e5e7288e3b)"
+- "s104 closed WIN: the pause-resume cycle's maintenance half proven, the inventory catching issue #21 as the next headline (ledger:s104-harvest@a84c3905bc129f6cb8ed80f74673423c263bbe498565fe7a1d03b95a03d0f7df)"
+- "s105 closed WIN: the spend line landed with the label split rendering live; the composer's fresh render verified real over the ledger (ledger:s105-harvest@d4a37e1448fffd95666d69398d7716415ecf2e367b59a034410a062b0c5ddf02)"
+- "issue #21 closed: the writer-lane tools restored at the spawn site, the live board read 2026-09-19 shows CLOSED (the recovery named in ledger:usefulness-s104@c669d88346104dbae75fa52a2665a6634155bebe79396ff4a80db5ec33930199)"
+- "s108 closed WIN: the rerun convention retired the s79 refusal class; the pinless close completes with a named skip (ledger:s108-harvest@febf9c609b1b7a258f14ad94e3f9505d3fddae523c52da8770f01f40bc9eaab4)"
+- "s110 closed WIN: the integration pass landed whole; the epic view renders per-member bases with the sums preserved (ledger:s110-harvest@a05114aa0527b33d6c92ee62556684b0d829f2a909f9e36c658de11ba003811d)"
+- "s111 closed WIN: the second opinion renders with the fold; the composer digest equality pinned (ledger:s111-harvest@c958540e856f043fcd1a2f3aeacb548d2b35b7d9d5f5d9c5a2f4e19f55d98d11)"
+- "s112 closed WIN: the notes gate structural, the dissent marks render (ledger:s112-harvest@e98a8ec13bfdd570e93ad9a297ff4b37bc43ae15343d0e4c76a7936091e2d290)"
+- "s113 closed WIN: the review surfaces fold the second opinion and the marks (ledger:s113-harvest@db46907926cb83c781f20a21abe46574bd9144b0f0e4f82093b476df93eaa6f0)"
+- "the second-opinion loop completed its ten verdicts: the six pre-gate verdicts of 09-17 stand, the four fresh ones sealed 2026-09-20 after the credits returned (ledger:panel-s69-3-verdict@51f2d014c1defd51a30e41dba910b4f95c0454cb957cead9ca6c7d379a48c9bc, ledger:panel-s79-2-verdict@387fa6ac08f195df0d0b0ca2a80050f5f061f7ac9be848848ede5a1834c7622f, ledger:panel-s83-2-verdict@5319dd4e235ccf4449ae7c4fbf54f9c65e8187b92fa496e8130f224992eafbe2, ledger:panel-s84-2-verdict@c3085ef323ccea9786ec57fe8770aa9c0d0d3e2d247c81e756de14119b09c88d)"
+- "the dissent marks name the true divergences: s69 dissent:LOSS over judge other, s79 dissent:NEUTRAL over judge WIN, s83 dissent:INCONCLUSIVE over judge WIN (ledger:s112-harvest@e98a8ec13bfdd570e93ad9a297ff4b37bc43ae15343d0e4c76a7936091e2d290)"
+- "the notes gate caught its first production gap at s113 (ledger:s113-harvest@db46907926cb83c781f20a21abe46574bd9144b0f0e4f82093b476df93eaa6f0)"
+- "issues #25/#26/#27 closed per the live board read 2026-09-20 (the fresh filings named in ledger:usefulness-s107@eff9ce0ecf4f82545bb32994c1dd7963fc5126006a8be19628ae24123dce7ae4)"
+- "s106 stands recorded as an honest unknown in .rumpun/epics.yaml (the epic carries s106 as other, no harvest record by design, resolving the s107 front differently than asked)"

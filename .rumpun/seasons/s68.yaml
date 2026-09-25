@@ -1,0 +1,46 @@
+# seasons/s68.yaml — drafted by evolve v0 from s67; filled by harness 2026-09-16 (the kancil forge flow + schema versioning, operator directives seq 13 + seq 6)
+id: s68
+parent: s67
+goal: "rumpun improves its tools and itself: the kancil forge flow lands one evidence-cited kancil improvement as a GitHub issue, PR, merge, and pip-installed update (directive seq 13), and the campaign schema becomes versioned - scaffold writes schema: 1, a versioned CHANGELOG.md records it, mutating verbs refuse unknown versions naming the supported range (directive seq 6)"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author runs the full kancil forge flow against khursanirevo/exp_manager (usage evidence from the ledger, gh issue, branch, PR, merge, reinstall the pip package, re-run the s67 route pins); one tester pins the schema-version contract (scaffold writes schema: 1, unknown versions block mutating verbs while reads still work, CHANGELOG newest-first and prunable with RESUME); shared build lane; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s67-harvest@704ae8de34e53dd6096fafef29c0ecd867108fe9350bc23a501992dc2a655d06"
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "s67 best: the kancil route, kancil-base pack, and competition template landed (suite 291/291); kancil improvements have no forge path (no issue/PR/merge/update loop) and the schema is unversioned, so a future breaking change is invisible to readers"
+    expected_band: "WIN if the forge flow completes end to end (issue filed and PR merged on khursanirevo/exp_manager, the installed kancil updated, s67 route pins re-green) AND the schema-version pins hold (scaffold writes schema: 1; schema: 99 blocks mutating verbs, read verbs still work; CHANGELOG recorded and prunable) AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s68 commits; the kancil change is upstream (its own revert PR if needed); the schema key is additive with a default read of 1"
+    eval_window: "w2 pins + merged-tree full pytest + the gh issue/PR urls in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: kancil-forge
+    collab: build
+    prompt: prompts/dev/w1-kancil-forge.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: schema-version
+    collab: build
+    prompt: prompts/dev/w2-schema-version.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

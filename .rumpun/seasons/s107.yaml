@@ -1,0 +1,46 @@
+# seasons/s107.yaml — drafted by evolve v0 from s106; filled by harness 2026-09-18 (the maintenance rhythm's next pass: the epic extends, the assessment seals, the pack checked, the composer rendered)
+id: s107
+parent: s106
+goal: "the maintenance rhythm's next pass: the board-arc epic extends with s97-s106 preserving every verdict, the assessment seals through the module (the fourth application), the pack digest is checked fresh, and the composer renders over the ledger confirming the pause-resume cycle's stability"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author extends the board-arc epic preserving every verdict (the pinned arithmetic) and seals the s107 assessment through the module; one author checks the pack digest fresh and renders the composer over the ledger confirming the pause-resume stability; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s105-harvest@d4a37e1448fffd95666d69398d7716415ecf2e367b59a034410a062b0c5ddf02"
+  primary_change:
+    type: retune
+    node: tooling
+    baseline: "s96 best: maintenance applied the rule instead of hope (suite 483/483) - but the epic trails by ten seasons, the assessment has sealed three times and never four, and the pack-composer rhythm has never run twice in a row"
+    expected_band: "WIN if the board-arc epic extends with the sum preserved AND the assessment seals through the module with the fronts read live AND the pack digest check lands (reinstall or the recorded equality) AND the composer render confirms the stability AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s107 commits; the epic edit preserves history"
+    eval_window: "w2 pins + merged-tree full pytest + the epic view and the sealed record in the writers' notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: epics-assess
+    collab: build
+    prompt: prompts/dev/w1-epics-assess.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: pack-render
+    collab: build
+    prompt: prompts/dev/w2-pack-render.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,46 @@
+# seasons/s130.yaml — drafted by evolve v0 from s129; fill primary_change + evidence, then apply
+id: s130
+parent: s129
+goal: "the honest-exit rehearsal: the exhaustion verdict seals through the module and surfaces in the planner, and the guide's happy path is proven end to end in a tmp campaign"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author rehearses the exhaustion path (the assessment module accepts verdict EXHAUSTED in a fixture, the seal reads back, and the plan surface is pinned for the campaign's own honest stop) with red-first pins; one author scripts the guide's happy path end to end in a tmp campaign (init, fill, lint, a minimal season, harvest, check) and pins the walk; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s129-harvest@cbe0ae078a81a1084473a9c6eacb0664ddf7e54c191e1d008315fdac3b8e775f"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: execute
+    baseline: "s129 best (both fable writers exited 0 at 888.2s; the flags named or hidden on purpose and the lessons surface first-class; merged-tree suite 739 passed 1 xfailed; measured by the sealed harvest record s129-harvest; the loop's s130 draft consumed at this close)"
+    expected_band: "WIN if the exhaustion verdict seals through the module in a fixture and reads back with the plan surface pinned (red-first), the guide's happy path walks end to end in a tmp campaign with every step captured (red-first), and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s130 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the rehearsal walks read from the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: exhaustion-rehearsal
+    collab: build
+    prompt: prompts/dev/w1-exhaustion-rehearsal.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: guide-walkthrough
+    collab: build
+    prompt: prompts/dev/w2-guide-walkthrough.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

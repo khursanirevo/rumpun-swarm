@@ -1,0 +1,46 @@
+# seasons/s75.yaml — drafted by evolve v0 from s74; filled by harness 2026-09-17 (the board create with the live write scope + the panel's teeth)
+id: s75
+parent: s74
+goal: "the board exists and the panel shows: with the operator's `project` write scope verified in the token, w1 lands the board (create, issue #1 item-add, live pickup through the pinned parser) and w2 makes a non-WIN panel verdict surface as a NEED HUMAN kanban card (issue #1, third slice)"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author confirms the scope from its own session then runs the full board flow (create, item-add, item-list with the board number verified through the pinned parser, pins re-green); one author lands latest_panel plus the _panel_cards NEED HUMAN rendering for non-WIN verdicts, pinned offline over fixture records; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s74-harvest@b6443e3e15e66ef042da00e5e8494ed88f764df0c9b337b5786922395bce2268"
+  primary_change:
+    type: rewire
+    node: tooling
+    baseline: "s74 best: the harvest-to-issue lifecycle landed whole (suite 326/326) but no board exists - the create waited on the write scope the operator has now granted and verified in the token"
+    expected_band: "WIN if the board exists with issue #1 on it and pickup verifies live through the pinned parser AND the panel-teeth pins hold (latest_panel over fixtures, non-WIN renders the card, WIN renders none, the s69 degrade pin stays green) AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s75 commits; the board is deletable via gh; the panel card rendering is additive"
+    eval_window: "w2 pins + merged-tree full pytest + the project url/number in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: board-create-live
+    collab: build
+    prompt: prompts/dev/w1-board-create-live.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: panel-teeth
+    collab: build
+    prompt: prompts/dev/w2-panel-teeth.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,86 @@
+# musim/s6.yaml — drafted by evolve v0 from s5; filled by harness 2026-09-14 (s5 LOSS retry, lane observational)
+id: s6
+parent: s5
+goal: "operator detail view (season show), process-level proof of the state lock, and final README sync; lane evidence recorded, not gating"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "three solo deliverables (show verb, dual-start proof, docs sync); w1 and w2 share lane build under protocol v2 to gather a third dogfood sample without betting the band on the external spawn defect"
+  evidence:
+    - akar:s5-harvest@7530e464d905fe6d4d13966380fae8a8e84fbc825777e801ca7bcf4c4e59a739
+    - akar:glm-toolless-spawn@dbfd74ccd9bd076e3a1de5c0afd244cd461f2ffcfb794dda98764a0a7bf257f9
+  primary_change:
+    type: add
+    node: execute
+    baseline: "s5 LOSS on the lane band only: state-lock and season list shipped green; spawn defect now 2 of 13 glm sessions"
+    expected_band: "WIN if season show prints correct detail for started seasons AND the process-level dual-start test passes with exactly one spawn per benih AND the full suite is green AND the README matches the v0.6.0 surface; LOSS otherwise. Lane event counts are recorded in results but are not band conditions."
+    rollback: "git revert s6 commits and remove musim/s6.yaml"
+    eval_window: "s6 season suite + merged-tree pytest + season show/list output + dual-start test"
+  pipeline:
+    - phase: analyze
+      primitive: analyze
+      agent: analyst
+      prompt: prompts/base/analyze.md
+      writes: errors.jsonl
+    - phase: rank_gaps
+      primitive: rank_gaps
+      agent: analyst
+      prompt: prompts/base/rank_gaps.md
+      reads: errors.jsonl
+      writes: gaps.yaml
+      top_n: 3
+    - phase: hypothesize
+      primitive: hypothesize
+      agent: swarm
+      prompt: prompts/base/hypothesize.md
+      reads: gaps.yaml
+      writes: hypotheses.yaml
+      per: gap
+      max_concurrent: 3
+    - phase: plan
+      primitive: plan
+      agent: planner
+      prompt: prompts/base/plan.md
+      reads: hypotheses.yaml
+      writes: experiments.yaml
+    - phase: falsify
+      primitive: falsify
+      agent: critic
+      prompt: prompts/base/falsify.md
+      reads: experiments.yaml
+      writes: falsification.yaml
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      reads: falsification.yaml
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: [falsification.yaml, results.jsonl]
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: glm
+    lane: show
+    collab: build
+    prompt: prompts/dev/w1-show.md
+    knowledge: partial
+    budget: {minutes: 25}
+  - name: w2
+    route: glm
+    lane: duptest
+    collab: build
+    prompt: prompts/dev/w2-duptest.md
+    knowledge: partial
+    budget: {minutes: 25}
+  - name: w3
+    route: glm
+    lane: docs
+    prompt: prompts/dev/w3-docs.md
+    knowledge: partial
+    budget: {minutes: 25}
+stop:
+  "on": [all_exited, {stall_minutes: 20}, budget_exhausted]

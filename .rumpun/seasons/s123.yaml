@@ -1,0 +1,46 @@
+# seasons/s123.yaml — drafted by evolve v0 from s122; fill primary_change + evidence, then apply
+id: s123
+parent: s122
+goal: "the convention-codify pass: the writer commit becomes a named rule with its attestation, and the loop's draft wins when it exists"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author codifies the lane-commit convention in the operator surfaces and adds the loop-draft preference to the planner (a warning naming the loop draft when one exists for the next id) with red-first pins; one author lands the writer-commit attestation (the engine records the season's start HEAD at spawn and the results row carries the commit when HEAD moved past it) with red-first pins; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s122-harvest@197927399188c4a139218d3fbdeb9cb55ce6edd46c39caaff25941423744f06f"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: execute
+    baseline: "s122 best (both fable writers exited 0 at 1806.6s; the drought counts the decade seals and the close check survives bare repos; the loop fired its first production close-preps; merged-tree suite 666/666; measured by the sealed harvest record s122-harvest)"
+    expected_band: "WIN if the lane-commit rule is codified in the operator surfaces with the planner's loop-draft preference pinned red-first, the results row carries the lane's commit when HEAD moved past the season's start HEAD and nothing when it did not (pinned red-first), and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s123 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the planner warning and the attested rows read from the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: commit-convention
+    collab: build
+    prompt: prompts/dev/w1-commit-convention.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: commit-attestation
+    collab: build
+    prompt: prompts/dev/w2-commit-attestation.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

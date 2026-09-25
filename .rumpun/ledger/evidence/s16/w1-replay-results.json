@@ -1,0 +1,164 @@
+{
+  "engine_loaded": "/mnt/data/work/rumpun/.rumpun/rimba/s16/w1/engine.py",
+  "w1": {
+    "scan": {
+      "file_tools": true,
+      "stream_offset": 6316289
+    },
+    "finalize": {
+      "file_tools": true,
+      "stream_offset": 6316289
+    },
+    "log_size": 6316289,
+    "parseable_events": 30680,
+    "tool_names": [
+      "Bash"
+    ]
+  },
+  "w2": {
+    "scan": {
+      "file_tools": true,
+      "stream_offset": 6766350
+    },
+    "finalize": {
+      "file_tools": true,
+      "stream_offset": 6766350
+    },
+    "log_size": 6766350,
+    "parseable_events": 32689,
+    "tool_names": [
+      "Bash"
+    ]
+  },
+  "w3_text_only": {
+    "scan": {
+      "file_tools": "absent",
+      "stream_offset": 12
+    },
+    "finalize": {
+      "file_tools": "absent",
+      "stream_offset": 12
+    },
+    "log_size": 12,
+    "parseable_events": 0,
+    "tool_names": []
+  },
+  "w4_toolsearch_only": {
+    "scan": {
+      "file_tools": "absent",
+      "stream_offset": 163
+    },
+    "finalize": {
+      "file_tools": false,
+      "stream_offset": 163
+    },
+    "log_size": 163,
+    "parseable_events": 2,
+    "tool_names": [
+      "ToolSearch"
+    ]
+  },
+  "w5_incremental": {
+    "offset_after_scan1": 2619,
+    "offset_after_scan2": 6316289,
+    "file_tools": true,
+    "log_size": 6316289
+  },
+  "ab_base": {
+    "season_state": {
+      "id": "s99",
+      "status": "completed",
+      "started_at": 0.0,
+      "spawned": {
+        "t1": {
+          "pid": 1,
+          "proc_start": null
+        }
+      },
+      "agents": {
+        "t1": {
+          "name": "t1",
+          "route": "fable",
+          "state": "crashed",
+          "exit_code": null,
+          "started_at": 0.0,
+          "seconds": 1789388683.1
+        }
+      },
+      "ended_at": 1789388683.070587
+    },
+    "read_status": {
+      "id": "s99",
+      "status": "completed",
+      "started_at": 0.0,
+      "spawned": {
+        "t1": {
+          "pid": 1,
+          "proc_start": null
+        }
+      },
+      "agents": {
+        "t1": {
+          "name": "t1",
+          "route": "fable",
+          "state": "crashed",
+          "exit_code": null,
+          "started_at": 0.0,
+          "seconds": 1789388683.1
+        }
+      },
+      "ended_at": 1789388683.070587
+    }
+  },
+  "ab_patched": {
+    "season_state": {
+      "id": "s99",
+      "status": "completed",
+      "started_at": 0.0,
+      "spawned": {
+        "t1": {
+          "pid": 1,
+          "proc_start": null
+        }
+      },
+      "agents": {
+        "t1": {
+          "name": "t1",
+          "route": "fable",
+          "state": "crashed",
+          "exit_code": null,
+          "started_at": 0.0,
+          "seconds": 1789388683.1
+        }
+      },
+      "ended_at": 1789388683.0727296
+    },
+    "read_status": {
+      "id": "s99",
+      "status": "completed",
+      "started_at": 0.0,
+      "spawned": {
+        "t1": {
+          "pid": 1,
+          "proc_start": null
+        }
+      },
+      "agents": {
+        "t1": {
+          "name": "t1",
+          "route": "fable",
+          "state": "crashed",
+          "exit_code": null,
+          "started_at": 0.0,
+          "seconds": 1789388683.1
+        }
+      },
+      "ended_at": 1789388683.0727296
+    }
+  },
+  "ab_bytes_identical": {
+    "season_state": true,
+    "read_status": true,
+    "ended_at_only_delta": true
+  }
+}

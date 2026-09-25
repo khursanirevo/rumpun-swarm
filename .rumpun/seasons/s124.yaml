@@ -1,0 +1,46 @@
+# seasons/s124.yaml — drafted by evolve v0 from s123; fill primary_change + evidence, then apply
+id: s124
+parent: s123
+goal: "the surface-the-silence pass: a stalled lane surfaces as an event instead of silence, and the engine's running state reconciles against live process identity so the restart scar cannot repeat quietly"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the lane heartbeat (a lane past its stall window with no progress surfaces as a named event and a report mark, so silence is visible) with red-first pins; one author pins the spawn-identity reconciliation (the durable running state reconciles against live process identity, so a dead runner cannot stay silently running) with red-first pins; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s123-harvest@fdae6ec4ea36cad0e417b453dc9ca08c8cab35961eddb432dd1f99a4d6bda3ca"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: tooling
+    baseline: "s123 best (both fable writers exited 0 at 1128.3s; the lane-commit rule codified, the loop-draft preference landed, the commit attestation live, and the four-review adopts in; merged-tree suite 679/679; measured by the sealed harvest record s123-harvest)"
+    expected_band: "WIN if a stalled or dead lane surfaces as a named event or rendered mark (pinned red-first), the durable running state reconciles against live process identity in the status and report surfaces (pinned red-first), and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s124 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the heartbeat events and the reconciliation reads come from the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: lane-heartbeat
+    collab: build
+    prompt: prompts/dev/w1-lane-heartbeat.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: spawn-identity
+    collab: build
+    prompt: prompts/dev/w2-spawn-identity.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,47 @@
+# musim/s44.yaml — drafted by evolve v0 from s43; filled by harness from the operator's plugin/hub directive (direct channel, 2 pending) + audit-33's drift candidate (operator standing order: continuous loop)
+id: s44
+parent: s43
+goal: "the plugin boundary, enforceable: the pack format (manifest with name, version, base lineage, digest, private vocabulary), priors/ vs campaign/ content classes, and the guardrails lint that rejects project leakage at publish - plus a minimal kaggle-base seed"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the pack format + the plugin guardrails lint in a new src/rumpun/plugin.py with minimal documented cli wiring; one author drafts the kaggle-base seed priors (generalized from this campaign's proven gates) and pins the whole contract; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-33@8e2939b38aceb14988b8fca4bfb29c54e5f265ce66aeb6e97af4af43dc218359
+    - akar:s39-harvest@2622c0c3fb400d3db2372b617a6a752117e660f4e8b3234bc130172c7913f9e7
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "the operator confirmed the plugin/hub architecture (direct channel, 2 pending): packs carry priors/ only (general knowledge), campaign/ never installs or publishes, distill + pack lint enforce the boundary, hub v1 is git-based sharing - none of which exists in code; the only pack-like artifact is the prompts/base tree with no manifest, no lint, no install"
+    expected_band: "WIN if a pack with a valid manifest (name, version, digest, private vocabulary, base lineage) passes plugin lint AND priors/ containing sids, absolute paths, or private-vocabulary matches fails lint naming file and offense (repro per class) AND the installer reads priors/ only - a campaign/ dir is structurally invisible to it (repro) AND a minimal kaggle-base seed pack passes AND the suite is green (188+ tests); LOSS otherwise"
+    rollback: "git revert s44 commits; plugin.py is a new module, additive"
+    eval_window: "repro pins per leak class + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: plugin-boundary
+    collab: build
+    prompt: prompts/dev/w1-plugin-core.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: plugin-pins
+    collab: build
+    prompt: prompts/dev/w2-plugin-core-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

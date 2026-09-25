@@ -1,0 +1,47 @@
+# seasons/s55.yaml — drafted by evolve v0 from s54; filled by harness 2026-09-16 (the independent artifact check, audit-39's residuals)
+id: s55
+parent: s54
+goal: "the loop checks its own work independently: a checker re-verifies the freshly landed season's ships from artifacts alone (re-run the merged pins, recompute the claimed digests, diff the DESIGN ships row against the tree) and the check's outcome lands as a ledger record the next season cites"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands tools/artifact_check.py (given a season id + the close commit, re-run the season's merged pins on a clean tree, recompute the plugin pack digests, diff DESIGN's ships row against the tree, write the ledger record) with minimal documented cli wiring (rumpun check <sid>); one spec-first tester pins the checker on s54's own close; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - ledger:s54-harvest@7340c8c39eb10402eb8ff0c9aff52a9327048f7c6d116630d9054744bfe944a2
+    - ledger:audit-39@052bc40cb335a9075e36648cd1de4ab3895d91f7be524534cd6628916175b626
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "every season's WIN rests on the workers' own reports: the harness close re-runs the suite but on the same session's terms, and no artifact-level check re-derives the landed ships independently (audit-39, usefulness-decade-1 residuals 1-3)"
+    expected_band: "WIN if the checker re-verifies s54's close from artifacts alone (the merged pins re-run green on a clean tree, the recomputed digests equal the claimed ones, the DESIGN ships row matches the tree) AND the checker's ledger record cites exactly what it ran AND the suite floor holds; LOSS if any artifact check contradicts the recorded verdict without a recorded explanation"
+    rollback: "git revert the s55 commits; the checker is additive tooling"
+    eval_window: "the checker's s54 run + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: artifact-check
+    collab: build
+    prompt: prompts/dev/w1-artifact-check.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: check-pins
+    collab: build
+    prompt: prompts/dev/w2-check-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

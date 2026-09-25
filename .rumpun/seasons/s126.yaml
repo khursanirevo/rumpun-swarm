@@ -1,0 +1,46 @@
+# seasons/s126.yaml — drafted by evolve v0 from s125; fill primary_change + evidence, then apply
+id: s126
+parent: s125
+goal: "the route-truth completion pass: models --write re-reads a filled campaign without refusing, and the kancil plugin's version parity with the installed CLI is pinned so the plugin cannot silently drift"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the models re-detect (models --write on a filled campaign diffs the detected routes against the config and writes only named additions, never clobbering a filled routes block) with red-first pins; one author lands the kancil version parity pin (the kancil-base plugin's declared version against the installed kancil CLI version, a drift reading named) with red-first pins; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s125-harvest@903b3287106817f56289f8ca16db7a6ba44af692a95548ce7ea86431abc44726"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: execute
+    baseline: "s125 best (both fable writers exited 0 at 1071.2s; the board carries the stall marks and the glm route serves 5.3 probe-checked; merged-tree suite 711/711; measured by the sealed harvest record s125-harvest)"
+    expected_band: "WIN if models --write re-reads a filled campaign writing only named additions with the diff printed (pinned red-first), the kancil version parity is pinned with a drift reading named (pinned red-first), and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s126 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the verb outputs read from the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: models-redetect
+    collab: build
+    prompt: prompts/dev/w1-models-redetect.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: kancil-parity
+    collab: build
+    prompt: prompts/dev/w2-kancil-parity.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,46 @@
+# seasons/s77.yaml — drafted by evolve v0 from s76; filled by harness 2026-09-17 (the kancil skills prompt from a full source read + version tracking, directive seq 15)
+id: s77
+parent: s76
+goal: "the kancil plugin gets its manual: a full read of the kancil 2.2.5 source distills a versioned skills prompt into the kancil-base pack, and route activation tracks the installed kancil version against the prompt's - a mismatch surfaces as a NEED HUMAN card instead of a silently wrong prompt (directive seq 15)"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author sweeps the kancil source systematically (CLI surface by workflow, loop/stop semantics, kaggle verbs, per-module summaries in notes) and distills priors/skills/kancil-2.2-skills.md with kancil-version frontmatter, re-sealing the pack; one author lands skills.py (skills_version, installed_kancil_version, version_aligned) and the _skills_cards NEED HUMAN rendering, pinned offline over fixtures; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s76-harvest@b5be5136ed8a371903da695681f6c3a23de4abedc2b6ab5adadb98556dea7cd8"
+  primary_change:
+    type: add
+    node: knowledge
+    baseline: "s76 best: the board carries the audit backlog and issue #1 is closed (suite 341/341) - but nothing tells a kancil-routed writer how to actually drive kancil, and nothing notices when the installed kancil no longer matches the assumptions that prompt was written under"
+    expected_band: "WIN if the skills prompt lands in the pack version-stamped and spot-checked against the source (five claims verified) AND the version-tracking pins hold (frontmatter parsing, the alignment matrix, the card renders only on falsy alignment) AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s77 commits; the skills file is additive to the pack draft; the card rendering is additive"
+    eval_window: "w2 pins + merged-tree full pytest + w1's module map and five spot-checks in notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: kancil-skills
+    collab: build
+    prompt: prompts/dev/w1-kancil-skills.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: version-track
+    collab: build
+    prompt: prompts/dev/w2-version-track.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

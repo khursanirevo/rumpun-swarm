@@ -1,0 +1,31 @@
+residual: Process locking and identity-checked termination provide concrete utility. The supplied ledger does not independently establish their current correctness.
+residual: No real external task demonstrates benefit. The cold-start checks use stub models and establish lifecycle operation only.
+residual: No matched baseline establishes that evolution improves delivery over a fixed workflow or a single agent.
+residual: Campaign cost remains unreported here, and the last explicit cap status is unset. Net efficiency remains unestablished.
+residual: The continuous-run order supplies no usefulness stopping criterion. Exhausted candidates repeatedly generate more maintenance and reporting work.
+residual: Repeated harness repairs contribute substantive implementation and test reconstruction. Season WIN labels do not isolate autonomous delivery.
+residual: Salvaged stopped seasons earn WIN alongside completed seasons. Aggregate verdicts obscure execution reliability and intervention costs.
+residual: Acceptance bands permit deferred deliverables, including s37's production exercise and s55's CLI wiring. WIN does not consistently mean complete scope.
+residual: DESIGN labels s43 WIN, but the supplied verdict ledger records none. The discrepancy remains unresolved.
+residual: The ledger labels s45 WIN without a corresponding ships entry in this brief. Its contribution cannot be assessed.
+residual: The campaign changes its goal after declaring goal_immutable. No governed amendment mechanism or invariant reconciliation appears here.
+residual: The falsify gate checks artifact connectivity. It does not establish a sealed prediction, meaningful rejection threshold, or independent evaluation.
+residual: Cross-family review requirements exceed the demonstrated workflow. Different model names alone do not establish independent evidence or judgment.
+residual: The artifact checker improves reproducibility through archived-tree execution. Reusing campaign-authored tests still leaves shared specification errors undetected.
+residual: s59 reads missing claims from the live worktree. The close commit alone therefore cannot reproduce the complete check input.
+residual: Artifact-check refusal or DELTA leaves WIN intact. The brief does not establish mandatory containment before subsequent work.
+residual: The supplied record shows close-check refusals at s57 and s59. It supplies no successful s60 close-check result.
+residual: Corpus coverage reporting improves honesty without expanding coverage. s49 skips a superseded repro without demonstrating execution of its replacement.
+residual: s52 explicitly generates no candidate from coverage gaps. Persistent untested behavior therefore lacks an automatic repair path.
+residual: Resealed goldens and reconciled tests require independent behavioral justification. Agreement with current output alone cannot establish correctness.
+residual: A 269/269 run does not establish retirement of the previously recorded race flakes. No causal repair appears here.
+residual: s60 treats every parsed tool_use event as progress. Repeated unproductive calls can reset the stall clock.
+residual: Workspace growth does not establish durable useful progress. The claim that the s59 kill is impossible exceeds three regression checks.
+residual: Multiplying budgets after stopped_stall does not repair provider hangs. Its production benefit remains unestablished, and repeated escalation lacks demonstrated bounds.
+residual: Plugin installation and local publish/pull provide concrete portability. No recipient campaign demonstrates improved outcomes from exported material.
+residual: Distillation selects fixed authored text. Calling this a completed learning cycle overstates demonstrated adaptation and transfer.
+residual: Plugin digests establish content consistency, not publisher trust. Vocabulary filters do not establish complete removal of private information.
+residual: Shared-identity writers previously modified the repository directly. Hashes and provenance labels do not establish protected evidence ownership.
+residual: Claims of complete review closure precede later repairs, including M4 and coverage enforcement. Historical closure labels require qualification.
+residual: Epics and resume files improve organization. Their effect on operator effort and reliable recovery remains unmeasured.
+VERDICT: PARTIALLY USEFUL

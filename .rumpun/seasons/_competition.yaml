@@ -1,0 +1,68 @@
+# seasons/_competition.yaml — the competition season template (s67 w1).
+# Shape of a Kaggle-competition season: baseline -> validate -> submit ->
+# improve. The competition's own metric is the band; submission scores are
+# the falsify gate. Copy to seasons/s<N>.yaml and fill every FILL field.
+#
+# Fill-in fields:
+#   id                       — next free season id (s<N>, must match ^s\d+$)
+#   parent                   — season whose best stands as the baseline
+#   goal                     — the competition goal, verbatim from its page
+#   metric                   — the competition's official scoring metric
+#   expected_band            — WIN/LOSS thresholds on the competition metric
+#   writers[].route          — a route in rumpun.yaml (kancil needs the
+#                              installed kancil CLI; 'rumpun models' probes)
+#   writers[].budget.minutes — per-writer wall-clock budget
+id: s68              # FILL: next free season id
+parent: s67          # FILL: the season whose best stands as the baseline
+goal: "drive the competition to a submission score that beats the sealed baseline"  # FILL
+metric: "submission_scores"  # FILL: the competition's official metric
+mode: fight
+methodology:
+  approach: "seal a baseline, pre-register the score gate, submit, improve"  # FILL: one line
+  evidence: []       # FILL: citations look like ledger:<record-id>@<sha>
+  primary_change:
+    type: add
+    node: baseline
+    baseline: "the sealed baseline submission's competition-metric score"
+    expected_band: "WIN if best submission >= baseline + <delta>; LOSS otherwise"  # FILL: <delta>
+    rollback: "FILL: how this season's changes walk back to the parent best"
+    eval_window: "the season's submissions.jsonl plus the competition leaderboard"
+  pipeline:
+    - phase: baseline
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: baseline.jsonl
+    - phase: validate
+      primitive: falsify
+      agents: writers
+      prompt: prompts/base/falsify.md
+      reads: baseline.jsonl
+      writes: falsification.yaml
+    - phase: submit
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md  # FILL: a kancil-ship submission prompt
+      reads: falsification.yaml
+      writes: submissions.jsonl
+    - phase: improve
+      primitive: hypothesize
+      agents: writers
+      prompt: prompts/base/hypothesize.md
+      reads: submissions.jsonl
+      writes: hypotheses.yaml
+writers:
+  - name: kancil-a        # FILL: per-season writer names
+    route: kancil         # the installed kancil CLI (route in rumpun.yaml)
+    lane: baseline-lane
+    prompt: prompts/base/execute.md
+    knowledge: full
+    budget: {minutes: 240}
+  - name: checker
+    route: fable
+    lane: alt-lane
+    prompt: prompts/base/evaluate.md
+    knowledge: none
+    budget: {minutes: 240}
+stop:
+  "on": [all_exited, {stall_minutes: 45}, budget_exhausted]

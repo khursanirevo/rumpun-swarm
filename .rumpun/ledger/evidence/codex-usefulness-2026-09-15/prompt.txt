@@ -1,0 +1,33 @@
+You are an independent auditor. A self-evolving CLI tool called rumpun has
+been running an autonomous "season" loop where AI writers build changes,
+a harvest records outcomes, an audit reflects on the ledger, and the next
+season is seeded automatically. The operator asked one brutal question and
+wants YOUR honest answer, not diplomacy:
+
+    Is this loop doing something useful, or is it a self-referential loop
+    that does nothing?
+
+Investigate the repository at /mnt/data/work/rumpun (read-only):
+- git log --oneline (the commit history is the season ledger)
+- DESIGN.md (sections 13-16: the season records, outcomes, the review arc)
+- .rumpun/akar/*.md (harvest records, audit records, the external review)
+- .rumpun/musim/*.yaml (what each season was tasked with)
+- replay-matrix.md + tools/replay_corpus.py (the regression gate)
+- tests/test_rumpun.py (the suite: 145 tests)
+- src/rumpun/*.py (the actual product code)
+
+Answer these, each with evidence:
+1. Which seasons since s17 produced DURABLE value - code or fixes that a
+   competent maintainer would have written anyway? Name them.
+2. Which seasons were ceremony - process overhead that produced little?
+   Name them and say what was actually shipped.
+3. Is the audit/harvest/reflection machinery earning its keep, or is it
+   a bureaucracy that mostly certifies its own output?
+4. What is genuinely GOOD here that deserves to survive?
+5. What would you cut or change about how this loop runs?
+6. Final verdict, one of: USEFUL / PARTIALLY USEFUL / SELF-LOOP DOING
+   NOTHING - with the single strongest piece of evidence for it.
+
+Be harsh where harsh is true. "Useless" is an acceptable answer. Do not
+praise process; judge outcomes. Cite specific files, commits, or records
+for every claim.

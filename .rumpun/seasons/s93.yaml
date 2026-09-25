@@ -1,0 +1,46 @@
+# seasons/s93.yaml — drafted by evolve v0 from s92; filled by harness 2026-09-17 (the board arc extends; issue #16's completion-effort contract, the last deep residual)
+id: s93
+parent: s92
+goal: "maintenance with verification teeth and the last deep residual scoped: the board-arc epic extends with s89-s92 (the pinned sum preserved) and the composer's resolution trail re-verifies on fresh data, while issue #16 gains the completion-effort contract and its first measured slice - the repairs the operator never made"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author extends the epic preserving every verdict (the pinned invariant), re-verifies the trail, and records any new candidate lines for s94; one author distills the completion-effort contract into the pack (repairs-per-season, recurrence, the operator counterfactual) and measures the first slice from the git log, commenting on issue #16; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s92-harvest@90a9d7615b4e3c53957c6f69b9082ee633eac4af2fe217afff9b75d29349bc6c"
+  primary_change:
+    type: retune
+    node: tooling
+    baseline: "s92 best: the reading side records signal deaths honestly and the first baseline slice exists (suite 453/453) - but the epic trails the closes by four seasons, and the last deep residual (#16, autonomous delivery unproven) has no contract and no measurement"
+    expected_band: "WIN if the epic extends with the sum preserved (the pinned invariant) AND the fresh composer run keeps audit-45's markers buried (new lines recorded for s94, not filed) AND the completion-effort contract lands with the first slice measured and commented on issue #16 (staying open) AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s93 commits; the epic edit preserves history; the template is additive to the pack draft"
+    eval_window: "w2 pins + merged-tree full pytest + the epic view and the issue #16 comment url in the writers' notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: epics-extend
+    collab: build
+    prompt: prompts/dev/w1-epics-extend.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: effort-quantify
+    collab: build
+    prompt: prompts/dev/w2-effort-quantify.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

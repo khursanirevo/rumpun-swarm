@@ -1,0 +1,80 @@
+# musim/s7.yaml — drafted by evolve v0 from s6; filled by harness 2026-09-14 (lane observational)
+id: s7
+parent: s6
+goal: "ship the P8 directives channel (rumpun direct) and sync the README to the v0.7.0 surface"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "two solo deliverables (direct verb, README sync) sharing the build lane for a fourth dogfood sample; band rests on repo-side deliverables only"
+  evidence:
+    - akar:s6-harvest@2301da0eacd2156f69255f360bb9abbb7b5ec0a77a22503af14ca0b5a8347d74
+    - akar:glm-toolless-diagnostic@67da0f301008aa3ff4edaaca0e17a4655947d275e5b179c5efce439227fb0298
+  primary_change:
+    type: add
+    node: execute
+    baseline: "s6: dual-start lock proof and season show (via w1 log salvage) shipped; README still shows v0.6.0 gaps; direct is a stub"
+    expected_band: "WIN if rumpun direct appends a pending directive and --list prints it AND README matches the v0.7.0 surface AND the suite stays green; LOSS otherwise. Lane events recorded, not gating."
+    rollback: "git revert s7 commits and remove musim/s7.yaml"
+    eval_window: "s7 season suite + merged-tree pytest + direct/--list smoke + README diff"
+  pipeline:
+    - phase: analyze
+      primitive: analyze
+      agent: analyst
+      prompt: prompts/base/analyze.md
+      writes: errors.jsonl
+    - phase: rank_gaps
+      primitive: rank_gaps
+      agent: analyst
+      prompt: prompts/base/rank_gaps.md
+      reads: errors.jsonl
+      writes: gaps.yaml
+      top_n: 3
+    - phase: hypothesize
+      primitive: hypothesize
+      agent: swarm
+      prompt: prompts/base/hypothesize.md
+      reads: gaps.yaml
+      writes: hypotheses.yaml
+      per: gap
+      max_concurrent: 3
+    - phase: plan
+      primitive: plan
+      agent: planner
+      prompt: prompts/base/plan.md
+      reads: hypotheses.yaml
+      writes: experiments.yaml
+    - phase: falsify
+      primitive: falsify
+      agent: critic
+      prompt: prompts/base/falsify.md
+      reads: experiments.yaml
+      writes: falsification.yaml
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      reads: falsification.yaml
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: [falsification.yaml, results.jsonl]
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: glm
+    lane: direct
+    collab: build
+    prompt: prompts/dev/w1-direct.md
+    knowledge: partial
+    budget: {minutes: 25}
+  - name: w2
+    route: glm
+    lane: docs2
+    collab: build
+    prompt: prompts/dev/w2-docs.md
+    knowledge: partial
+    budget: {minutes: 25}
+stop:
+  "on": [all_exited, {stall_minutes: 20}, budget_exhausted]

@@ -1,0 +1,48 @@
+# musim/s24.yaml — drafted by evolve v0 from s23; filled by harness from audit-12 + the two remaining recorded candidates (operator standing order: continuous loop)
+id: s24
+parent: s23
+goal: "backlog closure: stall progress measured by byte growth, not mtime (M10 candidate), and harvest season rows carry band and observed again via CLI flags"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands both fixes (content-based progress check; --band/--observed on the harvest verb); one spec-first tester pins both; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-12@6871e618b5af370d17315c888002fc4b36daf971d99e7e08559f9f84b7bc8cac
+    - akar:s23-harvest@c0f027115c5cefd6db15a34cb2919266ff379966c7a5db43f4bc03a06ccec271
+    - akar:stall-rule-fired-on-runtime@23841df1c62bcff6811e8a105e682350ff6d8bf885e0d8294e38c6b7465c5bdf
+  primary_change:
+    type: retune
+    node: gate
+    baseline: "the stall rule's progress signal is agent.log mtime (s15 hot-fix; M10 accepted trade-off): a touch without content defeats detection until budget - the review's suggested remedy (content-based progress) was recorded as a candidate, never built; and since the M3 change the harvest CLI writes season rows with empty band/observed fields (every row s21-s23 carries \"band\": \"\", \"observed\": \"\") because the verb gained no flags"
+    expected_band: "WIN if appending bytes changes the progress signal while touching without appending does not (repro: two stubs, same elapsed, different fates) AND harvest with --band/--observed writes a season row carrying both fields non-empty (repro) AND harvest without them stays backward compatible AND the suite is green (117+ tests); LOSS otherwise"
+    rollback: "git revert s24 commits; both fixes are behavior tightening"
+    eval_window: "repro tests + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: backlog-closure
+    collab: build
+    prompt: prompts/dev/w1-progress-rows.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: backlog-pins
+    collab: build
+    prompt: prompts/dev/w2-progress-rows-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

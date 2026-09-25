@@ -1,0 +1,36 @@
+# a-season-template.yaml — the lean execute -> evaluate shape.
+# The second phase reads the artifact the first writes, so the cycle's
+# verdict faces an input its own execution produced
+# (see patterns/the-falsify-gate.md in this pack).
+# Replace every <placeholder> and the sN id before use.
+id: sN
+goal: "<one sentence: what this cycle changes, and why now>"
+metric: <what the campaign counts>
+mode: fight
+methodology:
+  approach: "<how the cycle runs, one paragraph>"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: <path-to-prompt>
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agents: benih
+      prompt: <path-to-prompt>
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: <worker-label>
+    route: <route-name>
+    prompt: <path-to-prompt>
+    knowledge: none
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited]
+
+# Generalized from: the lean execute-then-evaluate pattern proven across a
+# verification campaign's seasons: one phase executes and writes an
+# artifact; a later phase reads that artifact and writes the verdict, so
+# every verdict faces a disconfirming input by construction.

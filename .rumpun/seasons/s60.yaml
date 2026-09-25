@@ -1,0 +1,47 @@
+# seasons/s60.yaml — drafted by evolve v0 from s59; filled by harness 2026-09-16 (stall detection counts real progress)
+id: s60
+parent: s59
+goal: "a stall stop must never kill a working writer: the stall watcher counts file-tool progress as progress, the stop record names the rule and the last-progress age, and the s59 mid-write kill becomes impossible"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the progress-event fix in the engine's stall watcher (file-tool and tool_use events reset the stall clock; a truly dead stream still stalls; the stop record names the counted classes and the last-progress age); one tester pins the writer-survives case, the dead-stream case, and the auditable stop record; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - ledger:s59-harvest@c9a5da140a1ebe2fb13494b8c30eeba7810575e8776d1e4bcc2a482a819784eb
+    - ledger:audit-40@13f559b61e4ea7db7f261b7f1e9a029fe489dc33424438f92463da329dca4b97
+  primary_change:
+    type: rewire
+    node: engine
+    baseline: "the stall watcher keys on stream output, not on parsed tool_use or file-write events: s59's w2 was terminated mid-write while producing a 274-line pins file - the season ended stopped_stall, w2's work corrupted at the cut, and the scope needed a salvage harvest (P25 says stall keys on progress events; the implementation undercounts them)"
+    expected_band: "WIN if a stub agent quiet on stdout but busy on file writes survives a stall window that kills it today (the season completes) AND a truly dead stub (no events at all) still stalls AND a stopped_stall fixture records the counted event classes and the last-progress age AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s60 commits; the watcher rewires with liveness semantics preserved"
+    eval_window: "w2 pins + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: stall-progress
+    collab: build
+    prompt: prompts/dev/w1-stall-progress.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: stall-pins
+    collab: build
+    prompt: prompts/dev/w2-stall-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

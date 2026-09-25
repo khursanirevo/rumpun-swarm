@@ -1,0 +1,46 @@
+# seasons/s82.yaml — drafted by evolve v0 from s81; filled by harness 2026-09-17 (the authorized re-seal and promotion + the version-surface fix and the s79 panel rerun)
+id: s82
+parent: s81
+goal: "the findings become fixes: the authorized one-token reword unblocks the kancil-base promotion (re-seal, install, list), the version tracking reads the route executable's version instead of Python metadata (issue #8's repro renders the card), and the s79 panel reruns once (issue #9)"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author applies the authorized reword, re-seals the manifest digest, and completes the promotion the gate refused (install, list, pins re-green); one author fixes the version surface (the route binary's version via a bounded subprocess with an injected runner, importlib.metadata as fallback only), pins the issue #8 repro rendering the card, and reruns the s79 panel once; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s81-harvest@dbcdb703f62c3dcd1e67ccd8831f7eadd3d0c0703d20c30a2beb8016d9e0ebf6"
+  primary_change:
+    type: rewire
+    node: tooling
+    baseline: "s81 best: the panel sweep delivered three real findings (suite 385/385 recorded) - but the pack stays uninstallable on one token, the version tracking reads the wrong installation surface, and the s79 panel has only an infrastructure error"
+    expected_band: "WIN if the re-sealed pack installs digest-verified and lists in the live campaign AND the version-surface fix renders the issue #8 repro card with the binary-reading contract pinned offline AND one honest s79 panel outcome seals AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s82 commits; the reword preserves meaning; the surface fix keeps the importlib fallback; issues reopen via gh"
+    eval_window: "both pins files + merged-tree full pytest + the install receipt and the s79 outcome in the writers' notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: pack-reseal
+    collab: build
+    prompt: prompts/dev/w1-pack-reseal.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: version-surface
+    collab: build
+    prompt: prompts/dev/w2-version-surface.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,46 @@
+# seasons/s102.yaml — drafted by evolve v0 from s101; filled by harness 2026-09-18 (the operator's filed defects #19 and #20, reproduced and fixed-or-closed)
+id: s102
+parent: s101
+goal: "the operator's two filed defects become the scope: issue #19 (the scaffold's evaluate phase declares singular agent: which v0.11.0 never spawned) and issue #20 (the scaffold omits tools/artifact_check.py so every harvest errors) — each reproduced on current main first, then fixed at the smallest surface or closed on the fix-since evidence"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author reproduces the singular-agent shape on current main and branches per the evidence (close-on-fixed or fix the engine/scaffold) with pins; one author reproduces the missing-checker shape on a fresh init and fixes the scaffold to ship the checker, with pins; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s101-harvest@b76b9851aeb8c6665ed6831e3ccef8480bff558b18277382e770452435e7cd3f"
+  primary_change:
+    type: fix
+    node: tooling
+    baseline: "s101 best: the loop resumed and consumed its first operator-filed input (suite 496/496) - the input is two real shipped defects from the khursani campaign on v0.11.0: the evaluate phase's singular agent never spawns, and the scaffold omits the close-time checker"
+    expected_band: "WIN if both defects reproduce-or-close per the evidence on current main (each branch taken honestly) AND the fixes carry offline pins AND both issues resolve on the landed evidence AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s102 commits; issues #19/#20 reopen via gh"
+    eval_window: "both pins files + merged-tree full pytest + the reproduction evidence in the writers' notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: issue19-agent
+    collab: build
+    prompt: prompts/dev/w1-issue19-agent.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: issue20-scaffold
+    collab: build
+    prompt: prompts/dev/w2-issue20-scaffold.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

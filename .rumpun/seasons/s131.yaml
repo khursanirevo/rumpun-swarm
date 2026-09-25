@@ -1,0 +1,46 @@
+# seasons/s131.yaml — drafted by evolve v0 from s130; fill primary_change + evidence, then apply
+id: s131
+parent: s130
+goal: "the operator-read pass: the standing decisions surface in the report index where the operator reads, and the pack teaches other campaigns the competition season"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the operator dashboard (a campaign file naming the standing operator decisions, the report index rendering its entries when present, silence when absent) with red-first pins; one author adds the competition-season priors template to the kancil-base pack (campaign-agnostic, the digest reseal probe-first in the same close) with red-first pins; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s130-harvest@356d29534936138afc106d128ebfea18263fd5eae7a98782475dbdf7490c4c53"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: tooling
+    baseline: "s130 best (both fable writers exited 0 at 1509.1s; the honest exit rehearsed and the guide happy path proven end to end; merged-tree suite 751 passed 1 xfailed; measured by the sealed harvest record s130-harvest; the loop's s131 draft consumed at this close)"
+    expected_band: "WIN if the report index renders the operator fronts file's entries when present and stays byte-identical when absent (pinned red-first), the competition-season priors template lands campaign-agnostic with the pack digest resealed probe-first in the same close (verified by the close check's digest pass), and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s131 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the dashboard render and the digest state read from the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: operator-dashboard
+    collab: build
+    prompt: prompts/dev/w1-operator-dashboard.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: priors-competition
+    collab: build
+    prompt: prompts/dev/w2-priors-competition.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,46 @@
+# seasons/s96.yaml — drafted by evolve v0 from s95; filled by harness 2026-09-18 (the pack resync, the epic extends, issue #18 gets its rule)
+id: s96
+parent: s95
+goal: "maintenance with the rule applied: the installed kancil-base syncs with the re-sealed draft (four priors ride in, digest-verified fresh), the board-arc epic extends with s94-s95, and issue #18 gets the cost template's stay-open rule applied to the landed spend-line evidence — the rule decides, not hope"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author verifies the draft digest fresh (probe, not notes), reinstalls digest-verified, and extends the board-arc epic preserving every verdict (the pinned arithmetic); one author renders the composer fresh over the grown ledger and applies the cost template's stay-open rule to issue #18 with the landed evidence commented; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s95-harvest@b97d52849c705f3469b8594d6a0325c0a64455bb28874452988044e112c933aa"
+  primary_change:
+    type: retune
+    node: tooling
+    baseline: "s95 best: the spend line landed and the grammar accepts fix (suite 483/483) - but the installed pack trails the draft by four priors, the epic trails by two seasons, and issue #18 carries the contract with no rule-based verdict applied"
+    expected_band: "WIN if the installed pack updates to the current draft digest with all four new priors present AND the board-arc epic extends with the sum preserved (the pinned invariant) AND issue #18 carries the landed evidence commented with the rule's verdict applied AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s96 commits; the reinstall is reversible; the epic edit preserves history"
+    eval_window: "w2 pins + merged-tree full pytest + the digests and the epic view in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: pack-sync-2
+    collab: build
+    prompt: prompts/dev/w1-pack-sync-2.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: spend-render-18
+    collab: build
+    prompt: prompts/dev/w2-spend-render-18.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,79 @@
+# musim/s11.yaml — drafted by evolve v0 from s10; filled by harness 2026-09-14 (campaign phase 2: self-evolution)
+id: s11
+parent: s10
+goal: "self-reflection mechanism: rumpun audit reads the ledger and produces evidence-cited candidate mutations"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author for the audit module+verb, one spec-first tester, shared build lane; the audit record over s2-s10 becomes the first ledger-driven input to s12's season YAML"
+  evidence:
+    - akar:s10-harvest@337bbabff811558756377bc3bca12ea3ba8337aa8872d92b13a0467c183afa34
+  primary_change:
+    type: add
+    node: execute
+    baseline: "phase 1 closed at s10: every designed verb exists, docs truthful; the pipeline DAG has never mutated because nothing in the system reflects on the ledger"
+    expected_band: "WIN if run_audit produces an akar record with per-phase liveness counts for every declared phase AND at least one evidence-cited candidate mutation AND the suite is green; LOSS otherwise. Lane events recorded, not gating."
+    rollback: "git revert s11 commits and remove musim/s11.yaml"
+    eval_window: "s11 season suite + merged-tree pytest + live audit run on the real ledger"
+  pipeline:
+    - phase: analyze
+      primitive: analyze
+      agent: analyst
+      prompt: prompts/base/analyze.md
+      writes: errors.jsonl
+    - phase: rank_gaps
+      primitive: rank_gaps
+      agent: analyst
+      prompt: prompts/base/rank_gaps.md
+      reads: errors.jsonl
+      writes: gaps.yaml
+      top_n: 3
+    - phase: hypothesize
+      primitive: hypothesize
+      agent: swarm
+      prompt: prompts/base/hypothesize.md
+      reads: gaps.yaml
+      writes: hypotheses.yaml
+      per: gap
+      max_concurrent: 3
+    - phase: plan
+      primitive: plan
+      agent: planner
+      prompt: prompts/base/plan.md
+      reads: hypotheses.yaml
+      writes: experiments.yaml
+    - phase: falsify
+      primitive: falsify
+      agent: critic
+      prompt: prompts/base/falsify.md
+      reads: experiments.yaml
+      writes: falsification.yaml
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      reads: falsification.yaml
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: [falsification.yaml, results.jsonl]
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: glm
+    lane: audit-impl
+    collab: build
+    prompt: prompts/dev/w1-audit.md
+    knowledge: partial
+    budget: {minutes: 25}
+  - name: w2
+    route: glm
+    lane: audit-tests
+    collab: build
+    prompt: prompts/dev/w2-audit-tests.md
+    knowledge: partial
+    budget: {minutes: 25}
+stop:
+  "on": [all_exited, {stall_minutes: 20}, budget_exhausted]

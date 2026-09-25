@@ -1,0 +1,46 @@
+# seasons/s92.yaml — drafted by evolve v0 from s91; filled by harness 2026-09-17 (the kill-detection gap + the baseline comparison, issue #15's first honest slice)
+id: s92
+parent: s91
+goal: "the engine stops lying about its writers and the campaign starts measuring itself: a killed writer is recorded as killed (the stall clock explained), and the baseline-comparison contract is designed and its first honest slice measured - the five board defects' filed-to-closed times, proving nothing alone and saying so (issue #15)"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author reproduces the kill (a fixture spawn + kill), fixes the exit-recording and stall-clock surfaces, and pins the killed-state contract offline; one author distills the baseline-comparison contract into the pack and measures the first slice from the ledger (the five defects' elapsed times), commenting both on issue #15; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s91-harvest@ab4144d7b2aaa162fea78dd445ce5021ada36e086c669c03e380d363543140a6"
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "s91 best: the H6 race fixed at 0 leaks in ~28k rounds (suite 447/447) - but the engine recorded a killed writer as exited 0 and the stall watcher stayed silent 20 minutes, and the campaign has never compared itself against any baseline (issue #15, open)"
+    expected_band: "WIN if the kill-detection pins hold (a killed writer records killed; the exit file distinguishes rc 0 / rc 1 / signal; the stall clock fires on a log-growing silent writer) AND the baseline contract lands in the pack with the five-defect table measured and commented on issue #15 (staying open) AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s92 commits; the recording fix is additive; the baseline template is additive to the pack draft"
+    eval_window: "both pins files + merged-tree full pytest + the issue #15 comment url in w2 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: kill-detection
+    collab: build
+    prompt: prompts/dev/w1-kill-detection.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: baseline-design
+    collab: build
+    prompt: prompts/dev/w2-baseline-design.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

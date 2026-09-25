@@ -1,0 +1,113 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.12, pytest-9.1.1, pluggy-1.6.0 -- /mnt/data/work/rumpun/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /mnt/data/work/rumpun
+configfile: pyproject.toml
+collecting ... collected 5 items
+
+.rumpun/rimba/s29/w2/scratch/test_s29_w2_pins.py::test_discovery_uppercase_id_link_resolves FAILED [ 20%]
+.rumpun/rimba/s29/w2/scratch/test_s29_w2_pins.py::test_discovery_underscore_id_link_resolves FAILED [ 40%]
+.rumpun/rimba/s29/w2/scratch/test_s29_w2_pins.py::test_discovery_dot_id_link_resolves FAILED [ 60%]
+.rumpun/rimba/s29/w2/scratch/test_s29_w2_pins.py::test_discovery_slug_collision_two_distinct_pages FAILED [ 80%]
+.rumpun/rimba/s29/w2/scratch/test_s29_w2_pins.py::test_discoveries_bytes_unchanged_from_pre_s29 PASSED [100%]
+
+=================================== FAILURES ===================================
+__________________ test_discovery_uppercase_id_link_resolves ___________________
+
+tmp_path = PosixPath('/mnt/data/tmp/pytest-of-sani/pytest-2474/test_discovery_uppercase_id_li0')
+
+    def test_discovery_uppercase_id_link_resolves(tmp_path):
+        """L1 pin 1: record "Audit-1" renders a page its list link resolves to.
+    
+        Red today: the list links the raw id (Audit-1.html) while the page is
+        written to the sanitized slug audit-1.html; on a case-sensitive
+        filesystem the link resolves to nothing.
+        """
+        root = _discovery_root(
+            tmp_path, (("Audit-1", "uppercase id", "uppercase body line"),)
+        )
+        out = report.render_discoveries(root)
+        page = _resolve(out, "uppercase id")
+>       assert page.is_file(), f"link href {page.name!r} resolves to no page file"
+E       AssertionError: link href 'Audit-1.html' resolves to no page file
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('/mnt/data/tmp/pytest-of-sani/pytest-2474/test_discovery_uppercase_id_li0/proj/.rumpun/rimba/discoveries/Audit-1.html').is_file
+
+.rumpun/rimba/s29/w2/scratch/test_s29_w2_pins.py:81: AssertionError
+__________________ test_discovery_underscore_id_link_resolves __________________
+
+tmp_path = PosixPath('/mnt/data/tmp/pytest-of-sani/pytest-2474/test_discovery_underscore_id_l0')
+
+    def test_discovery_underscore_id_link_resolves(tmp_path):
+        """L1 pin 2: record "my_id" renders a page its list link resolves to.
+    
+        Red today: the list links my_id.html while the page is written to the
+        sanitized slug my-id.html; the link resolves to nothing.
+        """
+        root = _discovery_root(tmp_path, (("my_id", "underscore id", "underscore body line"),))
+        out = report.render_discoveries(root)
+        page = _resolve(out, "underscore id")
+>       assert page.is_file(), f"link href {page.name!r} resolves to no page file"
+E       AssertionError: link href 'my_id.html' resolves to no page file
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('/mnt/data/tmp/pytest-of-sani/pytest-2474/test_discovery_underscore_id_l0/proj/.rumpun/rimba/discoveries/my_id.html').is_file
+
+.rumpun/rimba/s29/w2/scratch/test_s29_w2_pins.py:94: AssertionError
+_____________________ test_discovery_dot_id_link_resolves ______________________
+
+tmp_path = PosixPath('/mnt/data/tmp/pytest-of-sani/pytest-2474/test_discovery_dot_id_link_res0')
+
+    def test_discovery_dot_id_link_resolves(tmp_path):
+        """L1 pin 3: record "a.b" renders a page its list link resolves to.
+    
+        Red today: the list links a.b.html while the page is written to the
+        sanitized slug a-b.html; the link resolves to nothing.
+        """
+        root = _discovery_root(tmp_path, (("a.b", "dot id", "dot body line"),))
+        out = report.render_discoveries(root)
+        page = _resolve(out, "dot id")
+>       assert page.is_file(), f"link href {page.name!r} resolves to no page file"
+E       AssertionError: link href 'a.b.html' resolves to no page file
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('/mnt/data/tmp/pytest-of-sani/pytest-2474/test_discovery_dot_id_link_res0/proj/.rumpun/rimba/discoveries/a.b.html').is_file
+
+.rumpun/rimba/s29/w2/scratch/test_s29_w2_pins.py:107: AssertionError
+_______________ test_discovery_slug_collision_two_distinct_pages _______________
+
+tmp_path = PosixPath('/mnt/data/tmp/pytest-of-sani/pytest-2474/test_discovery_slug_collision_0')
+
+    def test_discovery_slug_collision_two_distinct_pages(tmp_path):
+        """L1 pin 4: "a-b" and "a.b" render two distinct pages, no overwrite.
+    
+        Red today: both ids sanitize to the same slug, so one page file is
+        written twice (the second render overwrites the first) and the list
+        then links a.b.html, which was never written at all.
+        """
+        root = _discovery_root(
+            tmp_path,
+            (
+                ("a-b", "collision hyphen", "hyphen body line"),
+                ("a.b", "collision dot", "dot body line"),
+            ),
+        )
+        out = report.render_discoveries(root)
+        hyphen = _resolve(out, "collision hyphen")
+        dot = _resolve(out, "collision dot")
+        assert hyphen != dot, f"both links resolve to one page file: {hyphen.name}"
+        assert hyphen.is_file(), f"link href {hyphen.name!r} resolves to no page file"
+>       assert dot.is_file(), f"link href {dot.name!r} resolves to no page file"
+E       AssertionError: link href 'a.b.html' resolves to no page file
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('/mnt/data/tmp/pytest-of-sani/pytest-2474/test_discovery_slug_collision_0/proj/.rumpun/rimba/discoveries/a.b.html').is_file
+
+.rumpun/rimba/s29/w2/scratch/test_s29_w2_pins.py:130: AssertionError
+=========================== short test summary info ============================
+FAILED .rumpun/rimba/s29/w2/scratch/test_s29_w2_pins.py::test_discovery_uppercase_id_link_resolves
+FAILED .rumpun/rimba/s29/w2/scratch/test_s29_w2_pins.py::test_discovery_underscore_id_link_resolves
+FAILED .rumpun/rimba/s29/w2/scratch/test_s29_w2_pins.py::test_discovery_dot_id_link_resolves
+FAILED .rumpun/rimba/s29/w2/scratch/test_s29_w2_pins.py::test_discovery_slug_collision_two_distinct_pages
+========================= 4 failed, 1 passed in 0.09s ==========================

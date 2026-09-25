@@ -1,0 +1,47 @@
+# seasons/s57.yaml — drafted by evolve v0 from s56; filled by harness 2026-09-16 (the check rides every close)
+id: s57
+parent: s56
+goal: "the loop closes on itself: rumpun harvest runs the artifact check as part of every season close - the verdict row and the check record land together, so a season's WIN never rests only on its own workers' reports"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the harvest-integrated check (cmd_harvest runs rumpun check <sid> HEAD~0-equivalent after the verdict row, the check record lands beside it, a DELTA is recorded not suppressed) with the close protocol documented in DESIGN; one tester pins harvest on a fixture season producing both records and the DELTA honesty path; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - ledger:s56-harvest@eceef15ddb560b006137d84c4e675a311bd4ee7054583067538f415faa95408e
+    - ledger:audit-40@13f559b61e4ea7db7f261b7f1e9a029fe489dc33424438f92463da329dca4b97
+  primary_change:
+    type: rewire
+    node: tooling
+    baseline: "the close protocol runs the check by hand at best: s55 landed the checker, s56 wired the verb, but nothing binds them to the close - a season's WIN still rests on its own workers' reports unless the harness remembers to run rumpun check (audit-40 residual 3)"
+    expected_band: "WIN if rumpun harvest <sid> on a fixture season lands BOTH the verdict row and the check-<sid> record AND a check DELTA is recorded beside the verdict, never suppressed AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s57 commits; the binding is rewiring with the checker untouched"
+    eval_window: "w2 pins + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: harvest-check
+    collab: build
+    prompt: prompts/dev/w1-harvest-check.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: harvest-check-pins
+    collab: build
+    prompt: prompts/dev/w2-harvest-check-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

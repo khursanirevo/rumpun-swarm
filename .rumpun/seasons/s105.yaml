@@ -1,0 +1,46 @@
+# seasons/s105.yaml — drafted by evolve v0 from s104; filled by harness 2026-09-18 (issue #21's tools restored + the assessment basis-superseding convention)
+id: s105
+parent: s104
+goal: "the two named gaps close: issue #21's writer-lane tool strip is measured against the working routes and restored at the smallest surface (the ToolSearch recovery documented per the issue's ask), and the assessment basis-superseding convention lands (a re-seal appends a superseding record citing the original; the reader prefers it) - the s104 disclosed miss gets its named path"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author measures the s13/a1 divergence against the working writer routes (the evidence first, the fix second) and closes issue #21 with the landed evidence; one author lands the supersede path in the assessment module (a re-seal appends, the reader prefers, a no-change re-seal refuses) with offline pins and the RESUME clause; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s104-harvest@a84c3905bc129f6cb8ed80f74673423c263bbe498565fe7a1d03b95a03d0f7df"
+  primary_change:
+    type: rewire
+    node: tooling
+    baseline: "s104 best: the post-pause assessment sealed with the basis miss disclosed and issue #21 filed (suite floor holds) - the writer lanes' tool strip is unmeasured and unrestored, and the basis-superseding path is named but unlanded"
+    expected_band: "WIN if the s13/a1 divergence is measured and the fix lands at the smallest surface with the working routes' behavior preserved AND the supersede path's pins hold (a re-seal appends, the reader prefers, no-change refuses) AND issue #21 closes on the landed evidence AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s105 commits; issue #21 reopens via gh"
+    eval_window: "both pins files + merged-tree full pytest + the divergence table and the close confirmation in the writers' notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: issue21-tools
+    collab: build
+    prompt: prompts/dev/w1-issue21-tools.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: basis-supersede
+    collab: build
+    prompt: prompts/dev/w2-basis-supersede.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

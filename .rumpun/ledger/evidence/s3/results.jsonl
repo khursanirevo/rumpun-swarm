@@ -1,0 +1,4 @@
+{"module": "collab.py", "writer": "w1", "lines": 71, "ruff": "pass", "import": "pass", "smoke": "prepare/append/read verified by merged-tree suite: seq 0,1 dense, never truncates, LaneError on corrupt line", "integrated": true}
+{"module": "test_rumpun.py", "writer": "w2", "lines": 282, "ruff": "pass", "suite": "15 passed in 2.46s, 0 skips, spec-first collab tests green after integration", "integrated": true}
+{"module": "README.md", "writer": "w3", "lines": 143, "ruff": "n/a", "check": "verb surface cross-checked against cli --help by writer; harness verified init seeds musim/s1.yaml and _template.yaml per scaffold.py", "integrated": true, "harness_patch": "version strings reconciled to 0.4.0 (writer flagged pyproject 0.2.0 vs __init__ 0.1.0 vs cli v0.3.0)"}
+{"season_meta": "3 writers glm route, exited 0 at 851s, budget 20min each, none stalled"}

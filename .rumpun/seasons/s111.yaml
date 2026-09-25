@@ -1,0 +1,46 @@
+# seasons/s111.yaml — drafted by evolve v0 from s110; fill primary_change + evidence, then apply
+id: s111
+parent: s110
+goal: "the second-opinion pass: the epic view names each member's latest panel verdict beside its basis so the second opinion renders with the fold, and the pack-composer rhythm lands as a pinned deliverable at last"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author extends the epic member render to name the latest panel verdict generation when one exists, with red-first pins; one author lands the composer's fourth render as a pinned deliverable (render the pack, prove the digest equality in a pin) with red-first pins; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s110-harvest@a05114aa0527b33d6c92ee62556684b0d829f2a909f9e36c658de11ba003811d"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: tooling
+    baseline: "s110 best (both fable writers exited 0 at 1927.3s; the epic basis render verified over the real campaign with the sums preserved; the sweep verified bare over the real ledger; merged-tree suite 559/559; measured by the sealed harvest record s110-harvest)"
+    expected_band: "WIN if the epic member render names the latest panel verdict generation beside its basis with the sum preserved and no-verdict members stay honest, the composer's render runs over the live campaign and its digest equality holds as a pinned deliverable, and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s111 commits; the epic yaml and the ledger survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the render and the composer output read from the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: epic-panel
+    collab: build
+    prompt: prompts/dev/w1-epic-panel.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: composer-pin
+    collab: build
+    prompt: prompts/dev/w2-composer-pin.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

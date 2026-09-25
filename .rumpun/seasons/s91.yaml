@@ -1,0 +1,46 @@
+# seasons/s91.yaml — drafted by evolve v0 from s90; filled by harness 2026-09-17 (the akar H6 race fix + the repro-backed closure applied to the campaign's own defect, issue #17)
+id: s91
+parent: s90
+goal: "the campaign's own defect gets its own medicine: the akar H6 lock leak - concurrent same-id appends both succeeding 1-in-20 barrier rounds on the core write path - is fixed at the smallest surface, and the repro-backed closure standard is applied to the campaign itself: the pin red-before and green-after, the issue commented with the red/green story"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author reproduces the race deterministically (the barrier harness tuned, the contract unchanged), reads the H6 lock path, and fixes the smallest surface with the all-pass signature as the contract and 40+ clean barrier rounds as the bar; one author captures the red into a pins file that flips green after the fix, with both colors and commit shas recorded, and posts the story on issue #17; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s90-harvest@cf8e356f61cc501fc0afa5c6cb627a8c83704f54360791aadccb8fdba6bf9eb5"
+  primary_change:
+    type: retune
+    node: tooling
+    baseline: "s90 best: the boundary proved the s84 fix live (suite 442/442) and surfaced the deepest finding - the ledger's own write path races 1-in-20 under concurrent same-id appends (issue #17); the repro-backed closure standard exists but has never been applied to the campaign itself"
+    expected_band: "WIN if the race reproduces deterministically enough to test AND the fix holds 40+ clean barrier rounds with the well-formed path unchanged AND the repro pin runs red-before/green-after with both colors and commit shas recorded AND issue #17 carries the story AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s91 commits; issue #17 reopens via gh"
+    eval_window: "both pins files + merged-tree full pytest + the barrier counts and the commit shas in the writers' notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: h6-race-fix
+    collab: build
+    prompt: prompts/dev/w1-h6-race-fix.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: repro-closure
+    collab: build
+    prompt: prompts/dev/w2-repro-closure.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,46 @@
+# seasons/s87.yaml — drafted by evolve v0 from s86; filled by harness 2026-09-17 (issue #13 retires + the campaign's first usefulness assessment, directive seq 9)
+id: s87
+parent: s86
+goal: "the gate finding retires and the campaign asks its own stopping question: issue #13 closes on the s86 landed evidence, the board gets its honest inventory, and the first usefulness assessment - CONTINUE, PAUSE, or EXHAUSTED, each front and owner named - is sealed per directive seq 9"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author retires issue #13 with the s86 evidence and takes the board's honest inventory; one author reads the ledger's open fronts and seals the first usefulness assessment - every front named, every owner named (campaign vs operator), every next-action stated; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s86-harvest@85eefd638a7d75bda482b104fda5653ab7a40b2ae833b65c197e921f4c6a418a"
+  primary_change:
+    type: retune
+    node: process
+    baseline: "s86 best: the panel gate reads the whole row and issue #10 is closed (suite floor holds, the s49 flake recorded) - but the gate finding is still open on the board, and the campaign has never asked its own stopping question (directive seq 9's exhaustion criterion has no assessment)"
+    expected_band: "WIN if issue #13 closes on the landed evidence with the board inventory recorded AND the sealed usefulness assessment names every open front with its owner and next-action under one honest verdict AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s87 commits; issue #13 reopens via gh; the assessment record is append-only history"
+    eval_window: "the board inventory + the sealed assessment in the writers' notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: retire-13
+    collab: build
+    prompt: prompts/dev/w1-retire-13.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: usefulness-assessment
+    collab: build
+    prompt: prompts/dev/w2-usefulness-assessment.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

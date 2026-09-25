@@ -1,0 +1,46 @@
+# seasons/s138.yaml — drafted by evolve v0 from s137; fill primary_change + evidence, then apply
+id: s138
+parent: s137
+goal: "the finish-and-first-class pass: the running card gets the pins its lane never wrote, and the steady-state season becomes a first-class scaffold shape"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the running-card pins (red-first over tmp fixtures: a running state renders the card, absent or non-running stays byte-identical) completing s137 w1's lane; one author adds the steady-state season template to the scaffold (init emits it beside the competition shape, lint-clean once filled, refusing bare as the positive control) with red-first pins; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s137-harvest@001f1149ab5c8916f10c97e7f5389bbd24e7be460ffe23a81acc145fcbbf307b"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: execute
+    baseline: "s137 partial (w2's steady-state docs landed and verified; w1's running card landed unpinned with no notes; the season closed NEUTRAL on the partial; merged-tree suite 828 passed 1 xfailed; measured by the sealed harvest record s137-harvest)"
+    expected_band: "WIN if the running-card pins pass red-first over tmp fixtures (a running state renders the card, absent or non-running byte-identical) completing the s137 lane, the scaffold emits the steady-state template lint-clean once filled and refusing bare as the positive control (pinned red-first), and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s138 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the pins and the template read from the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: fronts-refresh
+    collab: build
+    prompt: prompts/dev/w1-fronts-refresh.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: steady-state-template
+    collab: build
+    prompt: prompts/dev/w2-steady-state-template.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

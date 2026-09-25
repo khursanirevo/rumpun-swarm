@@ -1,0 +1,46 @@
+# seasons/s69.yaml — drafted by evolve v0 from s68; filled by harness 2026-09-16 (rumpun's GitHub home + Project board, directive seq 14)
+id: s69
+parent: s68
+goal: "rumpun gains a cross-machine surface: the campaign repo lands on GitHub as khursanirevo/rumpun (private), a Projects v2 board carries filed feature/bug issues, one real open item seeds the board, and the pickup path (board -> issue -> season scope) is pinned offline"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author creates the private repo, pushes the campaign, creates the Projects v2 board, files and boards one seed issue (directive seq 0 panel tooling), and lands src/rumpun/board.py (the gh project item-list parser + filing argv builder); one tester pins the parser, the argv construction, the origin remote, and the kanban degradation; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s68-harvest@86eb29ae17e60fa42db82bd2f7b148d597f1e6bb17de02d289f0798257f37341"
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "s68 best: the forge flow and schema versioning landed (suite 299/299); the campaign repo has no git remote and no board (directive seq 14 pending) - work identified on one machine is invisible to every other machine"
+    expected_band: "WIN if khursanirevo/rumpun exists private and pushed with the ledger, the Projects v2 board exists with one seeded real issue, the board module pins hold (parser, argv, origin remote, kanban degradation) and the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s69 commits; the remote is additive (git remote remove origin); the board is deletable via gh without touching campaign state"
+    eval_window: "w2 pins + merged-tree full pytest + the repo/project/issue urls in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: github-board
+    collab: build
+    prompt: prompts/dev/w1-github-board.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: board-pins
+    collab: build
+    prompt: prompts/dev/w2-board-pins.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

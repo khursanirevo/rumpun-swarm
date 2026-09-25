@@ -1,0 +1,8 @@
+{"experiment_id": "E1_spawn_exit", "criterion_verbatim": ">= 2 exit files code 0 within 30s", "result": "2/2 in 1s", "verdict": "PASS", "implies": "spawn + exit-file completion works end to end with local routes"}
+{"experiment_id": "E2_crash_detect", "criterion_verbatim": "crash_detected_seconds <= 5", "result": "4s after kill -9", "verdict": "PASS", "implies": "zombie-aware liveness detects killed agents"}
+{"experiment_id": "E3_stop", "criterion_verbatim": "stop_exit_code == 0 and stopped_operator and no alive pids", "result": "exit 0, stopped_operator", "verdict": "PASS", "implies": "operator stop is safe and observable"}
+{"experiment_id": "E4_stall", "criterion_verbatim": "stall_stop_seconds <= 75", "result": "60s, stopped_stall", "verdict": "PASS", "implies": "durable-progress stall rule fires as ratified"}
+{"experiment_id": "E5_budget", "criterion_verbatim": "budget_stop_seconds <= 75", "result": "61s, stopped_budget", "verdict": "PASS", "implies": "budget cap enforced by the engine"}
+{"experiment_id": "E6_routes_resolve", "criterion_verbatim": "routes_constructed_ok == 3, no model execution", "result": "3 routes, 4/4 markers", "verdict": "PASS", "implies": "model routes construct correctly; real model spawns still untested (s2 runs them)"}
+{"experiment_id": "E7_regression", "criterion_verbatim": "lint_graph_pass == 1", "result": "all pass", "verdict": "PASS", "implies": "no regression in preflight surfaces"}
+{"season": "s1", "verdict": "WIN", "metric": "step3_acceptance_criteria_passed", "implies": "build order step 3 shipped; engine may take over execute phases from s2 on; model-route spawns remain quota-gated"}

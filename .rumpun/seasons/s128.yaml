@@ -1,0 +1,46 @@
+# seasons/s128.yaml — drafted by evolve v0 from s127; fill primary_change + evidence, then apply
+id: s128
+parent: s127
+goal: "the truth-surface pass: the readme's verbs table gets the same parser-lint guard the guide has, and the guide documents the models re-detect that filled campaigns now have"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the readme verbs-table pin (every table row's command lints against the parser, drift named, missing verbs added) with red-first pins; one author documents the models re-detect behavior in the guide (the filled-campaign diff, the named-additions rule, the idempotence) aligned with the s126 verb; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s127-harvest@87f0f8cb70d5e4d44c9af4837a553fbd7c57372953b345e88ce5470ec25fc1ce"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: execute
+    baseline: "s127 best (both fable writers exited 0 at 1355.6s; the competition-season shape pinned both sides and the report renders the attested commit; merged-tree suite 726 passed 1 xfailed; measured by the sealed harvest record s127-harvest)"
+    expected_band: "WIN if every readme verbs-table command lints against the parser with drift named and missing verbs added (pinned red-first), the guide's models section documents the re-detect behavior matching the s126 verb, and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s128 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the readme lint and the guide section read from the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: readme-verbs-lint
+    collab: build
+    prompt: prompts/dev/w1-readme-verbs-lint.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: guide-models-doc
+    collab: build
+    prompt: prompts/dev/w2-guide-models-doc.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

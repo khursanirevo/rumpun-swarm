@@ -1,0 +1,48 @@
+# musim/s15.yaml — drafted by evolve v0 from s14; filled by harness from audit-3 + agentlog-no-tool-evidence (operator standing order: continuous loop)
+id: s15
+parent: s14
+goal: "route rewire: structured spawn streams (claude stream-json) so tool evidence is parseable, and the engine classifies spawn tool-capability from parsed events"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author adds the incremental stream parser + snap tool-evidence marking to the engine; one spec-first tester pins the event classifier and additive-key contract; shared build lane; both writers run on the new fable route — the campaign's first non-glm spawns (diversification cited)"
+  evidence:
+    - akar:audit-3@1a37d8db04354f3fa8dcb441b59c27f5d18739e85a656a625cc3fb6e537b6605
+    - akar:agentlog-no-tool-evidence@6354b9374c65d0f553ce5610f0e68c33e7c98f4277459e8876deee2fcbb0fe92
+    - akar:audit-2@0604ce196d06a5a5a93515527053b8a416a7d1149b35c7395e8351e98db7aea1
+  primary_change:
+    type: rewire
+    node: route
+    baseline: "spawn logs are prose streams with no tool events (agentlog-no-tool-evidence: marker+size rule tp=7 fn=1 fp=21 tn=2 over 31 logs); the claude-family route row was broken since s1 (literal --model <model> placeholder, never spawned); all 26 writer spawns to date ran glm"
+    expected_band: "WIN if both s15 writer spawns run on the fable route with stream-json logs AND the engine derives per-snap tool evidence (file_tools true on a parsed file-tool event, false at finalize when a non-empty stream shows none, ToolSearch alone never counts) from the spawn's own stream AND the marks are additive with report/audit bytes unchanged AND the suite is green; LOSS otherwise. Marking refines, never gates (lane protocol v2)."
+    rollback: "git revert s15 commits; the fable route row is config; stream marks are additive keys"
+    eval_window: "s15's two live spawn streams parsed by the engine + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: stream-rewire
+    collab: build
+    prompt: prompts/dev/w1-stream-rewire.md
+    knowledge: partial
+    budget: {minutes: 25}
+  - name: w2
+    route: fable
+    lane: stream-tests
+    collab: build
+    prompt: prompts/dev/w2-stream-rewire-tests.md
+    knowledge: partial
+    budget: {minutes: 25}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

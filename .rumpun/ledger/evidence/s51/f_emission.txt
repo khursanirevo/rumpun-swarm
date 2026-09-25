@@ -1,0 +1,5 @@
+        for subdir, prior in evidenced:
+            section_dir = priors_dir / subdir if subdir else priors_dir
+            target = section_dir / f"{prior.key}.md"
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(prior.body.strip() + "\n", encoding="utf-8")

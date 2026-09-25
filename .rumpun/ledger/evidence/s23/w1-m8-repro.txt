@@ -1,0 +1,30 @@
+INFO appended akar record reject-s2 -> /mnt/data/tmp/tmp7vs40vai/proj/.rumpun/akar/2026-09-15_reject-s2.md
+INFO rejected /mnt/data/tmp/tmp7vs40vai/proj/.rumpun/musim/s2.yaml -> /mnt/data/tmp/tmp7vs40vai/proj/.rumpun/akar/2026-09-15_reject-s2.md (draft moved to /mnt/data/tmp/tmp7vs40vai/proj/.rumpun/musim/rejected/s2.yaml)
+INFO PASS: s2.yaml moved to musim/rejected/
+INFO PASS: reject-s2 record appended
+INFO drafted /mnt/data/tmp/tmp7vs40vai/proj/.rumpun/musim/s3.yaml from /mnt/data/tmp/tmp7vs40vai/proj/.rumpun/musim/s1.yaml
+INFO PASS: new draft is musim/s3.yaml
+INFO PASS: s3.yaml exists
+INFO PASS: s2 not re-issued
+INFO PASS: drafted id is s3
+INFO PASS: drafted parent is s1
+INFO appended akar record rollback-s4 -> /mnt/data/tmp/tmp7vs40vai/proj/.rumpun/akar/2026-09-15_rollback-s4.md
+INFO drafted /mnt/data/tmp/tmp7vs40vai/proj/.rumpun/musim/s5.yaml from /mnt/data/tmp/tmp7vs40vai/proj/.rumpun/musim/s3.yaml
+INFO PASS: second draft is musim/s5.yaml
+INFO PASS: s4 not re-issued
+INFO PASS: s5.yaml exists
+INFO PASS: drafted id is s5
+INFO PASS: drafted parent is s3
+INFO GREEN s2.yaml moved to musim/rejected/
+INFO GREEN reject-s2 record appended
+INFO GREEN new draft is musim/s3.yaml
+INFO GREEN s3.yaml exists
+INFO GREEN s2 not re-issued
+INFO GREEN drafted id is s3
+INFO GREEN drafted parent is s1
+INFO GREEN second draft is musim/s5.yaml
+INFO GREEN s4 not re-issued
+INFO GREEN s5.yaml exists
+INFO GREEN drafted id is s5
+INFO GREEN drafted parent is s3
+INFO M8 hwm: 12/12 checks green

@@ -1,0 +1,48 @@
+# musim/s50.yaml — drafted by evolve v0 from s49; filled by harness from audit-38 + the plugin/hub arc's distill step (operator standing order: continuous loop)
+id: s50
+parent: s49
+goal: "the flywheel's export: rumpun plugin distill extracts the campaign's proven gates, patterns, and templates into a shareable kaggle-base pack draft, completing the plugin/hub arc's core"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands plugin distill (scan the campaign's proven gates and patterns from DESIGN + the suite's ratified contracts -> draft priors/ content -> the pack schema from s44 -> the digest computed) with cli wiring; one spec-first tester pins the distill contract; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-38@790b2c0f8dd7225c107c57c50a387369d6e61cc3ba993ee8492c57c18feaf6a6
+    - akar:s44-harvest@e585de8e6973fc444626587a197057eb7361407f7fc943dd5210e5dcc898f438
+    - akar:s46-harvest@b57599e236b29498957727037b1ad19d3e1c78629ba34924580d330f233802e5
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "the plugin/hub arc's core is complete (the boundary s44, install/list/use s46, the suite migration s47), but nothing exports: the campaign's proven gates and patterns (the falsify enforcement, the band-mask guard, the stall-resume, the DRIFT retirement) live only in this campaign's DESIGN and suite - the flywheel's export side is missing"
+    expected_band: "WIN if plugin distill emits a kaggle-base pack draft with priors/ content extracted from the campaign's proven gates (the falsify gate, the band-mask guard, the stall-resume pattern, the DRIFT retirement) AND the manifest carries the computed digest AND plugin lint passes on the emitted pack AND init --plugin scaffolds from it (repro) AND the suite is green (188+ tests); LOSS otherwise"
+    rollback: "git revert s50 commits; the distill is additive tooling"
+    eval_window: "repro pins + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: plugin-distill
+    collab: build
+    prompt: prompts/dev/w1-plugin-distill.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: distill-pins
+    collab: build
+    prompt: prompts/dev/w2-distill-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

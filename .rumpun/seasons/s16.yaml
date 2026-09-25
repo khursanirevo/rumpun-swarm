@@ -1,0 +1,48 @@
+# musim/s16.yaml — drafted by evolve v0 from s15; filled by harness from audit-4 + stall-rule-fired-on-runtime + agentlog-no-tool-evidence (operator standing order: continuous loop)
+id: s16
+parent: s15
+goal: "land the stream tool-evidence parser: engine classifies file-tool evidence from parsed stream-json events, additive snap marks, real s15 streams as the fixture corpus"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the parser + watcher/finalize integration (salvage basis: the clean block in akar evidence s15 w1-commands-dump); one spec-first tester pins the classifier, offsets, and additive-key contract against real stream copies; shared build lane; fable route with the fixed stall semantics"
+  evidence:
+    - akar:audit-4@98cef6cbaa7a749680f9b9f92abddfd8513eb232a3e53a48c5dbb41c01b1cc4b
+    - akar:stall-rule-fired-on-runtime@23841df1c62bcff6811e8a105e682350ff6d8bf885e0d8294e38c6b7465c5bdf
+    - akar:agentlog-no-tool-evidence@6354b9374c65d0f553ce5610f0e68c33e7c98f4277459e8876deee2fcbb0fe92
+  primary_change:
+    type: add
+    node: engine
+    baseline: "spawn streams carry typed tool events (proven live in s15: 29 and 17 Bash tool_use in 6.3MB/6.8MB streams) but the engine reads none of them; snap state shows only exit/terminate; text-log classification is falsified (tp=7 fn=1 fp=21 tn=2)"
+    expected_band: "WIN if the engine derives per-snap file_tools from parsed stream events (true on first file-tool event; false at finalize when >=1 parseable event and none was a file tool; ToolSearch-class never counts; absent when no parseable events) AND replaying both real s15 streams marks both writers true AND the marks are additive (report/audit bytes unchanged) AND the suite is green AND the season reaches a terminal state without stopped_stall; LOSS otherwise. Marking refines, never gates (lane protocol v2)."
+    rollback: "git revert s16 commits; stream marks and offsets are additive keys"
+    eval_window: "replay over the two real s15 streams (akar evidence s15) + s16 live spawns + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: stream-parser
+    collab: build
+    prompt: prompts/dev/w1-stream-parser.md
+    knowledge: partial
+    budget: {minutes: 25}
+  - name: w2
+    route: fable
+    lane: stream-parser-tests
+    collab: build
+    prompt: prompts/dev/w2-stream-parser-tests.md
+    knowledge: partial
+    budget: {minutes: 25}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

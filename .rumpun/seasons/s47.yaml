@@ -1,0 +1,47 @@
+# musim/s47.yaml — drafted by evolve v0 from s46; filled by harness from audit-35 + the s46 integration evidence (operator standing order: continuous loop)
+id: s47
+parent: s46
+goal: "plugin machinery completed: the resolver and manifest gates reconciled to the pinned interface, the campaign/ exclusion enforced in the installer, and the test suite migrated to the new-layout fixtures"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author reconciles the interface (resolve_prompt named per the pins, the manifest gates accepting the pinned schema shape, campaign/ excluded from the install copy) and pins the completion; one spec-first tester migrates the old-layout fixtures and pins the migrated contract; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-35@1eaa8b60de28e7d945577585560d2d5a5647805de382981ed081c1993ac1d7bd
+    - akar:s46-harvest@b57599e236b29498957727037b1ad19d3e1c78629ba34924580d330f233802e5
+  primary_change:
+    type: retune
+    node: tooling
+    baseline: "the s46 integration: 16 red - resolve_prompt absent (w1 named it resolve_template), w1's manifest gates rejecting w2's fixture packs on schema shape, the installer copying campaign/ content (the boundary pin caught it), and the test file's old-layout fixtures failing against the renamed code"
+    expected_band: "WIN if plugin.resolve_prompt resolves pack-before-base (repro) AND the pinned install fixtures pass against the reconciled gates (repro) AND campaign/ content never lands in the installed tree (repro) AND the suite is green (196+ tests); LOSS otherwise"
+    rollback: "git revert s47 commits; the reconciliation is behavior tightening"
+    eval_window: "repro pins + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: plugin-complete
+    collab: build
+    prompt: prompts/dev/w1-plugin-complete.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: suite-migrate
+    collab: build
+    prompt: prompts/dev/w2-suite-migrate.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

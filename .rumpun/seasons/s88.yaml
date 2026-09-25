@@ -1,0 +1,46 @@
+# seasons/s88.yaml — drafted by evolve v0 from s87; filled by harness 2026-09-17 (the epistemic residuals settle + the assessment becomes a standing close step)
+id: s88
+parent: s87
+goal: "the thin front settles and the question becomes permanent: the epistemic residuals resolve or promote to standing standards (the #5 precedent - silence is not a resolution), and the per-season usefulness assessment becomes a standing close step, sealed by contract and pinned"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author settles each residual deliberately - PROMOTE the general correctness truth into the pack as a prior commented on issue #5's thread, RESOLVE the board-window question on the s80 fresh-composer evidence - and pins the promoted prior; one author lands seal_usefulness_assessment (the s87 record's shape as the contract, the verdict vocabulary enforced) wired into the verb, and grows the RESUME protocol one line; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s87-harvest@29a326aa6007f37a444467d3d6ef49231165ff7bef1d2a9dd9e6ea6d2e02bda6"
+  primary_change:
+    type: add
+    node: knowledge
+    baseline: "s87 best: the stopping question answered CONTINUE with fronts and owners (suite 419/419) - but the epistemic residuals sit in silence, and the assessment was a one-off composition that could never repeat by contract"
+    expected_band: "WIN if each residual resolves or promotes with evidence (the prior lands in the pack, issue #5's thread carries the sibling standard, the board-window question closes or files precisely) AND the assessment module's pins hold (the s87 record re-read as a fixture, the verdict vocabulary enforced) AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s88 commits; the prior is additive to the pack draft; the assessment module is additive"
+    eval_window: "both pins files + merged-tree full pytest + the resolution urls in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: residual-settle
+    collab: build
+    prompt: prompts/dev/w1-residual-settle.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: assessment-standing
+    collab: build
+    prompt: prompts/dev/w2-assessment-standing.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

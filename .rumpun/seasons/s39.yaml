@@ -1,0 +1,47 @@
+# musim/s39.yaml — drafted by evolve v0 from s38; filled by harness from audit-28 + the usefulness verdict's count-honesty residual (operator standing order: continuous loop)
+id: s39
+parent: s38
+goal: "count honesty in the usefulness brief: run seasons (with rimba state) are reported separately from drafted-only files, so the decadal verdict rests on true counts"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the honest count split in tools/usefulness_audit.py's brief composition (run seasons with rimba state vs drafted-only, both reported); one spec-first tester pins it; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-28@efd66d0a290101e7496448ef5a356dea668615733ec517be80f9adad5fb23198
+    - akar:usefulness-decade-3@3d4d28d7004c75d23a3ebcf383ef4562123d535965645cb4f2af318e4bf4857b
+  primary_change:
+    type: retune
+    node: tooling
+    baseline: "the usefulness brief's headline counts every musim/*.yaml file including never-run drafts: the decade-3 review's own residual flagged it ('the headline counts 34 seasons, but the ledger lists 33 identifiers: 24 WIN, seven LOSS, and two without verdicts') - the decadal verdict rested on inflated numbers"
+    expected_band: "WIN if the brief reports run seasons (a rimba state file exists) separately from drafted-only files (repro: a fixture with 3 run + 2 drafted seasons shows '3 run, 2 drafted-only, 5 total') AND the verdict carries both numbers AND the suite is green (182+ tests); LOSS otherwise"
+    rollback: "git revert s39 commits; the split is inside the brief composition"
+    eval_window: "repro pins over fixture ledgers + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: honest-counts
+    collab: build
+    prompt: prompts/dev/w1-honest-counts.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: honest-counts-pins
+    collab: build
+    prompt: prompts/dev/w2-honest-counts-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

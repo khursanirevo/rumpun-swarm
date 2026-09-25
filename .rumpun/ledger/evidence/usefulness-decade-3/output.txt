@@ -1,0 +1,22 @@
+residual: Reported locking, containment, citation checks, regression tooling, and reduced dashboard rendering provide concrete maintenance value. External task value remains unmeasured.
+residual: The supplied ledger establishes verdict labels, not implementation correctness. Detailed shipping claims come from the campaign’s own account.
+residual: The headline counts 34 seasons, but the ledger lists 33 identifiers: 24 WIN, seven LOSS, and two without verdicts.
+residual: s1 and s33 lack verdicts. Season count therefore overstates completed, assessed work.
+residual: s30 and s32 record WIN despite stopped_stall execution. Salvaged code value and execution reliability require separate measures.
+residual: Repeated harness repairs and integration work support assisted development. They do not establish autonomous completion.
+residual: No unchanged control or direct-development baseline establishes that the season loop improves delivery speed, quality, or effort.
+residual: The campaign cost cap remains unset in the supplied account. Total spending and repair labor remain unquantified.
+residual: Historical bands obscure shipped value. Passing self-declared clauses also provides no independent measure of usefulness.
+residual: s32 adds a lint warning, not mandatory rejection. Its claim that masked-value seasons cannot silently recur exceeds demonstrated enforcement.
+residual: Removing unused phases demonstrates one structural simplification. Sustained beneficial graph evolution remains unproven.
+residual: The execute -> evaluate trim removes falsify despite the declared falsify_required invariant. The account supplies no equivalent enforced replacement.
+residual: The phase-two goal update conflicts with the declared goal_immutable invariant. No authorized invariant transition appears in the supplied record.
+residual: The described rollback contains seasons and stops execution but never runs git. Restoration to the last-good code remains unestablished.
+residual: Cross-family governance and evaluator independence remain design commitments without demonstrated recurring enforcement in these seasons.
+residual: Six passing corpus scripts do not establish coverage of every ratified behavior. s25 skips 47 discovered scripts.
+residual: Matrix ingestion arms candidates for FAIL/REGRESSION. The account does not establish actionable handling of DRIFT or malformed-row omissions.
+residual: Appended log bytes measure activity, not necessarily durable progress. Repetitive output can satisfy the described growth rule.
+residual: Same-identity observation provides no tamper resistance. s21’s direct repository edits demonstrate that workspace instructions alone provide no containment.
+residual: Later accounting corrects premature review-closure claims through s29. Those corrections preserve value but weaken earlier closure assertions.
+residual: Green audits and an exhausted backlog supply no reason for another season. Endless continuation lacks a demonstrated marginal-value stop rule.
+VERDICT: PARTIALLY USEFUL

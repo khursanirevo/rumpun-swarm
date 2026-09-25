@@ -1,0 +1,3 @@
+{"module": "README.md lean-lifecycle sync", "writer": "w2", "diff": "5 hunks: audit verb documented, lifecycle 2-phase note, direct wording, akar table, scaffold README mention", "integrated": true}
+{"module": "scaffold.py pipeline trim", "writer": "w1 (task failed: tool-less spawn #7, session could not even read files; refused to fabricate — honest)", "harness_apply": "patch executed post-season per audit-1 spec: MUSIM_S1 pipeline trimmed to execute->evaluate; gates ruff clean, 41/41; fresh-init proof: scratch project s1 lints clean with exactly 2 phases", "integrated": true}
+{"season_meta": "2 writers glm route, completed 419s; lane 3 events from w2; tool-less rate 7 of 24 spawns"}

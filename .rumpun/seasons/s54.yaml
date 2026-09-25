@@ -1,0 +1,47 @@
+# seasons/s54.yaml — drafted by evolve v0 from s53; filled by harness 2026-09-16 (the rename finished, operator directive)
+id: s54
+parent: s53
+goal: "the English rename finishes what s45 started: the season yaml schema key benih becomes writers (back-compat read), tuai and musim/akar leave the user-facing strings, and the direct verb's directives path rejoins the ledger"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the schema rename (lint.py + engine.py read writers: first with benih: back-compat, draft_next emits writers:), the cli string sweep (harvest help, evolve reject/rollback paths), and the direct verb's ledger-path fix with the stray akar/ record migrated; one spec-first tester pins both forms read identically and an English-only help surface; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:s53-harvest@86086dfa009c6eace2ddd1e0a1b41df6baf44e0c4e2f566218b14cdbf78b4d02
+    - akar:audit-39@052bc40cb335a9075e36648cd1de4ab3895d91f7be524534cd6628916175b626
+  primary_change:
+    type: rewire
+    node: tooling
+    baseline: "s45 renamed paths and docs (musim/ -> seasons/, akar/ -> ledger/) but the schema keys stayed Indonesian: benih: in every season yaml (lint.py, engine.py draft_next), tuai in the harvest help, musim/rejected/ in the evolve strings, and the direct verb still writes .rumpun/akar/directives.jsonl (found live 2026-09-16, stray record on disk) while the real history is .rumpun/ledger/directives.jsonl; operator directive seq 3 named the target: benih to writers"
+    expected_band: "WIN if a yaml with writers: and a yaml with benih: lint and start identically (same roster, same budgets, back-compat pinned) AND draft_next emits writers: AND no benih/tuai/musim/akar survives in --help or stderr strings AND the direct verb reads and writes .rumpun/ledger/directives.jsonl with one seq numbering AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s54 commits; the rename is rewiring with back-compat read"
+    eval_window: "w2 pins + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: rename-finish
+    collab: build
+    prompt: prompts/dev/w1-rename-finish.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: rename-pins
+    collab: build
+    prompt: prompts/dev/w2-rename-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

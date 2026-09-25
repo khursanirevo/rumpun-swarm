@@ -1,0 +1,58 @@
+# seasons/s258.yaml — the scorer front, filled at the operator's run order (2026-09-24)
+id: s258
+parent: s257
+goal: "process-scoring pass: recent seasons graded against the close protocol and brief compliance, one evidence-cited fix proposed for the operator to merge"
+metric: "process_findings_sealed"
+mode: fight
+methodology:
+  approach: "one author scores the last sixteen completed seasons against the eight-line rubric (harvest, DESIGN entry, seed, commit, check, brief-target match, bounds, notes) sealing findings as pins; one author turns the top failure class into one reviewable diff citing the failing seasons; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s257-harvest@57d193d0393a72b9f09b7ac8c0547b85f76a76b7edea93471ab1488e723b710c"
+  primary_change:
+    type: add             # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: evaluate
+    baseline: "the s255 landing fold (d999cf4); corroborated process failures: frozen-brief record targets s214-s257, harvest-only closes s214-s254 (closed late by the resumed chain at s255-s257)"
+    expected_band: "WIN if the score report seals per-season findings with citations and the proposal carries one diff that passes git apply --check citing the failures; LOSS if the report claims compliance where git shows gaps; NEUTRAL if only operator-gated items block"
+    rollback: "git revert the season's commits; the ledger and season state survive untouched"
+    eval_window: "the score record's pins plus the proposal's apply-check; the tallies read from the writers notes.md"
+  pipeline:
+    - phase: process-score
+      primitive: evaluate
+      agents: writers
+      prompt: prompts/base/evaluate.md
+      writes: score.jsonl
+    - phase: triage
+      primitive: evaluate
+      agents: writers
+      prompt: prompts/base/evaluate.md
+      reads: [score.jsonl]
+      writes: triage.jsonl
+    - phase: propose
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      reads: [triage.jsonl]
+      writes: proposal.jsonl
+    - phase: decision-gate
+      primitive: evaluate
+      agents: writers
+      prompt: prompts/base/evaluate.md
+      reads: [proposal.jsonl]
+      writes: gate-report.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: process-score
+    collab: build
+    prompt: prompts/dev/w1-process-score.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: process-diff
+    collab: build
+    prompt: prompts/dev/w2-process-diff.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 30}, budget_exhausted]

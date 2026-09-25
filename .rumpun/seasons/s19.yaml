@@ -1,0 +1,48 @@
+# musim/s19.yaml — drafted by evolve v0 from s18; filled by harness from audit-7 + codex-review-2026-09-14 next tier (operator standing order: continuous loop)
+id: s19
+parent: s18
+goal: "spawn and citation safety: termination re-checks process identity (H2), agents run inside their workspace (H3), evidence citations must match their recorded digest (H7)"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author fixes H2 + H3 in the engine (identity-checked termination, cwd=workspace); one author enforces digest comparison in citation resolution and pins H2/H3/H7 spec-first; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-7@3fde474b217d102140219922424db7994d311c7fefc0e7f9e2375a08131b3239
+    - akar:s18-harvest@9bfbcf61791de5f7276f63c3a432b589eb6f2c45c2e3341f8e31b7d585a69683
+    - akar:codex-review-2026-09-14@23bcca3defbf8c9645b74143ad7536ae173c21ef6cd7cd30f48915a81ff709cd
+  primary_change:
+    type: retune
+    node: gate
+    baseline: "termination signals killpg on a bare pid without re-checking recorded proc_start (a reused pid kills an innocent process group; crashed leaders leave descendants); Popen sets no cwd so workspaces are convention, not enforcement (reviewer's pwd route printed the repo dir); _citation_resolves captures the digest but never compares it, so the evolution gate accepts altered evidence"
+    expected_band: "WIN if termination re-checks proc_start ownership before signaling (repro: a recycled pid is not signaled) AND spawned agents run with cwd set to their workspace (repro: pwd prints the workspace) AND a citation whose digest mismatches the record fails resolution and blocks apply (repro: tampered evidence rejected) AND the suite is green (84+ tests); LOSS otherwise"
+    rollback: "git revert s19 commits; all three fixes are behavior tightening inside existing modules"
+    eval_window: "repro tests mirroring the review's reproductions + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: spawn-safety
+    collab: build
+    prompt: prompts/dev/w1-spawn-safety.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: citation-safety
+    collab: build
+    prompt: prompts/dev/w2-citation-safety.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,48 @@
+# musim/s20.yaml — drafted by evolve v0 from s19; filled by harness from audit-8 + codex-review-2026-09-14 remaining highs (operator standing order: continuous loop)
+id: s20
+parent: s19
+goal: "lifecycle safety: startup failure cannot abandon spawned agents (H5), rejected seasons are non-executable and rollback coordinates (H8), per-agent budgets enforced individually (H9)"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author fixes H5 + H9 in the engine (pre-spawn validation, spawn-intent persistence, per-agent deadlines); one author lands H8 lifecycle checks in evolve/engine and pins H5/H8/H9 spec-first; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-8@6af114d7f92561439b25e16e93a5f8675acef1f8a5eb2f72cbe2e6cd577d2369
+    - akar:s19-harvest@082fbe00f83884a61caea648e262e1cffc075fc7c1d469014fb279d981596f9d
+    - akar:codex-review-2026-09-14@23bcca3defbf8c9645b74143ad7536ae173c21ef6cd7cd30f48915a81ff709cd
+  primary_change:
+    type: retune
+    node: gate
+    baseline: "route checks run inside the spawn loop and no cleanup surrounds it: a missing second route raises after the first child is live, unwatched and unregistered; a crash between Popen and the spawned-map save has the same effect (reviewer reproduced). Rejected seasons moved to musim/rejected/ still lint and still run; rollback records containment without stopping an active season. The engine takes max(benih budgets) as the whole season deadline, so a 1-minute agent inherits a 60-minute one, and campaign_cost_cap is never checked (P9)"
+    expected_band: "WIN if a mid-spawn route failure terminates the already-spawned children and records the error (repro: no live untracked process after a failed second-route start) AND a rejected season fails at start and apply (repro) AND each agent's own deadline stops that agent without touching longer-budget siblings (repro: short agent terminated, long agent completes) AND the suite is green (94+ tests); LOSS otherwise"
+    rollback: "git revert s20 commits; all three fixes are behavior tightening inside existing modules"
+    eval_window: "repro tests mirroring the review's reproductions + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: startup-budget
+    collab: build
+    prompt: prompts/dev/w1-startup-budget.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: lifecycle-pins
+    collab: build
+    prompt: prompts/dev/w2-lifecycle.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

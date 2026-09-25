@@ -1,0 +1,71 @@
+# musim/s10.yaml — drafted by evolve v0 from s9; filled by harness 2026-09-14 (campaign close-out)
+id: s10
+parent: s9
+goal: "docs truth: README synced to the v0.9.0 surface with the stub section removed and the evolution loop documented"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "single writer docs sync; harness verifies command-by-command against cli --help; band rests on repo-side deliverable only"
+  evidence:
+    - akar:s9-harvest@c4b7811f7cdb3686c6d83ba530855e237252a3a4139d31331784f157ccc9db6b
+  primary_change:
+    type: remove
+    node: execute
+    baseline: "s9 WIN: stub registry empty; README still lists approve/reject/rollback as not implemented and lacks the evolution loop"
+    expected_band: "WIN if the README matches the v0.9.0 surface exactly (every command real, no stale stub rows, evolution loop documented) and the suite stays green; LOSS otherwise"
+    rollback: "git revert s10 commits and remove musim/s10.yaml"
+    eval_window: "s10 season suite + README diff review + suite run"
+  pipeline:
+    - phase: analyze
+      primitive: analyze
+      agent: analyst
+      prompt: prompts/base/analyze.md
+      writes: errors.jsonl
+    - phase: rank_gaps
+      primitive: rank_gaps
+      agent: analyst
+      prompt: prompts/base/rank_gaps.md
+      reads: errors.jsonl
+      writes: gaps.yaml
+      top_n: 3
+    - phase: hypothesize
+      primitive: hypothesize
+      agent: swarm
+      prompt: prompts/base/hypothesize.md
+      reads: gaps.yaml
+      writes: hypotheses.yaml
+      per: gap
+      max_concurrent: 3
+    - phase: plan
+      primitive: plan
+      agent: planner
+      prompt: prompts/base/plan.md
+      reads: hypotheses.yaml
+      writes: experiments.yaml
+    - phase: falsify
+      primitive: falsify
+      agent: critic
+      prompt: prompts/base/falsify.md
+      reads: experiments.yaml
+      writes: falsification.yaml
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      reads: falsification.yaml
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: [falsification.yaml, results.jsonl]
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: glm
+    lane: docs-final
+    prompt: prompts/dev/w1-docs-final.md
+    knowledge: partial
+    budget: {minutes: 15}
+stop:
+  "on": [all_exited, {stall_minutes: 10}, budget_exhausted]

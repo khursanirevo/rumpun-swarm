@@ -1,0 +1,48 @@
+# musim/s41.yaml — drafted by evolve v0 from s40; filled by harness as the direct resume of s40's teardown-killed scope (operator standing order: continuous loop)
+id: s41
+parent: s40
+goal: "harvest integrity (resumed): M4 closed in full (a non-terminal season refuses harvest, so its permanent id is never consumed by a partial judgment) and the akar record lands before the verdicts row, so a failure between them cannot strand the state"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the M4 terminal refusal and the akar-before-row write order in harvest_season; one spec-first tester pins both; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-30@a1acfc670ccb259c134f803aa43a58d37d4b3ff5152fc16a85bd396c3ad0aabc
+    - akar:s40-harvest@253aad42e295db73b06748daf88697086abe8747282885bdce33128d563f4adf
+    - akar:audit-29@a284da061d37f6369e13bd25a456da925e2731980794f2ed5ee2203e8a00162d
+  primary_change:
+    type: retune
+    node: gate
+    baseline: "s40's own scope, resumed: its writers were killed by the previous session's teardown ~22 minutes in, during exploration - zero work product, nothing to salvage; the reattach finalized honestly as failed. The defects stand as audited: the verdicts row precedes the akar record (s32's live partial-write instance) and M4's core (a running season's harvest consumes the permanent id) was s21's acknowledged minimal form"
+    expected_band: "WIN if harvest of a running season raises AkarError without consuming the id or writing the verdicts row (repro) AND a mid-harvest failure (injected akar fault) leaves NO verdicts row behind (repro: the row cannot strand) AND a terminal season with its row already present still refuses a second harvest (regression) AND the suite is green (185+ tests); LOSS otherwise"
+    rollback: "git revert s41 commits; the reorder is inside harvest_season"
+    eval_window: "repro pins + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: harvest-integrity-2
+    collab: build
+    prompt: prompts/dev/w1-harvest-integrity.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: harvest-integrity-pins-2
+    collab: build
+    prompt: prompts/dev/w2-harvest-integrity-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,47 @@
+# seasons/s61.yaml — drafted by evolve v0 from s60; filled by harness 2026-09-16 (audit-41's phase-liveness candidate: exercise or trim execute)
+id: s61
+parent: s60
+goal: "the pipeline stops lying: results.jsonl is written in 0 of the last 10 engine seasons while every yaml still declares execute->evaluate - audit-41's candidate resolves by evidence, the pipeline declaration is exercised for real or trimmed honestly"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "the workers pick the route by evidence: exercise the phase (a season's ledger actually holds results.jsonl, written by the pipeline path) or trim the declaration (the schema and lint stop requiring it, the audit's phase-liveness finding retires); one author lands the change, one tester pins both the new truth and the old finding's retirement; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - ledger:s60-harvest@144c97b66d4e798abcb3949da2d9ef7993440b159e77700334ca2038e56b6c18
+    - ledger:audit-41@1068a2f507f6e41f23f52217c281baaf40772d80505f587360f00a8a945dac7d
+  primary_change:
+    type: rewire
+    node: engine
+    baseline: "every season yaml since s1 declares execute->evaluate with declared artifact writes, and the engine seasons have written results.jsonl in 0 of the last 10: the declaration is vestigial, the audit's phase-liveness finding counts the gap every close, and audit-41 armed it first in pipeline order"
+    expected_band: "WIN per audit-41's own clause: a later season's ledger holds results.jsonl (the phase exercised) OR the pipeline drops execute (the declaration trimmed, F1 retires with it) AND w2's pins hold the new truth both ways AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s61 commits; whichever route, the change is a schema/tooling rewire"
+    eval_window: "w2 pins + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: pipeline-truth
+    collab: build
+    prompt: prompts/dev/w1-pipeline-truth.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: pipeline-truth-pins
+    collab: build
+    prompt: prompts/dev/w2-pipeline-truth-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

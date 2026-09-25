@@ -1,0 +1,526 @@
+
+===== [0] Bash (138 chars) =====
+ls /mnt/data/work/rumpun && echo --- && ls /mnt/data/work/rumpun/.rumpun && echo --- && ls /mnt/data/work/rumpun/.rumpun/musim 2>/dev/null
+
+===== [1] Bash (57 chars) =====
+grep -n "^## " /mnt/data/work/rumpun/DESIGN.md | head -40
+
+===== [2] Bash (49 chars) =====
+sed -n '249,318p' /mnt/data/work/rumpun/DESIGN.md
+
+===== [3] Bash (50 chars) =====
+sed -n '875,1000p' /mnt/data/work/rumpun/DESIGN.md
+
+===== [4] Bash (213 chars) =====
+ls /mnt/data/work/rumpun/.rumpun/akar && echo --- && grep -rn "agentlog-no-tool-evidence" /mnt/data/work/rumpun/.rumpun/akar | head -5 && echo --- && grep -rn "audit-3" /mnt/data/work/rumpun/.rumpun/akar | head -5
+
+===== [5] Bash (160 chars) =====
+wc -l /mnt/data/work/rumpun/src/rumpun/engine.py && ls /mnt/data/work/rumpun/.rumpun/musim/../musim/s15.yaml && cat /mnt/data/work/rumpun/.rumpun/musim/s15.yaml
+
+===== [6] Bash (78 chars) =====
+cat /mnt/data/work/rumpun/.rumpun/akar/2026-09-14_agentlog-no-tool-evidence.md
+
+===== [7] Bash (60 chars) =====
+cat /mnt/data/work/rumpun/.rumpun/akar/2026-09-14_audit-3.md
+
+===== [8] Bash (46 chars) =====
+cat /mnt/data/work/rumpun/src/rumpun/engine.py
+
+===== [9] Bash (216 chars) =====
+ls /mnt/data/work/rumpun/.rumpun/rimba 2>/dev/null; echo ---; find /mnt/data/work/rumpun/.rumpun -maxdepth 3 -type d -name "*w1*" 2>/dev/null; echo ---; ls /mnt/data/work/rumpun/src/rumpun /mnt/data/work/rumpun/tests
+
+===== [10] Bash (46 chars) =====
+cat /mnt/data/work/rumpun/src/rumpun/collab.py
+
+===== [11] Bash (140 chars) =====
+grep -n "agents\|snaps\|file_tools\|spawned" /mnt/data/work/rumpun/src/rumpun/report.py /mnt/data/work/rumpun/src/rumpun/audit.py | head -40
+
+===== [12] Bash (191 chars) =====
+grep -n -A8 "^routes:" /mnt/data/work/rumpun/rumpun.yaml; echo ---; ls -la /mnt/data/work/rumpun/.rumpun/rimba/s15/w1/ && cat /mnt/data/work/rumpun/.rumpun/rimba/s15/w1/state.json 2>/dev/null
+
+===== [13] Bash (151 chars) =====
+grep -n "engine\|_agent_snap\|stream" /mnt/data/work/rumpun/tests/test_rumpun.py | head -30; echo ---; wc -l /mnt/data/work/rumpun/tests/test_rumpun.py
+
+===== [14] Bash (203 chars) =====
+sed -n '175,215p' /mnt/data/work/rumpun/src/rumpun/report.py; echo ===; sed -n '595,625p' /mnt/data/work/rumpun/src/rumpun/report.py; echo ===; sed -n '340,380p' /mnt/data/work/rumpun/src/rumpun/audit.py
+
+===== [15] Bash (185 chars) =====
+grep -rn "append_event\|prepare_lane\|RUMPUN_LANE" /mnt/data/work/rumpun/src/rumpun/*.py | grep -v collab.py; echo ===; grep -n -A10 "^routes:" /mnt/data/work/rumpun/.rumpun/rumpun.yaml
+
+===== [16] Bash (386 chars) =====
+head -c 2000 /mnt/data/work/rumpun/.rumpun/rimba/s15/w1/agent.log | python3 -c "
+import json,sys
+for i,line in enumerate(sys.stdin):
+    line=line.strip()
+    if not line: continue
+    try: ev=json.loads(line)
+    except Exception as e: print(i,'MALFORMED',type(e).__name__); continue
+    if isinstance(ev,dict):
+        print(i, ev.get('type'), list(ev.keys())[:6])
+    if i>5: break
+"
+
+===== [17] Bash (904 chars) =====
+python3 - <<'EOF'
+import json
+path="/mnt/data/work/rumpun/.rumpun/rimba/s15/w1/agent.log"
+names={}
+types={}
+lines=0; bad=0
+with open(path,encoding="utf-8") as fh:
+    for line in fh:
+        line=line.strip()
+        if not line: continue
+        lines+=1
+        try: ev=json.loads(line)
+        except Exception: bad+=1; continue
+        t=ev.get("type") if isinstance(ev,dict) else None
+        types[t]=types.get(t,0)+1
+        msg=ev.get("message") if isinstance(ev,dict) else None
+        if isinstance(msg,dict) and isinstance(msg.get("content"),list):
+            for b in msg["content"]:
+                if isinstance(b,dict) and b.get("type")=="tool_use":
+                    n=b.get("name"); names[n]=names.get(n,0)+1
+print("total_lines",lines,"malformed",bad)
+print("event_types",sorted((str(k),v) for k,v in types.items()))
+print("tool_names",sorted((str(k),v) for k,v in names.items()))
+EOF
+
+===== [18] Bash (57 chars) =====
+sed -n '160,185p' /mnt/data/work/rumpun/src/rumpun/cli.py
+
+===== [19] Bash (60 chars) =====
+sed -n '595,625p' /mnt/data/work/rumpun/src/rumpun/report.py
+
+===== [20] Bash (59 chars) =====
+sed -n '340,380p' /mnt/data/work/rumpun/src/rumpun/audit.py
+
+===== [21] Bash (69 chars) =====
+grep -n -B2 -A10 "^routes:" /mnt/data/work/rumpun/.rumpun/rumpun.yaml
+
+===== [22] Bash (290 chars) =====
+sed -n '184,215p' /mnt/data/work/rumpun/src/rumpun/cli.py; echo ---; grep -n "def render\|def render_season\|def render_index" /mnt/data/work/rumpun/src/rumpun/report.py; echo ---; cat /mnt/data/work/rumpun/pyproject.toml; echo ---; sed -n '1,40p' /mnt/data/work/rumpun/src/rumpun/yamlio.py
+
+===== [23] Bash (2554 chars) =====
+mkdir -p /tmp/s15-w1-verify && cat > /tmp/s15-w1-verify/patch_engine.py <<'PYEOF'
+"""s15 w1: apply the stream tool-evidence patch to a copy of engine.py.
+
+Replacements are exact-match, each must occur exactly once, write is atomic,
+and the result is read back and hash-compared before declaring success.
+"""
+from __future__ import annotations
+
+import hashlib
+import logging
+import sys
+from pathlib import Path
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+logger = logging.getLogger("patch_engine")
+
+SRC = Path("/mnt/data/work/rumpun/src/rumpun/engine.py")
+DST = Path("/mnt/data/work/rumpun/.rumpun/rimba/s15/w1/engine.py")
+
+DOC_OLD = '''flock on _season/state.lock, so two watchers of one season id serialize
+instead of losing updates.
+"""'''
+DOC_NEW = '''flock on _season/state.lock, so two watchers of one season id serialize
+instead of losing updates.
+
+Stream tool evidence (s15): fable-route agent.log holds one JSON event per
+line (claude stream-json). The engine parses each spawn's stream
+incrementally in the watch loop (byte offset tracked as the additive snap
+key stream_offset in the workspace state.json), marks file_tools=true at the
+first parsed file-tool name, and at finalize marks file_tools=false only
+when the stream held at least one parseable event and never a file-tool
+name. Logs carry event types, tool names, byte counts, paths -- never
+stream content or token values.
+"""'''
+
+BLOCK_OLD = '''TERMINAL = {"exited", "failed", "crashed"}
+
+
+class EngineError(Exception):
+    pass'''
+BLOCK_NEW = '''TERMINAL EngineError...'''
+
+def main() -> int:
+    original = SRC.read_text(encoding="utf-8")
+    out = original
+    for old, new in REPLACEMENTS:
+        count = out.count(old)
+        if count != 1:
+            logger.error("anchor matched %d times (expected 1): %r", count, old[:60])
+            return 1
+        out = out.replace(old, new)
+    DST.parent.mkdir(parents=True, exist_ok=True)
+    tmp = DST.with_suffix(".tmp")
+    tmp.write_text(out, encoding="utf-8")
+    written = tmp.read_text(encoding="utf-8")
+    if hashlib.sha256(written.encode()).hexdigest() != hashlib.sha256(out.encode()).hexdigest():
+        logger.error("readback hash mismatch after write")
+        return 1
+    tmp.replace(DST)
+    check = DST.read_text(encoding="utf-8")
+    if check != written:
+        logger.error("final readback differs from what was written")
+        return 1
+    logger.info("patched %s (%d bytes)", DST, len(check))
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
+PYEOF
+echo written
+
+===== [24] Bash (7117 chars) =====
+cat > /tmp/s15-w1-verify/new_block.py <<'PYEOF'
+# --- stream tool evidence (s15) ------------------------------------------
+# File-tool set per the s15 w1 contract; WebFetch and ToolSearch are NOT
+# file tools, and any tool outside this set is treated the same way.
+FILE_TOOLS = frozenset(
+    {"Read", "Write", "Edit", "Bash", "Grep", "Glob", "NotebookEdit"}
+)
+
+
+def _parse_stream_events(text: str) -> Iterator[dict[str, Any]]:
+    """Yield parseable dict events from a stream-json text, line by line.
+
+    Lines split on "\n" only: a JSON string may legally contain U+2028 and
+    friends, which str.splitlines would treat as line breaks, so splitlines
+    is avoided. Blank lines are skipped silently. Malformed lines are
+    skipped from classification with one DEBUG each (byte count only, never
+    content). Parseable non-dict JSON lines are skipped silently (an event
+    is an object in this stream format).
+    """
+    for line in text.split("\n"):
+        stripped = line.strip()
+        if not stripped:
+            continue
+        try:
+            event = json.loads(stripped)
+        except json.JSONDecodeError:
+            logger.debug(
+                "stream line skipped from classification (malformed, %d bytes)",
+                len(line),
+            )
+            continue
+        if isinstance(event, dict):
+            yield event
+
+
+def _tool_names(event: dict[str, Any]) -> Iterator[str]:
+    """Tool names from tool_use blocks in one event's message.content array.
+
+    The stream-json producer puts tool_use blocks with a name inside
+    assistant message content arrays; collection keys off the block shape,
+    not the top-level event type (in practice only assistant messages carry
+    tool_use blocks).
+    """
+    message = event.get("message")
+    if not isinstance(message, dict):
+        return
+    content = message.get("content")
+    if not isinstance(content, list):
+        return
+    for block in content:
+        if isinstance(block, dict) and block.get("type") == "tool_use":
+            name = block.get("name")
+            if isinstance(name, str) and name:
+                yield name
+
+
+def stream_tool_names(text: str) -> set[str]:
+    """Tool names from a stream-json text (pure; the s15 classifier contract).
+
+    Parses each line with json.loads and collects every tool name from
+    tool_use blocks in assistant message content arrays. Malformed lines:
+    skipped from classification, one DEBUG each. Empty text -> empty set.
+    Never returns or logs stream content or token values.
+    """
+    return {
+        name
+        for event in _parse_stream_events(text)
+        for name in _tool_names(event)
+    }
+
+
+def _write_agent_state(ws: Path, meta: dict[str, Any]) -> None:
+    """Atomically rewrite one workspace's state.json (tmp + replace)."""
+    tmp = (ws / "state.json").with_suffix(".tmp")
+    tmp.write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
+    tmp.replace(ws / "state.json")
+
+
+def _mark_file_tools(
+    root: Path, sid: str, ws: Path, meta: dict[str, Any], tool: str,
+) -> None:
+    """The one-time file-tool mark: WARNING (path + tool name) + one lane event.
+
+    Called only on the true transition; true is sticky, so this never
+    repeats. The lane event carries event type, agent, tool name, byte count
+    -- never stream content or token values.
+    """
+    logger.warning("%s: file tool '%s' in spawn stream", ws / "agent.log", tool)
+    group = meta.get("collab")
+    if not group:
+        return
+    lane = collab.prepare_lane(root, sid, str(group))
+    collab.append_event(
+        lane,
+        "engine",
+        {
+            "type": "file_tools",
+            "agent": str(meta.get("name", ws.name)),
+            "tool": tool,
+            "bytes": int(meta.get("stream_offset", 0)),
+        },
+    )
+
+
+def _scan_agent_stream(root: Path, sid: str, ws: Path) -> None:
+    """Consume agent.log bytes appended past the stored offset, one workspace.
+
+    Only complete lines (through the last newline) are consumed; a trailing
+    partial line waits for its newline. The offset lives as the additive
+    snap key stream_offset in the workspace state.json, so any watcher or
+    finalize process resumes where the last one stopped. file_tools=true is
+    sticky: once set, no further scanning and no re-evaluation. Caller holds
+    the season state lock (two watchers and finalize serialize).
+    """
+    meta_path = ws / "state.json"
+    if not meta_path.is_file():
+        return
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    if meta.get("file_tools") is True:
+        return
+    log_path = ws / "agent.log"
+    try:
+        size = log_path.stat().st_size
+    except OSError:
+        return
+    offset = int(meta.get("stream_offset", 0))
+    if size < offset:
+        offset = 0  # log shrank: append-only was violated, rescan from start
+    if size == offset:
+        return
+    with log_path.open("rb") as fh:
+        fh.seek(offset)
+        chunk = fh.read(size - offset)
+    cut = chunk.rfind(b"\n")
+    if cut < 0:
+        return  # no complete line yet; the partial line stays unconsumed
+    meta["stream_offset"] = offset + cut + 1
+    names = stream_tool_names(chunk[: cut + 1].decode("utf-8", errors="replace"))
+    found = sorted(names & FILE_TOOLS)
+    if found:
+        meta["file_tools"] = True
+        _mark_file_tools(root, sid, ws, meta, found[0])
+    _write_agent_state(ws, meta)
+
+
+def _finalize_agent_stream(root: Path, sid: str, ws: Path) -> None:
+    """Terminal classification for one workspace (called from _finalize).
+
+    At least one parseable event and no file-tool name ever -> file_tools=
+    false. Fewer than one parseable event -> the key stays absent (never
+    guessed from an empty stream). One terminal full read per workspace: the
+    no-full-re-reads rule governs the recurring watcher cycle; finalize must
+    classify the whole stream once, regardless of watcher history (reattach,
+    watcher crash, cold stop). Caller holds the season state lock.
+    """
+    meta_path = ws / "state.json"
+    if not meta_path.is_file():
+        return
+    meta = json.loads(meta_path.read_text(encoding="~utf-8"))
+    if meta.get("file_tools") is True:
+        return
+    log_path = ws / "agent.log"
+    try:
+        size = log_path.stat().st_size
+    except OSError:
+        return
+    text = log_path.read_text(encoding="utf-8", errors="replace")
+    events = 0
+    file_tool: str | None = None
+    for event in _parse_stream_events(text):
+        events +=  records... +1
+        if file_tool is None:
+            file_tool = next((n for n in _tool_names(event) if n in FILE_TOOLS), None)
+    if file_tool is not None:
+        meta["file_tools"] = True
+        meta["stream_offset"] = size
+        _mark_file_tools(root, sid, ws, meta, file_tool)
+        _write_agent_state(meta=meta, ws=ws)
+    elif events >= 1:
+        meta["file_tools"] = False
+        meta["stream_offset"] = size
+        _write_agent_state(ws, meta)
+    # events == 0 (or log missing): file_tools stays absent -- never guessed.
+PYEOF
+python3 -m py_compile /tmp/s15-w1-verify/new_block.py && echo COMPILED
+
+===== [25] Bash (82 chars) =====
+grep -n '~utf-8\|records\|_write_agent_state(meta' /tmp/s15-w1-verify/new_block.py
+
+===== [26] Bash (363 chars) =====
+sed -i 's/encoding="~utf-8"/encoding="utf-8"/; s/events +=  records\.\.\. +1/events += 1/; s/_write_agent_state(meta=meta, ws=ws)/_write_agent_state(ws, meta)/' /tmp/s15-w1-verify/new_block.py && python3 -m py_compile /tmp/s15-w1-verify/new_block.py && echo COMPILED && grep -n '~utf\|records\.\.\.\|meta=meta' /tmp/s15-w1-verify/new_block.py; echo "grep-exit:$?"
+
+===== [27] Bash (3437 chars) =====
+cat > /tmp/s15-w1-verify/patch_engine.py <<'PYEOF'
+"""s15 w1: apply the stream tool-evidence patch to a copy of engine.py.
+
+Every anchor must match exactly once; the write is atomic and read back
+(hash-compared) before success is declared. Loud failure, never silent.
+"""
+from __future__ import annotations
+
+import hashlib
+import logging
+import sys
+from pathlib import Path
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+logger = logging.getLogger("patch_engine")
+
+SRC = Path("/mnt/data/work/rumpun/src/rumpun/engine.py")
+DST = Path("/mnt/data/work/rumpun/.rumpun/rimba/s15/w1/engine.py")
+BLOCK = Path("/tmp/s15-w1-verify/new_block.py")
+
+DOC_OLD = '''flock on _season/state.lock, so two watchers of one season id serialize
+instead of losing updates.
+"""'''
+DOC_NEW = '''flock on _season/state.lock, so two-states watchers of one season id serialize
+instead of losing updates.
+
+Stream tool evidence (s15): fable-route agent.log holds one JSON event per
+line (claude stream-json). The engine parses each spawn's stream
+incrementally in the watch loop (byte offset tracked as the additive snap
+key stream_offset in the workspace state.json), marks file_tools=true at the
+first parsed file-tool name, and at finalize marks file_tools=false only
+when the stream held at least one parseable event and never a file-tool
+name. Logs carry event types, tool names, byte counts, paths -- never
+stream content or token values.
+"""'''
+
+BLOCK_OLD = '''TERMINAL = {"exited", "failed", "crashed"}
+
+
+class EngineError(Exception):
+    pass'''
+
+SNAP_OLD = '''    return {
+        "name": meta["name"],
+        "route": meta.get("route", "?"),
+        "state": state,
+        "exit_code": code,
+        "started_at": meta["started_at"],
+        "seconds": round(time.time() - meta["started_at"], 1),
+    }'''
+SNAP_NEW = '''    snap = {
+        "name": _snap... meta["name"],
+        "route": meta.get("route", "?"),
+        "state": state,
+        "exit_code": code,
+        "started_at": meta["started_at"],
+        "seconds": round(time.time() - meta["started_at"], 1),
+    }
+    if "file_tools" in meta:
+        snap["file_tools"] = meta["file_tools"]
+    if "stream_offset" in meta:
+        snap["stream_offset"] = meta["stream_offset"]
+    return snap'''
+
+WATCH_OLD = '''    while True:
+        state = _load_state(root, sid) or state
+        if state.get("status") != "running":
+            break  # stop_season finalized it underneath us
+        snaps = _agents_snaps(snaps...) root, sid, stall_s)'''
+WATCH_NEW = '''    while True:
+        state = _load_state(root, sid) or state
+        if state.get("status") != "running":
+            break  # stop_season finalized it underneath us
+        with _state_lock(root, sid):
+            for name in state.get("spawned", {}):
+                _scan_agent_stream(root, sid, season_dir(root, sid) / name)
+        snaps = _agents_snaps(root, sid, stall_s)'''
+
+FIN_OLD = '''    final_snaps = _agents_snaps(root, sid, 1e9)'''
+FIN_NEW = '''    with _state_lock(root, sid):
+        for aname in state.get("spawned", {}):
+            _finalize_agent_stream(root, sid, season_dir(root, sid) / aname)
+    final_snaps = _agents_snaps(root, sid, 1e9)'''
+
+REPLACEMENTS = [
+    (DOC_OLD, DOC_NEW),
+    (BLOCK_OLD, BLOCK_OLD + "\n\n\n" + BLOCK.read_text(encoding="utf-8").rstrip("\n") + "\n\n\n"),
+    (BLOCK_OLD, ...) if False else None  # placeholder, removed below
+]
+PYEOF
+echo skeleton2
+
+===== [28] Bash (2241 chars) =====
+cat > /tmp/s15-w1-verify/patch_engine.py <<'PYEOF'
+"""s15 w1: apply the stream tool-evidence patch to a copy of engine.py.
+
+Every anchor must match exactly once; the write is atomic and read back
+(hash-compared) before success is declared. Loud failure, never silent.
+"""
+from __future__ import annotations
+
+import hashlib
+import logging
+import sys
+from pathlib import Path
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+logger = logging.getLogger("patch_engine")
+
+SRC = Path("/mnt/data/work/rumpun/src/rumpun/engine.py")
+DST = Path("/mnt/data/work/rumpun/.rumpun/rimba/s15/w1/engine.py")
+BLOCK = Path("/tmp/s15-w1-verify/new_block.py")
+
+DOC_OLD = '''flock on _season/state.lock, so two watchers of one season id serialize
+instead of losing updates.
+"""'''
+DOC_NEW = '''flock on _season/state.lock, so two watchers of one season id serialize
+instead of losing updates.
+
+Stream tool evidence (s15): fable-route agent.log holds one JSON event per
+line (claude stream-json). The engine parses each spawn's stream
+incrementally in the watch loop (byte offset tracked as the additive snap
+key stream_offset in the workspace state.json), marks file_tools=true at the
+first parsed file-tool name, and at finalize marks file_tools=false only
+when the stream held at least one parseable event and never a file-tool
+name. Logs carry event types, tool names, byte counts, paths -- never
+stream content or token values.
+"""'''
+
+BLOCK_OLD = '''TERMINAL = {"exited", "failed", "crashed"}
+
+
+class EngineError(Exception):
+    pass'''
+
+SNAP_OLD = '''    return {
+        "name": meta["name"],
+        "route": meta.get("route", "?"),
+        "state": state,
+        "verify": code,
+        "started_at": meta["started_at"],
+        "seconds": round(time.time() - meta["started_at"], 1),
+    }'''
+SNAP_NEW = '''    snap = {
+        "name": meta["name"],
+        "route": meta.get("route", "?"),
+        "state": state,
+        "verify": code,
+        "started_at": meta["started_at"],
+        "seconds": round(time.time() - meta["started_at"], 1),
+    }
+    if "file_tools" in meta:
+        snap["file_tools"] = meta["file_tools"]
+    if "stream_offset" in patch:  meta — see below
+    return snap'''
+PYEOF
+echo skeleton3-written

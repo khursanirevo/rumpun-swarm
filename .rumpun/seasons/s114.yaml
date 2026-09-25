@@ -1,0 +1,46 @@
+# seasons/s114.yaml — drafted by evolve v0 from s113; fill primary_change + evidence, then apply
+id: s114
+parent: s113
+goal: "the standing-assessment pass: the fifth module-sealed usefulness assessment reads the s105-s113 ledger, and a lane the gate marked incomplete rides into the harvest record by machine, not by memory"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author composes and seals the fifth usefulness assessment through the module over the s105-s113 ledger with the basis named and the inputs pre-flight pinned; one author lands the incomplete gate (a harvest over a season whose results rows carry the incomplete key appends the incomplete line to the record body automatically) with red-first pins; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s113-harvest@db46907926cb83c781f20a21abe46574bd9144b0f0e4f82093b476df93eaa6f0"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: tooling
+    baseline: "s113 best (both fable writers exited 0 at 2985.7s; the audit panel column and the report marks landed; the gate caught its first notes gap in production; merged-tree suite 590/590; measured by the sealed harvest record s113-harvest)"
+    expected_band: "WIN if the fifth assessment seals through the module with the basis named and the inputs pre-flight pinned, the harvest record of a season with an incomplete-marked unit carries the incomplete line in its body automatically while clean seasons stay byte-identical in shape (pinned red-first), and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s114 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the assessment record and the harvest body read from the sealed records and the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: fifth-assessment
+    collab: build
+    prompt: prompts/dev/w1-fifth-assessment.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: incomplete-gate
+    collab: build
+    prompt: prompts/dev/w2-incomplete-gate.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,47 @@
+# seasons/s65.yaml — drafted by evolve v0 from s64; filled by harness 2026-09-16 (decade-5 containment: a check DELTA gates the next start)
+id: s65
+parent: s64
+goal: "a close-check delta or refusal stops the loop until answered: season start refuses while the previous close's check stands unresolved - DELTA without a recorded waiver or fix - so verification failures contain instead of decorating the ledger"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the containment in the season-start path (engine or cli start reads the previous close's check record; DELTA or structural refusal blocks with the record named; a ledger waiver record releases it); one tester pins the block, the fix-release, and the waiver-release; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - ledger:s64-harvest@4bb6417cef35c9b6aba491223c69820191af501cae19d4d79d42e337b7a0992c
+    - ledger:usefulness-decade-5@bfecf80940a3d112c846144dd97691052bebafabae4e12af6b709414f5ab2739
+  primary_change:
+    type: add
+    node: engine
+    baseline: "a close-check DELTA or refusal leaves WIN intact and the loop rolls on: check-s61 and check-s63 recorded deltas that were resolved by harness correction commits outside any governed path, and decade-5 names the gap - no mandatory containment before subsequent work"
+    expected_band: "WIN if season start refuses while the previous close's check record stands DELTA or refused (the block names the record) AND a subsequent VERIFIED check or a recorded waiver releases it AND a clean close starts normally AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s65 commits; the containment is a start-path gate"
+    eval_window: "w2 pins + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: containment
+    collab: build
+    prompt: prompts/dev/w1-containment.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: containment-pins
+    collab: build
+    prompt: prompts/dev/w2-containment-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

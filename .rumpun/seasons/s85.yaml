@@ -1,0 +1,46 @@
+# seasons/s85.yaml — drafted by evolve v0 from s84; filled by harness 2026-09-17 (epics --init lands + the panel's second window)
+id: s85
+parent: s84
+goal: "the deferred decision lands and the panel patrols again: rumpun epics --init scaffolds the epic rollup over the campaign's real history (the board arc s69-s84 as the first epic), and the panel runs its second window - s80 through s84, five bounded second opinions, any non-WIN filed"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author runs epics --init on the campaign, verifies the board arc rolls into one epic view reading the ledger only, and records any interface gap; one author runs five bounded panel calls in season order, reads every sealed verdict, and files non-WINs to the board (three max); fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s84-harvest@09eb4c95008b8cf051932697c133fc8028390bc61275dff99e1fba8ce2c7ec6b"
+  primary_change:
+    type: retune
+    node: tooling
+    baseline: "s84 best: the composer reads its resolution trail and the loop closed issue #2 end to end (suite 409/409) - but the epic rollup has never been initialized on a real campaign, and the panel has spoken on only one window"
+    expected_band: "WIN if epics --init scaffolds and the board arc rolls into one epic view (or a minimal epic.py fix lands with pins) AND the five panel calls seal in order with non-WINs filed (three max) AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s85 commits; the epic scaffolding is additive; the panel records are append-only history"
+    eval_window: "the pins files + merged-tree full pytest + the epic view and the sweep table in the writers' notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: epics-init
+    collab: build
+    prompt: prompts/dev/w1-epics-init.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: panel-sweep-2
+    collab: build
+    prompt: prompts/dev/w2-panel-sweep-2.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

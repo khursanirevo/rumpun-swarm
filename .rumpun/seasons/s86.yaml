@@ -1,0 +1,46 @@
+# seasons/s86.yaml — drafted by evolve v0 from s85; filled by harness 2026-09-17 (the panel gate reads the whole row + issue #10 retires on evidence)
+id: s86
+parent: s85
+goal: "the sweep's finding becomes the fix and the stale issue retires: the panel's suite gate reads the whole ships row (a claim in any cell satisfies it; nowhere still refuses, the s81 shape), and issue #10 closes on the s83 landed evidence it was filed against"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author fixes the scan to span the row, verifies against the real s80/s81/s82 rows (two dry-runs pass, one refuses with the named message), and pins the acceptance matrix offline; one author retires issue #10 with the sealed s83 evidence and pins the gate's contract adversarially from the other side; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s85-harvest@67fc4ca056dcf171f6bcefa295dc5bc8bc569506164b1e3117748d2e27fcfb78"
+  primary_change:
+    type: rewire
+    node: tooling
+    baseline: "s85 best: the board-arc epic preserved every verdict (suite 409/409) - but the panel's suite gate reads one cell of the ships row, refusing three of five sweep requests, and issue #10 stays open although its fix landed and was pinned in s83"
+    expected_band: "WIN if the gate accepts a claim in any cell and still refuses the nowhere shape (the s81 row) with the named message, verified on the real rows via dry-runs AND the contract pins hold adversarially from both files AND issue #10 closes on the sealed evidence AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s86 commits; issue #10 reopens via gh"
+    eval_window: "both pins files + merged-tree full pytest + the three dry-run outputs in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: panel-gate-fix
+    collab: build
+    prompt: prompts/dev/w1-panel-gate-fix.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: retire-10
+    collab: build
+    prompt: prompts/dev/w2-retire-10.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,5 @@
+{"module": "tests/test_rumpun.py dual-start", "writer": "w2", "lines": 23, "added": 1, "ruff": "pass", "suite": "20 passed in 1.31s", "smoke": "two concurrent 'season start' subprocesses on one scratch season: both exit 0, each benih spawned exactly once, second reattached via state.lock", "integrated": true}
+{"module": "cli.py season show", "writer": "w1", "integrated": false, "cause": "tool-less spawn #3: session had no Read/Write/Bash; patch drafted in agent.log (evidence/s6), unapplied"}
+{"module": "README.md sync", "writer": "w3", "integrated": false, "cause": "tool-less spawn #4: refused to invent content without file reads (honest); nothing written"}
+{"season_meta": "3 writers glm route, completed 674s, all exit 0; lane events 3 all from w2 (start/policy/done); defect rate now 4 of 16 spawns"}
+{"module": "cli.py season show", "writer": "w1 (patch drafted in blocker log during s6; harness-applied verbatim post-season)", "gates": "ruff clean, 20/20 suite", "smoke": "show s5: status line + deliverables per agent + lane count; show s6 --json: exact key set; show nope: exit 1 EngineError; versions bumped to 0.6.0", "integrated": true}

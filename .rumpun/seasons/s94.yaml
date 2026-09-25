@@ -1,0 +1,46 @@
+# seasons/s94.yaml — drafted by evolve v0 from s93; filled by harness 2026-09-18 (the governance candidates: the stopping rule, the aggregate reconciliation, the cost visibility)
+id: s94
+parent: s93
+goal: "the composer's governance questions get answers with evidence: the aggregate verdict question reconciled honestly (the slot label or the documented aggregate), the stopping rule distilled to a concrete EXHAUSTED threshold and pinned, and the cost visibility designed with the first measured slice - writer-seconds from the ledger, the unrecordables named as unrecordable"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author reconciles the aggregate question (the slot label or the documented aggregate, landed as a composer test) and distills the stopping-rule threshold into the pack; one author distills the cost-accounting contract (the measurables, the unrecordables named, the spend-line fix) and measures the first slice from the ledger, filing and commenting the board issue; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s93-harvest@aac5cfd063639cddc00ae003f0ec5161659c19c37282cf4378fd8287b4de777f"
+  primary_change:
+    type: add
+    node: knowledge
+    baseline: "s93 best: the board arc extended and the last deep residual scoped (suite floor holds) - but the composer surfaced three governance questions with no answers: the aggregate verdict consistency, the stopping-rule threshold, and the total absence of cost visibility (directive seq 9 set no cap, which is not the same as knowing the spend)"
+    expected_band: "WIN if the aggregate reconciliation lands as a composer test (the count unchanged or honestly relabeled) AND the stopping-rule template lands with its parse pinned AND the cost contract lands with the first slice measured, the board issue filed and commented (staying open) AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s94 commits; the templates are additive to the pack draft; the slot label is cosmetic if landed"
+    eval_window: "both pins files + merged-tree full pytest + the issue url and the threshold in the writers' notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: stopping-rule
+    collab: build
+    prompt: prompts/dev/w1-stopping-rule.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: cost-accounting
+    collab: build
+    prompt: prompts/dev/w2-cost-accounting.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

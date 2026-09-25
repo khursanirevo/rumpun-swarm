@@ -1,0 +1,48 @@
+# musim/s23.yaml — drafted by evolve v0 from s22; filled by harness from audit-11 + codex-review-2026-09-14 M-remainder (operator standing order: continuous loop)
+id: s23
+parent: s22
+goal: "reflection correctness: audit liveness recognizes declared artifacts (M2), season ids resist rejection reuse (M8), malformed inputs fail as domain errors (M9), and the stall progress trade-off is pinned as documented (M10)"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author fixes M2 (liveness checks each declared writes artifact directly, counting only completed seasons that declared the phase) + M8 (draft ids from a persistent high-water mark over every lifecycle record); one author lands M9 (container-type guards in lint/yamlio, domain errors not AttributeError) + M10 (mtime-only progress pinned as accepted trade-off in code + DESIGN, with the content-progress candidate recorded) and pins all four spec-first; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-11@7cda48801a99b97d7508e2e223b7f0d5cb825f78c9cae5ba84a47345155aa927
+    - akar:s22-harvest@fd6f26b4244ba57fc24bf212756ad1533881cb6ec031b729c85a86e8a6cf9214
+    - akar:codex-review-2026-09-14@23bcca3defbf8c9645b74143ad7536ae173c21ef6cd7cd30f48915a81ff709cd
+  primary_change:
+    type: retune
+    node: gate
+    baseline: "audit artifact discovery recognizes only the fixed LEDGER_ARTIFACTS list: a declared custom.jsonl present in every season still yields 0-of-N and a false trim candidate, and the denominator includes pre-phase and unfinished seasons (reviewer reproduced); draft numbering scans only top-level musim/s*.yaml, so rejecting the latest season makes the next draft reuse its id against existing approval records (reviewer reproduced); lint records invalid methodology then calls .get on it (methodology: null raises uncaught AttributeError) and yamlio skips lists so nested non-string keys pass; the stall rule accepts mtime-only progress (accepted s15 trade-off, unpinned)"
+    expected_band: "WIN if a declared artifact existing in all seasons never yields a dead-phase candidate (repro) AND the liveness denominator counts only completed seasons that declared the phase (repro) AND rejecting the latest season does not reuse its id (repro) AND methodology: null and non-string mapping keys produce domain errors, not AttributeError (repro) AND the mtime-only trade-off is pinned with a code-level comment and a test documenting the decision AND the suite is green (108+ tests); LOSS otherwise"
+    rollback: "git revert s23 commits; behavior tightening + documentation inside existing modules"
+    eval_window: "repro tests mirroring the review's reproductions + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: reflection-correct
+    collab: build
+    prompt: prompts/dev/w1-audit-ids.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: input-guards
+    collab: build
+    prompt: prompts/dev/w2-input-guards.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,46 @@
+# seasons/s109.yaml — drafted by evolve v0 from s108; fill primary_change + evidence, then apply
+id: s109
+parent: s108
+goal: "the integration pass: the epic view names each member's basis so the fold's honesty renders, the panel learns to sweep pending outcomes under an explicit seal, and the pack-composer rhythm runs its fourth pass"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author extends the epics render with per-member basis lines (a win names its record sha, an other names its declared basis) with red-first pins; one author adds the panel pending-outcome sweep (list the pending ids, refuse bare, seal only from an explicit outcome file) with red-first pins and renders the composer's fourth pass; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s108-harvest@febf9c609b1b7a258f14ad94e3f9505d3fddae523c52da8770f01f40bc9eaab4"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: tooling
+    baseline: "s108 best (both fable writers exited 0 at 1246.7s; the panel rerun convention verified over the live ledger with run 1 byte-identical; the pinless skip reproduced on the s107 close state; measured by the sealed harvest record s108-harvest)"
+    expected_band: "WIN if the epic render names each member's basis with the sum preserved, the sweep lists the pending ids and refuses bare while sealing only from an explicit outcome file, and the composer's fourth render holds with the merged-tree full suite green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s109 commits; the epic yaml and the ledger survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the epic render and the sweep listing read from the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: epic-basis
+    collab: build
+    prompt: prompts/dev/w1-epic-basis.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: panel-sweep
+    collab: build
+    prompt: prompts/dev/w2-panel-sweep.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

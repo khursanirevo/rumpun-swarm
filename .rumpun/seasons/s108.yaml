@@ -1,0 +1,46 @@
+# seasons/s108.yaml - filled by the harness 2026-09-20 (directive id 17: seed, fill, launch)
+id: s108
+parent: s107
+goal: "the maintenance pass: the board-arc epic folds s106-s107 with the basis named, the audit panel gains a rerun convention (the s79 refusal resolved with pins red-first), and the close check rides a pinless season with a named skip instead of a refusal"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author folds s107 into the board-arc epic, decides s106 honestly against the no-record basis, and fixes the audit panel second-run refusal with red-first pins; one author turns the close check pinless refusal into a named clean skip and re-proves the pack-composer rhythm (the digest equality fresh, the third render); fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s107-harvest@fed940362122390a96a8efbcb3928a291275400b9e00ecc75d6c06c00f8f9616"
+  primary_change:
+    type: fix
+    node: tooling
+    baseline: "s107 best (1388s, both fable writers exited 0): the pack equality held across the pause-resume cycle (all four digests a22944c1) and the sixth module-sealed assessment locked CONTINUE; measured by the sealed harvest record s107-harvest"
+    expected_band: "WIN if the epic view sums to the whole ledger with the s106 basis named, the panel runs twice cleanly under derived ids, and the check skip line reproduces on the s107 close state with the merged-tree full suite green; LOSS if any of the three refuses or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s108 commits; the epic edit preserves every prior verdict row"
+    eval_window: "w2 pins plus the merged-tree full pytest; the epic view, both panel runs, and the check skip line read from the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: epics-panel
+    collab: build
+    prompt: prompts/dev/w1-epics-panel.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: check-render
+    collab: build
+    prompt: prompts/dev/w2-check-render.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

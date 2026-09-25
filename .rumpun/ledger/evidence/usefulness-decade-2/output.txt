@@ -1,0 +1,26 @@
+residual: Concrete repairs support partial usefulness, especially locking, citation checks, and reduced rendering. The supplied ledger independently establishes only verdict labels.
+residual: No external workload demonstrates usefulness beyond building and maintaining rumpun itself.
+residual: No comparison establishes that seasons outperform direct implementation on equivalent tasks.
+residual: Repeated harness repairs make successful integration inseparable from supervising intervention. Autonomous completion remains unproven.
+residual: The 34 season declarations include s1 and s33 without verdicts. They do not establish 34 completed seasons.
+residual: WIN labels measure changing acceptance bands, not a consistent campaign outcome.
+residual: Earlier LOSS seasons shipped useful changes, while s30 and s32 receive WIN after stalled execution and posthumous integration.
+residual: The brief omits complete sealed criteria and observations, preventing independent checks of claimed band satisfaction.
+residual: s32 adds a lint warning. Its claim that vague bands cannot silently recur exceeds demonstrated enforcement.
+residual: Campaign cost remains unbounded in the supplied record. Total spending and supervising effort are absent.
+residual: Continuous reseeding lacks a demonstrated stopping rule tied to marginal usefulness.
+residual: The phase-2 campaign goal changes despite goal_immutable. The account provides no reconciliation with that invariant.
+residual: s12 removes falsify despite falsify_required. The account does not establish an enforced replacement.
+residual: The demonstrated structural mutation removes unused phases. Sustained improvement through graph evolution remains unproven.
+residual: Cross-family panels and staged autonomy remain design commitments without demonstrated campaign operation.
+residual: s9 rollback contains seasons and never runs git. Restoration to the promised last-good code state remains unproven.
+residual: Appended log bytes measure activity, not durable task progress. Repetitive output still defeats the stated progress standard.
+residual: Shared Unix identity limits ledger protection. Content hashes establish integrity checks, not independent truth or citation relevance.
+residual: Both s21 writers bypassed workspace rules. Subsequent compliance does not demonstrate enforced containment.
+residual: The 22-finding external review supplies valuable repair targets. Its retirement does not establish fresh discovery capability or general correctness.
+residual: Earlier declarations of complete scope and empty backlog coexist with unresolved L1. s29 closes L1 without repairing historical overstatements.
+residual: The corpus executes six repro scripts while skipping 47 at s25. This does not substantiate coverage of every ratified behavior.
+residual: Green corpus results and zero audit candidates establish no detected errors within existing checks, not exhaustion of useful work.
+residual: Increasing test counts demonstrate recorded checks, not independent coverage or operator benefit.
+residual: Provider hangs and corrupted drafts still require salvage late in the campaign. Reliable unattended operation remains unproven.
+VERDICT: PARTIALLY USEFUL

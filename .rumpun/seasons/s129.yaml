@@ -1,0 +1,46 @@
+# seasons/s129.yaml — drafted by evolve v0 from s128; fill primary_change + evidence, then apply
+id: s129
+parent: s128
+goal: "the reverse-mapping pass: every parser flag is named in the operator surfaces or marked intentionally hidden, and the sibling's lessons file becomes a first-class read"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the reverse flag audit (every parser flag named in the readme verbs table or documented as intentionally hidden, drift named) with red-first pins; one author surfaces the lessons file in the campaign's read path (the report index renders its entry count when present, silence when absent) with red-first pins; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s128-harvest@6d5fc6ff00b8000b7b9f3a8807f384069e6850863235af186a6bcc91b2ceb6fc"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: execute
+    baseline: "s128 best (both fable writers exited 0 at 965.9s; the readme table proven complete by mutation and the guide documents the re-detect; merged-tree suite 733 passed 1 xfailed; measured by the sealed harvest record s128-harvest)"
+    expected_band: "WIN if every parser flag is named in the readme table or documented as intentionally hidden with drift named (pinned red-first), the lessons file surfaces its entry count in the report index when present and stays silent when absent (pinned red-first), and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s129 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the audit and the surfacing read from the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: reverse-flag-audit
+    collab: build
+    prompt: prompts/dev/w1-reverse-flag-audit.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: lessons-surface
+    collab: build
+    prompt: prompts/dev/w2-lessons-surface.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,46 @@
+# seasons/s106.yaml — drafted by evolve v0 from s105; filled by harness 2026-09-18 (the resume maintenance: the pack check, the epic extends, the composer render)
+id: s106
+parent: s105
+goal: "the resume's maintenance season: the installed pack digest checked fresh against the re-sealed draft (the four priors verified present or reinstalled), the board-arc epic extends with s104-s105 preserving every verdict, and the composer renders over the ledger confirming the pause-resume cycle added nothing and broke nothing"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author probes the draft digest fresh and reinstalls digest-verified only if it moved, then extends the board-arc epic preserving every verdict (the pinned arithmetic); one author renders the composer fresh over the ledger and confirms the pause-resume stability (the label split, the spend lines, the byte-stable plain records); fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s105-harvest@d4a37e1448fffd95666d69398d7716415ecf2e367b59a034410a062b0c5ddf02"
+  primary_change:
+    type: retune
+    node: tooling
+    baseline: "s105 best: the spend line landed and the grammar accepts fix (suite 519/519) - but the installed pack may trail the re-sealed draft, and the epic trails by two seasons"
+    expected_band: "WIN if the pack digest check lands (reinstall or the recorded equality) AND the board-arc epic extends with the sum preserved AND the composer render confirms the stability AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s106 commits; the reinstall is reversible"
+    eval_window: "w2 pins + merged-tree full pytest + the epic view and the digest in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: pack-check-epics
+    collab: build
+    prompt: prompts/dev/w1-pack-check-epics.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: composer-render
+    collab: build
+    prompt: prompts/dev/w2-composer-render.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

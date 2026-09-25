@@ -1,0 +1,2 @@
+{"from": "w2", "kind": "start", "seq": 0, "text": "w2: README sync for v0.7.0 surface \u2014 season show + direct quickstart, stub table cut to 3 evolve verbs, cli.py re-verified"}
+{"from": "w2", "kind": "done", "seq": 1, "text": "w2 done: README.md, notes.md, lane_tool.py in rimba/s7/w2; diff vs repo README = 4 intended changes only; ruff clean; verbs re-verified live"}

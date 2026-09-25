@@ -1,0 +1,47 @@
+# musim/s27.yaml — drafted by evolve v0 from s26; filled by harness from audit-15 (third consecutive zero-candidate audit) + the session-ephemeral tooling gap (operator standing order: continuous loop)
+id: s27
+parent: s26
+goal: "infrastructure consolidation: the per-close dashboard render loop lands as maintained repository tooling instead of a session-ephemeral script"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands tools/render_dashboard.py (render every stateful season plus the index and discoveries view, skip-list documented, atomic writes) hardened from the harness's /tmp script; one spec-first tester pins it; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-15@730591d645c301405766f54c77dcc85e96f4fbf7ca878db530ef784b04a52991
+    - akar:s26-harvest@4e822bb154f54ef97653d6752d049cb8a8bdc22aaa52e7a7376d1fb22078ada6
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "every dashboard refresh since s13 depends on a render script living in the harness session's /tmp (rerender_all.py): it dies with the session, is unversioned, untested, and skips seasons by a rule duplicated from report.py internals rather than shared; audit-13/14/15 armed zero candidates, so consolidation is the honest step"
+    expected_band: "WIN if tools/render_dashboard.py renders every season with a state file plus the index and discoveries views (repro: a fixture root with two seasons renders 2 reports + index + discoveries) AND skips stateless seasons with a logged reason AND is byte-deterministic across two consecutive runs AND the suite is green (129+ tests); LOSS otherwise"
+    rollback: "git revert s27 commits; the tool is additive"
+    eval_window: "fixture repro + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: render-tool
+    collab: build
+    prompt: prompts/dev/w1-render-tool.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: render-tool-pins
+    collab: build
+    prompt: prompts/dev/w2-render-tool-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

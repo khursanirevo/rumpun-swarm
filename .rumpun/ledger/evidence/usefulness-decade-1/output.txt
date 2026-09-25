@@ -1,0 +1,26 @@
+residual: Reported locking repairs, citation checks, regression tooling, and reduced rendering provide specific utility. Independent artifact checks remain absent here.
+residual: The ledger establishes 24 WIN, eight LOSS, and two missing verdicts, not 34 completed improvements.
+residual: Recorded verdicts establish what evaluators wrote. They do not independently establish implementation correctness or practical value.
+residual: No external workload or operator outcome demonstrates usefulness beyond maintaining rumpun itself.
+residual: No baseline comparison establishes that the season loop improves delivery speed, quality, or cost over ordinary development.
+residual: Repeated harness repairs make autonomous delivery unproven. Completion effort outside the stopped seasons remains unquantified.
+residual: s30 and s32 count post-stop integration as WIN. Earlier salvaged seasons retain LOSS, making aggregate outcomes inconsistent.
+residual: The campaign supplies no total cost accounting. The last explicit cost-cap status remains unset despite a declared budget invariant.
+residual: Automatic continuation lacks a demonstrated usefulness threshold or stopping rule after actionable candidates disappear.
+residual: Removing unused pipeline phases demonstrates simplification. It does not establish improved hypothesis generation or general graph evolution.
+residual: Removing falsify conflicts with falsify_required. The supplied account does not demonstrate an enforced replacement.
+residual: The phase-two goal update conflicts with goal_immutable unless an authorized transition exists. That transition is not established here.
+residual: Manual-stage delivery does not demonstrate the proposed blinded panel, promotion rules, or automatic containment.
+residual: The reported rollback command never runs git. Restoration to a last-good code state remains unproven.
+residual: Workspace violations demonstrate that prompt rules did not contain writers. Later compliance does not establish enforced isolation.
+residual: Harness observation under a shared Unix identity does not establish tamper resistance or semantic support for cited claims.
+residual: Appended log bytes demonstrate activity, not necessarily durable progress. Repeated output still threatens the stated stall contract.
+residual: Six passing repro scripts do not establish coverage of every ratified behavior. Most discovered scripts were skipped.
+residual: Growing test counts do not establish independent coverage. Shared evidence and reconciled tests leave correlated blind spots.
+residual: Zero-candidate audits establish detector silence, not backlog completeness. The missed matrix input demonstrates this limitation.
+residual: s24 prematurely claims every review finding landed. The account records L1 closure only at s29.
+residual: s28 claims the first documentation season despite s10's documentation deliverable. Historical summaries require reconciliation.
+residual: The s32 warning detects missing integration definitions. It does not establish meaningful thresholds or prevent vague acceptance bands.
+residual: One budget overrun followed by successful delivery does not establish that 40-minute budgets are necessary or efficient.
+residual: Documentation and dashboards improve inspectability, but the account supplies no measured reduction in operator effort or decision errors.
+VERDICT: PARTIALLY USEFUL

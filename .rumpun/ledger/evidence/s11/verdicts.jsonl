@@ -1,0 +1,3 @@
+{"unit": "w1 rumpun audit", "verdict": "WIN", "implies": "phase-2 reflection verb live: deterministic trigger rules only, cap 3, every line cites season ids; the verb mutates nothing but its akar record"}
+{"unit": "w2 audit tests (+10)", "verdict": "WIN", "implies": "reflection contract pinned by tests incl. musim/rimba immutability"}
+{"season": "s11", "verdict": "WIN", "metric": "modules_integrated", "band": "WIN = audit record with per-phase liveness AND >=1 cited candidate AND suite green", "observed": "all met: audit-1 on the real ledger, 3 candidates + cap note, 41/41", "implies": "first ledger-driven season next: s12 trims the dead pipeline head per audit-1, DAG forces the full head removal (plan/falsify lose inputs) -> 2-phase pipeline"}

@@ -1,0 +1,2 @@
+{"agent": "w1", "bytes": 209512, "from": "engine", "seq": 0, "tool": "Read", "type": "file_tools"}
+{"agent": "w2", "bytes": 401235, "from": "engine", "seq": 1, "tool": "Bash", "type": "file_tools"}

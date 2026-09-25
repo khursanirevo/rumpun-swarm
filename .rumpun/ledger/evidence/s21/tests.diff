@@ -1,0 +1,282 @@
+diff --git a/tests/test_rumpun.py b/tests/test_rumpun.py
+index f632abb..94c1f42 100644
+--- a/tests/test_rumpun.py
++++ b/tests/test_rumpun.py
+@@ -66,6 +66,7 @@ counts unchanged); scanning rides the existing watch cycle, no new
+ polling.
+ """
+ 
++import fcntl
+ import hashlib
+ import inspect
+ import json
+@@ -85,6 +86,9 @@ from rumpun import akar, engine, evolve, harvest, lint, report
+ # isort: split
+ from rumpun import audit, collab  # spec-first: modules land at integration
+ 
++# isort: split
++from rumpun import routes, scaffold  # spec-first: M11 pin (codex-review-2026-09-14)
++
+ RUMPUN_YAML = """\
+ autonomy:
+   stage: manual
+@@ -466,32 +470,148 @@ def test_save_state_lock_serializes_concurrent_writers(tmp_path):
+ # --- dual start at process level (w2 s6 scope) --------------------------------
+ 
+ 
++# s21 L2 (codex-review-2026-09-14): the old test launched both starters
++# back-to-back, so starter 2's contention was luck. When it read the season
++# after starter 1 had already finalized, the finished check raised and it
++# exited nonzero (~1/5 loaded runs, 5+ transients). The race is closed with
++# an explicit barrier: a marker-gated route keeps the season provably
++# un-finalizable while the test orders the starters, and the agents are
++# released only after starter 2 is observed contending on state.lock and
++# then observed clear of the spawn transaction.
++DUAL_BARRIER_ROUTE = (
++    "while [ ! -f {marker} ]; do sleep 0.5; done; cat {prompt} > /dev/null"
++)
++
++
++def _wait_until(action, timeout, message):
++    """Poll action() every 20ms; return the first truthy value, else fail."""
++    deadline = time.monotonic() + timeout
++    while time.monotonic() < deadline:
++        value = action()
++        if value:
++            return value
++        time.sleep(0.02)
++    pytest.fail(f"{message} (waited {timeout}s)")
++
++
++def _pid_has_fd(pid: int, target: Path) -> bool:
++    """True while /proc/<pid>/fd exposes an fd resolving to `target`."""
++    try:
++        entries = os.listdir(f"/proc/{pid}/fd")
++    except OSError:
++        return False
++    resolved = str(os.path.realpath(target))
++    for fd in entries:
++        try:
++            if os.path.realpath(f"/proc/{pid}/fd/{fd}") == resolved:
++                return True
++        except OSError:
++            continue
++    return False
++
++
+ def test_dual_start_single_spawner(tmp_path):
+     """Two concurrent `rumpun season start` processes spawn each agent once.
+ 
+-    Starter 1 holds _season/state.lock across load, the finished check, the
+-    initial save, and the whole spawn loop. Starter 2 blocks on the flock,
+-    then reads the fully spawned state and reattaches (both names already in
+-    `spawned` -> continue) instead of spawning again. Proven by: both exit 0,
+-    the season reaches exactly one terminal state.json with status
+-    completed, each benih name appears in the spawned map exactly once, both
+-    per-agent workspaces hold a state.json, and the "spawned alpha" log line
+-    appears in exactly one of the two stderr streams.
++    The barrier, in order: the route blocks each agent on a marker file, so
++    starter 1 cannot finalize while the test withholds the marker. Starter 1
++    launches alone; the test waits until the flock-serialized spawn
++    transaction has persisted both agent pids, then takes _season/state.lock
++    itself. Starter 2 launches against that held lock and is observed via
++    /proc/<pid>/fd blocked with the lock fd open: demonstrably contending,
++    its spawned-alphas line not yet emitted. The test releases the lock,
++    observes starter 2 acquire it, pass the finished check against a season
++    provably still running, and leave the transaction (lock fd closed).
++    Only then does the marker touch release the agents; both watchers
++    finalize (first writer wins, the second returns cleanly via
++    engine._finalize) and both exit 0.
++
++    Proven by: both exit 0, the season reaches exactly one terminal
++    state.json with status completed, each benih name appears in the spawned
++    map exactly once, both per-agent workspaces hold a state.json, and the
++    "spawned alpha" log line appears in exactly one of the two stderr
++    streams.
+     """
+-    root, season = _write_proj(tmp_path, SEASON_DUAL, project_yaml=RUMPUN_YAML_DUAL)
++    marker = tmp_path / "agents_go"
++    project_yaml = RUMPUN_YAML_DUAL.replace(
++        "cat {prompt} > /dev/null",
++        DUAL_BARRIER_ROUTE.replace("{marker}", marker.as_posix()),
++    )
++    root, season = _write_proj(tmp_path, SEASON_DUAL, project_yaml=project_yaml)
+     cmd = [sys.executable, "-m", "rumpun", "season", "start", str(season)]
+-    # Both Popens go out back-to-back so starter 2 reaches the flock while
+-    # starter 1 still holds it; its state read then happens under the lock.
+-    starters = [
+-        subprocess.Popen(
+-            cmd,
+-            stdout=subprocess.PIPE,
+-            stderr=subprocess.PIPE,
+-            text=True,
++
++    # Starter 1 launches alone. Its spawn transaction persists both agent
++    # pids under the flock; with the marker absent the season stays running,
++    # so this wait does not depend on scheduler timing.
++    starter1 = subprocess.Popen(
++        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
++        cwd=str(tmp_path),
++    )
++    season_state = root / "rimba" / "s1" / "_season" / "state.json"
++    lock_path = root / "rimba" / "s1" / "_season" / "state.lock"
++
++    def both_spawned():
++        if starter1.poll() is not None:
++            _out, err = starter1.communicate(timeout=30)
++            pytest.fail(f"starter 1 exited before spawning both; stderr:\n{err}")
++        try:
++            state = json.loads(season_state.read_text(encoding="utf-8"))
++        except (OSError, ValueError):
++            return False
++        spawned = state.get("spawned") or {}
++        return all(
++            (spawned.get(name) or {}).get("pid") is not None
++            for name in ("alpha", "beta")
++        )
++
++    _wait_until(both_spawned, 30, "starter 1 never persisted both agent pids")
++
++    # The test now holds state.lock: starter 2 must queue on it, not on luck.
++    with open(lock_path, "a") as probe:
++        deadline = time.monotonic() + 5
++        while True:
++            try:
++                fcntl.flock(probe.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
++                break
++            except BlockingIOError:
++                if time.monotonic() > deadline:
++                    pytest.fail(
++                        "state.lock held by an unexpected holder after 5s"
++                    )
++                time.sleep(0.02)
++
++        starter2 = subprocess.Popen(
++            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+             cwd=str(tmp_path),
+         )
+-        for _ in range(2)
+-    ]
++
++        def contending():
++            if starter2.poll() is not None:
++                _out, err = starter2.communicate(timeout=30)
++                msg = f"starter 2 exited before contending on the lock; stderr:\n{err}"
++                pytest.fail(msg)
++            return _pid_has_fd(starter2.pid, lock_path)
++
++        _wait_until(contending, 30, "starter 2 never showed the lock fd open")
++
++    # Probe released: starter 2 acquires the lock, its finished check reads a
++    # season provably still running (marker absent), it reattaches and exits
++    # the transaction -- observed as the lock fd closing while it stays alive.
++    def past_transaction():
++        return (
++            not _pid_has_fd(starter2.pid, lock_path)
++            and starter2.poll() is None
++        )
++
++    _wait_until(
++        past_transaction, 30,
++        "starter 2 never cleared the spawn-transaction lock",
++    )
++
++    # Starter 2 has passed its finished check; the agents may now exit and
++    # both watchers finalize.
++    marker.touch()
++    starters = [starter1, starter2]
+     results = []
+     for starter in starters:
+         try:
+@@ -2362,3 +2482,91 @@ def test_agent_budget_deadline_is_per_agent(tmp_path):
+             if engine._alive(meta["pid"], meta["proc_start"]):
+                 with suppress(OSError):
+                     os.killpg(meta["pid"], signal.SIGKILL)
++
++
++# --- s21 w2: spec-first pins (codex-review-2026-09-14 M3, M11) ----------------
++# RED against the s21 base code by design: w1's harvest.py/routes.py work
++# turns the failing clauses green at integration. The measured red set is
++# recorded in .rumpun/rimba/s21/w2/notes.md.
++
++
++def test_harvest_writes_season_verdict_row_and_report_renders_win(tmp_path):
++    """M3 pin: harvest_season writes the season verdict where reports read it.
++
++    After harvest_season(...) on a completed WIN season, rimba/<sid>/
++    verdicts.jsonl carries exactly one season-level WIN row (the row rule
++    report._verdict_of reads: row["season"] == sid), and the rendered season
++    report shows WIN in its verdict headline. Red at s21 base: harvest only
++    appends the akar record; rimba/<sid>/verdicts.jsonl is never written.
++    """
++    _write_season_state(tmp_path)
++    harvest.harvest_season(tmp_path, "s1", "WIN", "note")
++    verdicts = tmp_path / "rimba" / "s1" / "verdicts.jsonl"
++    assert verdicts.is_file(), "harvest must write rimba/<sid>/verdicts.jsonl"
++    rows = [
++        json.loads(line)
++        for line in verdicts.read_text(encoding="utf-8").splitlines()
++        if line.strip()
++    ]
++    season_rows = [row for row in rows if row.get("season") == "s1"]
++    assert len(season_rows) == 1, f"expected one season-level row, got: {rows}"
++    assert season_rows[0]["verdict"] == "WIN"
++    doc = report.render_report(tmp_path, "s1")
++    html = doc.read_text(encoding="utf-8")
++    start = html.find('<p class="one">')
++    assert start != -1, "season report verdict headline missing"
++    end = html.find("</p>", start)
++    assert end != -1, "season report verdict headline unterminated"
++    assert "WIN" in html[start:end], "report headline does not render WIN"
++
++
++def test_second_harvest_refuses_and_keeps_single_record(tmp_path):
++    """M4-minimal pin: a second harvest_season on one season refuses.
++
++    akar refuses the duplicate <sid>-harvest record id (serialized append,
++    s18 H6), so the second call raises akar.AkarError and exactly one
++    harvest record remains in the ledger. Green at s21 base: measured below,
++    the refusal already holds; the pin guards it through the M3 change.
++    """
++    _write_season_state(tmp_path)
++    harvest.harvest_season(tmp_path, "s1", "WIN", "note")
++    with pytest.raises(akar.AkarError):
++        harvest.harvest_season(tmp_path, "s1", "WIN", "note")
++    records = list((tmp_path / "akar").glob("*_s1-harvest.md"))
++    assert len(records) == 1
++
++
++def test_write_routes_commands_spawn_clean(tmp_path):
++    """M11 pin: write_routes generates spawn-clean commands, scaffold intact.
++
++    Every command write_routes writes into a scaffolded rumpun.yaml contains
++    no "<model>" placeholder and, with {prompt} resolved, passes /bin/sh -n.
++    The rest of the scaffold survives the patch and the file still parses.
++    Red at s21 base: the claude login route is generated with a literal
++    --model <model> placeholder (the defect fixed ad hoc in the campaign
++    copy at s15 lives on in the generator).
++    """
++    target = tmp_path / "proj"
++    scaffold.init_project(target)
++    cfg = target / ".rumpun" / "rumpun.yaml"
++    before = cfg.read_text(encoding="utf-8").splitlines()
++    count = routes.write_routes(cfg)
++    assert count >= 1
++    commands = list(
++        (yaml.safe_load(cfg.read_text(encoding="utf-8")).get("routes") or {}).values()
++    )
++    assert commands, "write_routes wrote no route commands"
++    offenders = [cmd for cmd in commands if "<model>" in cmd]
++    assert offenders == [], f"<model> placeholder still generated: {offenders}"
++    for cmd in commands:
++        proc = subprocess.run(
++            ["/bin/sh", "-n"],
++            input=cmd.replace("{prompt}", "prompt.md"),
++            text=True,
++            capture_output=True,
++        )
++        assert proc.returncode == 0, f"/bin/sh -n rejected: {cmd}\n{proc.stderr}"
++    after = cfg.read_text(encoding="utf-8").splitlines()
++    kept = [line for line in before if not line.startswith("routes:")]
++    it = iter(after)
++    assert all(line in it for line in kept), "write_routes disturbed the scaffold"

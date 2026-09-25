@@ -1,0 +1,47 @@
+# musim/s43.yaml — drafted by evolve v0 from s42; filled by harness from audit-32 + the decade-4 triage's three sharpest confirmed residuals (operator standing order: continuous loop)
+id: s43
+parent: s42
+goal: "triage follow-through: the falsify gate requires a reachable artifact (reading what the pipeline writes), DRIFT rows arm candidates instead of escaping, and the corpus coverage fraction is a standing audit finding"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author strengthens the falsify gate (the reading phase's artifact must be produced within the pipeline) and arms DRIFT rows as mismatch candidates in the audit; one author lands the corpus coverage finding (covered/total as a standing F-line) and pins all three; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-32@54705b03cb4282bed7bcf81a813bad78b395b41d8e4a2bee8334da8c48e4626d
+    - akar:s42-harvest@66feb58b2ef87fad32a2a6cfa5b85abcfb5c8069184e0537f339147f22195bdf
+  primary_change:
+    type: retune
+    node: gate
+    baseline: "the decade-4 triage confirmed all 21 residuals; the three sharpest code-actionable: the falsify gate accepts any reader (reading a foreign file satisfies falsification - lint.py), DRIFT corpus rows escape the mismatch check (audit.py arms FAIL/REGRESSION only - assumptions moving arms nothing), and the corpus runs 6 of 53 discovered scripts with the coverage gap only implied by the SKIP count"
+    expected_band: "WIN if the falsify gate errors when the reading phase's artifact is not produced within the declared pipeline (repro: reading a foreign file errors) AND a DRIFT corpus row arms a candidate citing the drifted script (repro) AND the audit carries a standing coverage finding (covered/total from the fresh matrix) AND the suite is green (171+ tests); LOSS otherwise"
+    rollback: "git revert s43 commits; all three are tightening inside existing modules"
+    eval_window: "repro pins + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: gate-strengthen
+    collab: build
+    prompt: prompts/dev/w1-gate-strengthen.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: coverage-findings
+    collab: build
+    prompt: prompts/dev/w2-coverage-findings.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

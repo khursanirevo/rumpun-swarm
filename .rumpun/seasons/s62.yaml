@@ -1,0 +1,47 @@
+# seasons/s62.yaml — drafted by evolve v0 from s61; filled by harness 2026-09-16 (decade-5's aggregate-verdicts criticism: salvaged wins read as salvaged)
+id: s62
+parent: s61
+goal: "a salvaged win reads as salvaged: the harvest knows the season's terminal state, the verdict row and the harvest record mark a stopped_stall-salvaged win distinctly, and the audits split the aggregate - completed wins and salvaged wins never blur again"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the salvage marker (cmd_harvest reads the season's terminal state, the verdict row gains the salvage field, the harvest record's title and outcome line name it, the audit's verdict histogram splits completed from salvaged); one tester pins both worlds end to end; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - ledger:s61-harvest@ec94b7acd99f603247631fbaf92f385885fde03294998d4bd75241e9e978bf07
+    - ledger:usefulness-decade-5@bfecf80940a3d112c846144dd97691052bebafabae4e12af6b709414f5ab2739
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "decade-5's different-model audit (PARTIALLY USEFUL, 30 residuals): salvaged stopped seasons earn WIN alongside completed seasons - aggregate verdicts obscure execution reliability and intervention costs; the verdict rows and harvest records of s59 (stopped_stall, salvaged) and s43 (budget-terminated w2, pins green) read identically to clean completions"
+    expected_band: "WIN if harvesting a stopped_stall fixture marks the verdict row and the harvest record as salvaged while a completed fixture stays unmarked AND the audit's verdict histogram splits completed from salvaged AND neither change rewrites any existing record (additions-only over the ledger) AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s62 commits; the marker is additive tooling over untouched records"
+    eval_window: "w2 pins + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: salvage-mark
+    collab: build
+    prompt: prompts/dev/w1-salvage-mark.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: salvage-pins
+    collab: build
+    prompt: prompts/dev/w2-salvage-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

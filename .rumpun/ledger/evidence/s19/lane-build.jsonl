@@ -1,0 +1,4 @@
+{"agent": "w1", "bytes": 216479, "from": "engine", "seq": 0, "tool": "Bash", "type": "file_tools"}
+{"agent": "w2", "bytes": 281934, "from": "engine", "seq": 1, "tool": "Bash", "type": "file_tools"}
+{"from": "w1", "seq": 2, "started: H2+H3 engine patch; scratch tree at rimba/s19/w1/scratch": "", "type": "status"}
+{"artifact": "engine.py", "deferred": "crashed-leader-descendants", "from": "w1", "notes": "notes.md", "repros": "H2-PASS,H3-PASS", "seq": 3, "suite": "84-passed", "type": "done"}

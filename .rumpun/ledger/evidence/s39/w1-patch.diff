@@ -1,0 +1,108 @@
+--- /mnt/data/work/rumpun/tools/usefulness_audit.py	2026-09-15 06:54:30.127000710 +0800
++++ /mnt/data/work/rumpun/.rumpun/rimba/s39/w1/copy/tools/usefulness_audit.py	2026-09-15 09:52:38.438135852 +0800
+@@ -12,7 +12,10 @@
+ SELF-LOOP DOING NOTHING), and appends one akar record
+ ``usefulness-decade-<N>`` carrying the verdict, the residuals the
+ auditor listed, and a pointer to the captured output under
+-``.rumpun/akar/evidence/``.
++``.rumpun/akar/evidence/``.  The brief headline counts seasons
++honestly: run seasons (a ``rimba/<sid>/_season/state.json`` exists) and
++drafted-only musim yamls (no state file) are reported separately, so a
++seeded draft never inflates the auditor's headline.
+ 
+ Isolation follows the audit corpus-runner precedent
+ (``audit.refresh_corpus_matrix``): the route runs as a subprocess in its
+@@ -145,6 +148,28 @@
+     return count
+ 
+ 
++def season_split(root: Path) -> tuple[int, int]:
++    """(run, drafted-only) musim counts by rimba state file presence.
++
++    Run needs ``rimba/<sid>/_season/state.json``; a yaml without one (a
++    seeded draft, a manual-run season) is drafted-only.  The split sums
++    to season_count; the decade math uses the total, never the split.
++    """
++    musim = root / "musim"
++    if not musim.is_dir():
++        return 0, 0
++    rimba = root / "rimba"
++    run_count = drafted = 0
++    for path in musim.iterdir():
++        if not (path.is_file() and _SEASON_FILE_RE.match(path.name)):
++            continue
++        if (rimba / path.stem / "_season" / "state.json").is_file():
++            run_count += 1
++        else:
++            drafted += 1
++    return run_count, drafted
++
++
+ def covered_decades(root: Path, akar: ModuleType) -> set[int]:
+     """Decade numbers of every usefulness-decade-<N> akar record id."""
+     try:
+@@ -236,16 +261,26 @@
+ 
+ 
+ def compose_brief(
+-    decade: int, count: int, history: list[tuple[str, str]], design_text: str
++    decade: int,
++    count: int,
++    run_count: int,
++    drafted_count: int,
++    history: list[tuple[str, str]],
++    design_text: str,
+ ) -> str:
+-    """The auditor brief: the question, the output contract, both inputs."""
++    """The auditor brief: the question, the output contract, both inputs.
++
++    ``count`` stays the total (the decade-math input); the headline and
++    the ledger-facts line carry the run/drafted-only split verbatim.
++    """
+     history_lines = "\n".join(f"{sid}: {verdict}" for sid, verdict in history)
+     if not history_lines:
+         history_lines = "(no rimba seasons yet)"
+     return (
+         f"You are the independent usefulness auditor for the rumpun campaign.\n"
+         f"This is the decade-{decade} review: the ledger holds {count} musim "
+-        f"seasons.\n\n"
++        f"seasons ({run_count} run, {drafted_count} drafted-only, {count} "
++        f"total).\n\n"
+         "Question: does this loop produce something useful, or is it a "
+         "self-loop doing nothing?\n\n"
+         "Judge the system the two inputs below describe, skeptically and in "
+@@ -263,7 +298,8 @@
+         "\n--- DESIGN.md sections 13-16 (the campaign's own account) ---\n"
+         f"{design_text}\n"
+         "\n--- ledger facts (harness-observed) ---\n"
+-        f"musim seasons: {count}\n"
++        f"musim seasons: {run_count} run, {drafted_count} drafted-only, "
++        f"{count} total\n"
+         "season verdicts (last season-level row per season, "
+         "rimba/<sid>/verdicts.jsonl):\n"
+         f"{history_lines}\n"
+@@ -390,6 +426,13 @@
+     doc = _load_config(root, yamlio)
+     route_name, template, timeout_s = resolve_route(doc)
+     count = season_count(root)
++    run_count, drafted_count = season_split(root)
++    if run_count + drafted_count != count:
++        msg = (
++            f"musim split {run_count} run + {drafted_count} drafted-only "
++            f"does not sum to season count {count}"
++        )
++        raise UsefulnessAuditError(msg)
+     covered = covered_decades(root, akar)
+     decade = due_decade(count, covered)
+     if decade is None:
+@@ -401,7 +444,9 @@
+         raise UsefulnessAuditError(msg)
+     history = verdict_history(root)
+     design_text = design_sections(repo)
+-    brief = compose_brief(decade, count, history, design_text)
++    brief = compose_brief(
++        decade, count, run_count, drafted_count, history, design_text
++    )
+ 
+     evidence_dir = root / "akar" / "evidence" / f"usefulness-decade-{decade}"
+     with tempfile.TemporaryDirectory(prefix="usefulness-brief-", dir=root) as tmp:

@@ -1,0 +1,88 @@
+# musim/s2.yaml — parallel dev season: 4 glm-5.2 writers (steps 4-5 + P36 surface 2)
+id: s2
+parent: s1
+goal: "ship build-order steps 4-5 and P36 surface 2 via four parallel glm-5.2 writers"
+metric: "modules_integrated"
+mode: fight
+methodology:
+  approach: "parallel module authors, harness integrates and evaluates"
+  evidence: []
+  primary_change:
+    type: add
+    node: execute
+    baseline: "s1 shipped step 3 (spawn/watch/stop) pending s1 suite verdict"
+    expected_band: "WIN if >=3 of 4 modules integrate passing ruff+import+smoke; LOSS if <=2"
+    rollback: "git revert s2 commits; workspaces additive; src changes one module per commit"
+    eval_window: "integration checks this season + s1 suite re-run"
+  pipeline:
+    - phase: analyze
+      primitive: analyze
+      agent: analyst
+      prompt: prompts/base/analyze.md
+      writes: errors.jsonl
+    - phase: rank_gaps
+      primitive: rank_gaps
+      agent: analyst
+      prompt: prompts/base/rank_gaps.md
+      reads: errors.jsonl
+      writes: gaps.yaml
+      top_n: 3
+    - phase: hypothesize
+      primitive: hypothesize
+      agent: swarm
+      prompt: prompts/base/hypothesize.md
+      reads: gaps.yaml
+      writes: hypotheses.yaml
+      per: gap
+      max_concurrent: 3
+    - phase: plan
+      primitive: plan
+      agent: planner
+      prompt: prompts/base/plan.md
+      reads: hypotheses.yaml
+      writes: experiments.yaml
+    - phase: falsify
+      primitive: falsify
+      agent: critic
+      prompt: prompts/base/falsify.md
+      reads: experiments.yaml
+      writes: falsification.yaml
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      reads: falsification.yaml
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: [falsification.yaml, results.jsonl]
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: glm
+    lane: akar-writer
+    prompt: prompts/dev/w1-akar.md
+    knowledge: none
+    budget: {minutes: 20}
+  - name: w2
+    route: glm
+    lane: harvest
+    prompt: prompts/dev/w2-harvest.md
+    knowledge: none
+    budget: {minutes: 20}
+  - name: w3
+    route: glm
+    lane: evolve
+    prompt: prompts/dev/w3-evolve.md
+    knowledge: none
+    budget: {minutes: 20}
+  - name: w4
+    route: glm
+    lane: report
+    prompt: prompts/dev/w4-report.md
+    knowledge: none
+    budget: {minutes: 20}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,47 @@
+# musim/s36.yaml — drafted by evolve v0 from s35; filled by harness from audit-25 (stall-rate candidate) + the three manual stall-resume cycles (operator standing order: continuous loop)
+id: s36
+parent: s35
+goal: "stall-resume mechanization: a stopped_stall season's successor inherits its scope with an automatically raised budget and a stall citation, so a provider hang costs one cycle instead of a manual redesign"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the resume logic in evolve draft_next (stopped_stall parent -> scope inherited, budget multiplied 1.5x, yaml header citing the stall record); one spec-first tester pins it; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-25@73e1bfffde7818117cd44d58f7047012f3901d681ece58ff452b57c960c9ad60
+    - akar:s30-harvest@0119b955180f8f836c891b23f8788e137f3a6a07d1bf4b480080462a2e362901
+  primary_change:
+    type: retune
+    node: evolve
+    baseline: "three stall-killed seasons (s17 scope lost then manually re-scoped, s30 both writers hung and manually resumed at s31, s32 same at s33) each required hand-filling the successor's scope, re-citing salvage, and re-tuning the budget; draft_next copies the parent verbatim with no stall awareness, so the manual pattern is re-run every time"
+    expected_band: "WIN if draft_next from a stopped_stall parent produces a successor whose budget is the parent's times 1.5 and whose yaml header cites the stall record AND the budget raise is skipped for non-stall parents AND the suite is green (171+ tests); LOSS otherwise"
+    rollback: "git revert s36 commits; the resume logic is inside draft_next"
+    eval_window: "repro pins + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: stall-resume
+    collab: build
+    prompt: prompts/dev/w1-stall-resume.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: stall-resume-pins
+    collab: build
+    prompt: prompts/dev/w2-stall-resume-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

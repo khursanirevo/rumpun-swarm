@@ -1,0 +1,46 @@
+# seasons/s98.yaml — drafted by evolve v0 from s97; filled by harness 2026-09-18 (the standing step's second application + the pack resync check + the board arc extends)
+id: s98
+parent: s97
+goal: "the standing step proves repeatability and maintenance stays first-class: the s98 assessment seals through the module (the second application - the first proved the shape, the second proves it repeats), the installed pack resyncs if the draft moved or records the equality, and the board arc extends with s97 - the pinned arithmetic"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author seals the s98 assessment through the module (the fronts read from the live board state), checks the pack digest fresh (reinstall only if it moved), and verifies both assessment records coexist and re-read whole; one author extends the board arc with s97 preserving every verdict (the pinned arithmetic); fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s97-harvest@5e4c2c1d9d6b39abef9e506c06f116c2335685fc9561544460de6ed60b3bc402"
+  primary_change:
+    type: retune
+    node: process
+    baseline: "s97 best: the assessment sealed through the module once (the first application) - one seal proves the shape, not the repeatability - and the installed pack may trail the re-sealed draft"
+    expected_band: "WIN if the s98 assessment seals through the module and both records coexist and re-read whole AND the pack digest check lands (reinstall or the recorded equality) AND the board-arc epic carries s97 with the sum preserved AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s98 commits; the assessment record is append-only history; the epic edit preserves history"
+    eval_window: "w2 pins + merged-tree full pytest + the sealed record and the digest check in the writers' notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: assessment-seal-2
+    collab: build
+    prompt: prompts/dev/w1-assessment-seal-2.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: epics-extend-3
+    collab: build
+    prompt: prompts/dev/w2-epics-extend-3.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

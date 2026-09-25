@@ -1,0 +1,62 @@
+# seasons/s142.yaml — the steady-state cycle's fourth season, seeded from
+# the _steady-state.yaml template (the s138 shape's first production fill).
+id: s142
+parent: s141
+goal: "the steady-state season from the template: the light lanes re-prove the standing surfaces and the gate reports, the mode's first template-seeded run"
+metric: "light-lane re-proofs"
+mode: fight
+methodology:
+  approach: "the template's pipeline runs as designed: the lint sweep, the route probes, the rehearsals, and the decision gate report"
+  evidence:
+    - "ledger:s141-harvest@edda34ef141b762822d69771ab252808582863d8955a8267f6b8c3ea85a32724"
+  primary_change:
+    type: retune
+    node: execute
+    baseline: "the standing surfaces the last close left green (the s141 guards and records)"
+    expected_band: "the operator's decision gate: WIN if the lanes re-prove clean; LOSS on drift"
+    rollback: "nothing new ships; leaving the steady state is the operator's decision"
+    eval_window: "sweep.jsonl, probes.jsonl, rehearsals.jsonl, gate-report.jsonl"
+  pipeline:
+    - phase: lint-sweep
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: sweep.jsonl
+    - phase: route-probes
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: probes.jsonl
+    - phase: rehearsals
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      reads: [sweep.jsonl, probes.jsonl]
+      writes: rehearsals.jsonl
+    - phase: decision-gate
+      primitive: evaluate
+      agents: writers
+      prompt: prompts/base/evaluate.md
+      reads: rehearsals.jsonl
+      writes: gate-report.jsonl
+writers:
+  - name: sweep
+    route: fable
+    lane: lint-sweep
+    prompt: prompts/base/execute.md
+    knowledge: full
+    budget: {minutes: 60}
+  - name: probes
+    route: fable
+    lane: route-probes
+    prompt: prompts/base/execute.md
+    knowledge: none
+    budget: {minutes: 30}
+  - name: rehearsal
+    route: fable
+    lane: rehearsals
+    prompt: prompts/base/execute.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 30}, budget_exhausted]

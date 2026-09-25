@@ -1,0 +1,47 @@
+# musim/s17.yaml — drafted by evolve v0 from s16; filled by harness from audit-5 + codex-review-2026-09-14 (operator standing order: continuous loop)
+id: s17
+parent: s16
+goal: "gate hardening: finalize locking (H1), benih name containment (H4), akar append serialization (H6) — the external review's fix-first list"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author fixes the finalize lock and the akar append transaction; one author adds benih name containment and pins all three fixes spec-first; shared build lane; fable route"
+  evidence:
+    - akar:codex-review-2026-09-14@23bcca3defbf8c9645b74143ad7536ae173c21ef6cd7cd30f48915a81ff709cd
+    - akar:audit-5@49fdf758f8fe0b3cb440a411ce50960ceaa9c54d7ff9e3e00911d35da8ed0014
+  primary_change:
+    type: retune
+    node: gate
+    baseline: "operator stop finalizes without holding state.lock (untracked live agents reproduced by the reviewer); lint accepts benih names like ../../x and _season (traversal and harness-state overwrite); akar duplicate-check and publish run without a shared lock (concurrent same-id appends both succeeded, second replaced first)"
+    expected_band: "WIN if a stop under concurrent spawn leaves zero live untracked agents (repro test) AND lint rejects traversal names, _season, and any resolved path outside the season dir AND concurrent same-id akar appends admit exactly one writer AND the suite is green (70+ tests); LOSS otherwise"
+    rollback: "git revert s17 commits; all three fixes are behavior tightening inside existing modules"
+    eval_window: "concurrency repro tests from the review's reproductions + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: gate-locking
+    collab: build
+    prompt: prompts/dev/w1-gate-locking.md
+    knowledge: partial
+    budget: {minutes: 25}
+  - name: w2
+    route: fable
+    lane: gate-containment
+    collab: build
+    prompt: prompts/dev/w2-gate-containment.md
+    knowledge: partial
+    budget: {minutes: 25}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

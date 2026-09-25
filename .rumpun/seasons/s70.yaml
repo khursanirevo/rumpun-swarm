@@ -1,0 +1,46 @@
+# seasons/s70.yaml — drafted by evolve v0 from s69; filled by harness 2026-09-16 (board completion + the panel's first slice, the s69 NEUTRAL retry)
+id: s70
+parent: s69
+goal: "finish the cross-machine board and start the panel: if the operator's gh scopes are refreshed, the Projects v2 board lands with issue #1 on it and pickup verifies live; the panel tooling (seeded issue #1, directive seq 0) gains its input contract, dry-run surface, and pending-record seal"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author probes the gh scopes and either completes the board (project create, item-add, live pickup verification against the real JSON shape) or stops honestly naming the persisting blocker; one tester-author lands the panel's claim_set/render_review/pending-record contract with pins; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s69-harvest@b8e5e26fb5fb471b98f0a5ea50fdc830219399aac4487525b2b207aac5119aea"
+  primary_change:
+    type: rewire
+    node: tooling
+    baseline: "s69 best: repo, issue #1, board.py, and the kanban seam landed (suite 303/303) with verdict NEUTRAL - the board itself is missing (operator gh scopes) and no panel exists, so seasons stay manual per directive seq 0"
+    expected_band: "WIN if the board exists with issue #1 on it and pickup verifies live (or the blocker persists and the stop is honest and recorded) AND the panel's claim_set, render_review, and pending-record seal hold in pins AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s70 commits; the board is deletable via gh; panel.py is additive"
+    eval_window: "w2 pins + merged-tree full pytest + the project url in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: board-complete
+    collab: build
+    prompt: prompts/dev/w1-board-complete.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: panel-slice
+    collab: build
+    prompt: prompts/dev/w2-panel-slice.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

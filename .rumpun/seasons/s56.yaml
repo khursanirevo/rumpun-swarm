@@ -1,0 +1,47 @@
+# seasons/s56.yaml — drafted by evolve v0 from s55; filled by harness 2026-09-16 (the check verb + the last rimba string)
+id: s56
+parent: s55
+goal: "the artifact check completes: rumpun check <sid> <close-commit> reaches the checker from the cli, and the audit's phase-liveness comment names the real runs path - the last two surfaces s55's budget ceiling left open"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the check verb in cli.py (argparse wiring onto tools/artifact_check.py's run, the record to the default ledger dir) and the F1 comment sweep in audit.py; one tester pins the verb end-to-end via subprocess and the English comment; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - ledger:s55-harvest@30ae577c2751fa63f06107057c5bd91f09a5322d3a57b04e55dd353f8ae474cb
+    - ledger:audit-39@052bc40cb335a9075e36648cd1de4ab3895d91f7be524534cd6628916175b626
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "the checker exists and re-verified s54 from artifacts alone (check-s54 VERIFIED, evidence/s55/), but w1's termination at the 40-minute ceiling left the cli unwired - rumpun check is not a verb - and the audit F1 comment still says rimba/<sid>/ while the code reads paths.runs_dir (audit.py:547)"
+    expected_band: "WIN if rumpun check s54 <close-commit> exits 0 and writes the check-s54 ledger record with the same VERIFIED verdict as the direct tool run AND the F1 comment names the runs path in English AND w2's pins cover both surfaces AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s56 commits; the verb is additive tooling"
+    eval_window: "w2 pins + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: check-verb
+    collab: build
+    prompt: prompts/dev/w1-check-verb.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: verb-pins
+    collab: build
+    prompt: prompts/dev/w2-verb-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

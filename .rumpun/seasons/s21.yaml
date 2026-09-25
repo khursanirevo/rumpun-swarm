@@ -1,0 +1,48 @@
+# musim/s21.yaml — drafted by evolve v0 from s20; filled by harness from audit-9 + codex-review-2026-09-14 M-tier (operator standing order: continuous loop)
+id: s21
+parent: s20
+goal: "consistency tier: one authoritative season-verdict source (M3), the route generator stops emitting the model placeholder (M11), the dual-start flake gets its barrier (L2)"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author unifies the verdict source (harvest writes the season row both surfaces read) and fixes routes.py generation; one author lands the L2 barrier in the dual-start test and pins M3 + M11 spec-first; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-9@53c027035421b383b3fda4684e1b3df0715d84439cb835d1f9658afe7a55d023
+    - akar:s20-harvest@78f4a2f65e8331f11636849cb32e9646440a45961d539e2eda2b053b15c72a1b
+    - akar:codex-review-2026-09-14@23bcca3defbf8c9645b74143ad7536ae173c21ef6cd7cd30f48915a81ff709cd
+  primary_change:
+    type: retune
+    node: gate
+    baseline: "season verdicts live in two books: harvest writes an akar record while reports and audit read rimba/<sid>/verdicts.jsonl, so a harvest-only WIN still renders the older verdict (reconciled by hand at every close since s13); routes.py still generates --model <model> literally (the s15 fix repaired only the campaign copy); the dual-start test fails ~1/5 under load because back-to-back Popens do not guarantee contention (L2, 5+ observed transients)"
+    expected_band: "WIN if harvest writes the season-level verdict row that report and audit read, so a WIN harvest renders WIN with no manual verdicts.jsonl (repro: harvest then render, verdict matches) AND every generated route command passes /bin/sh -n with a concrete model (repro: no <model> in any generated row) AND the dual-start test passes 5 consecutive loaded runs with the barrier in place AND the suite is green (99+ tests); LOSS otherwise"
+    rollback: "git revert s21 commits; behavior tightening + test hardening only"
+    eval_window: "repro pins + 5 consecutive loaded dual-start runs + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: verdict-source
+    collab: build
+    prompt: prompts/dev/w1-verdict-source.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: consistency-pins
+    collab: build
+    prompt: prompts/dev/w2-mtier-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

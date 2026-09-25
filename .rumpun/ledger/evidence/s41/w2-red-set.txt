@@ -1,0 +1,27 @@
+F..                                                                      [100%]
+=================================== FAILURES ===================================
+_____________ test_harvest_running_season_refuses_before_any_write _____________
+
+tmp_path = PosixPath('/mnt/data/tmp/pytest-of-sani/pytest-2653/test_harvest_running_season_re0')
+
+    def test_harvest_running_season_refuses_before_any_write(tmp_path):
+        """M4-full pin: harvest of a running season refuses before any write.
+    
+        harvest_season on a season whose persisted status is "running" raises
+        akar.AkarError naming the season and its status, with the permanent
+        <sid>-harvest akar id unconsumed and rimba/<sid>/verdicts.jsonl
+        unwritten. Red at s41 base: harvest logs a warning and harvests the
+        live snapshot anyway, consuming the permanent id and writing the row.
+        """
+        _write_running_season_state(tmp_path)
+>       with pytest.raises(akar.AkarError) as excinfo:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE AkarError
+
+tests/test_rumpun.py:6152: Failed
+------------------------------ Captured log call -------------------------------
+WARNING  rumpun.harvest:harvest.py:108 season s1 still running; harvesting a live snapshot
+=========================== short test summary info ============================
+FAILED tests/test_rumpun.py::test_harvest_running_season_refuses_before_any_write
+1 failed, 2 passed in 0.70s
+exit=1

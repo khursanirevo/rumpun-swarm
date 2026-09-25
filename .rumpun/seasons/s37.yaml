@@ -1,0 +1,47 @@
+# musim/s37.yaml — drafted by evolve v0 from s36; filled by harness from audit-26 + the usefulness verdict's external-task-value residual (operator standing order: continuous loop)
+id: s37
+parent: s36
+goal: "cold-start task value: a fresh init in an isolated directory runs the documented quickstart end to end - season lifecycle against a stub model, harvest, audit - proving the tool serves an external user, not the campaign ledger"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands tools/coldstart_check.py (isolated temp dir, rumpun init with a stub model route, full documented lifecycle, honest per-step PASS/FAIL) and wires the stall-resume citation; one spec-first tester pins the cold-start contract; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-26@1c3e4226e76907ebe09c04f2f107a5315c244f233541cc35624b49bf761b7ee2
+    - akar:usefulness-decade-3@3d4d28d7004c75d23a3ebcf383ef4562123d535965645cb4f2af318e4bf4857b
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "the tool has never been verified serving its documented purpose from a cold start: the s28 init-check covered scaffold and lint only; every season since ran inside the campaign's own ledger with fable writers the quickstart never mentions; the usefulness auditor's control-baseline residual (no comparison against a straightforward workflow) is this gap"
+    expected_band: "WIN if tools/coldstart_check.py in an isolated temp dir performs rumpun init -> season lint -> season start with a stub model route -> harvest -> audit, each step PASS/FAIL-logged, exiting nonzero on the first failed step (repro) AND the stall-resume citation lands on drafts from stall parents (the s36 mechanism verified in production) AND the suite is green (175+ tests); LOSS otherwise"
+    rollback: "git revert s37 commits; the checker is additive tooling"
+    eval_window: "the cold-start run itself + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: coldstart
+    collab: build
+    prompt: prompts/dev/w1-coldstart.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: coldstart-pins
+    collab: build
+    prompt: prompts/dev/w2-coldstart-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

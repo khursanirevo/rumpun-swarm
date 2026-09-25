@@ -1,0 +1,47 @@
+# seasons/s51.yaml — drafted by evolve v0 from s50; filled by harness 2026-09-16
+id: s51
+parent: s50
+goal: "the flywheel's export: rumpun plugin distill extracts the campaign's proven gates, patterns, and templates into a shareable kaggle-base pack draft, completing the plugin/hub arc's core"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the distill's patterns+templates extension (the scan selects evidenced patterns and templates from the ratified records into generalized priors/patterns/ and priors/templates/ inside the unchanged s44 schema, digest over the full priors/ tree, self-lint refuses on error) with cli wiring unchanged; one spec-first tester pins the extended contract; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:s50-harvest@24ece71e578200d43040cf3c43b6c06975dce439713cf47eda72fd762c9f05cf
+    - akar:audit-38@790b2c0f8dd7225c107c57c50a387369d6e61cc3ba993ee8492c57c18feaf6a6
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "the s50 distill exports the four proven gates only; the campaign's working patterns (spec-first pinning, merge reconciliation, harvest close, the replay corpus gate) and reusable templates (season yaml, harvest note, pins header, the akar record shape) stay locked in DESIGN and the repo"
+    expected_band: "WIN if distill emits evidenced patterns and templates inside priors/ (priors/patterns/, priors/templates/), generalized (no sids, campaign names, or absolute paths), self-lint clean, digest verified over the full priors/ tree, install round-trip green, and the suite holds its floor (the four known reds stay the only reds); LOSS otherwise"
+    rollback: "git revert the s51 commits; the extension is additive tooling"
+    eval_window: "w2 pins + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: plugin-patterns
+    collab: build
+    prompt: prompts/dev/w1-plugin-patterns.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: pattern-pins
+    collab: build
+    prompt: prompts/dev/w2-pattern-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

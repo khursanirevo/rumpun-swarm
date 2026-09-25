@@ -1,0 +1,86 @@
+# musim/s5.yaml — drafted by evolve v0 from s4; filled by harness 2026-09-14 (s4 LOSS retry)
+id: s5
+parent: s4
+goal: "retry the collab dogfood non-blocking: engine state-lock built through lane protocol v2; plus a real season list verb"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "protocol v2: the full contract lives in each prompt, lane events refine but never gate; w1 and w2 share lane build while building the state-lock fix; w3 ships season list solo"
+  evidence:
+    - akar:s4-harvest@277013812e8a0842bd7dd5ba4052aa583879e51cc1c9e4713b69ee78861609f4
+    - akar:glm-toolless-spawn@dbfd74ccd9bd076e3a1de5c0afd244cd461f2ffcfb794dda98764a0a7bf257f9
+  primary_change:
+    type: rewire
+    node: execute
+    baseline: "s4 LOSS: tool-less w1 starved the lane protocol at 1 event; kill-marker and report --serve shipped anyway; 18 tests green"
+    expected_band: "WIN if lane-build.jsonl holds >=2 events from each of w1,w2 AND the state-lock integrates with the suite green AND season list prints s1..s5 with correct states; LOSS if any misses"
+    rollback: "git revert s5 commits and remove musim/s5.yaml"
+    eval_window: "s5 season suite + lane file + merged-tree pytest + season list output"
+  pipeline:
+    - phase: analyze
+      primitive: analyze
+      agent: analyst
+      prompt: prompts/base/analyze.md
+      writes: errors.jsonl
+    - phase: rank_gaps
+      primitive: rank_gaps
+      agent: analyst
+      prompt: prompts/base/rank_gaps.md
+      reads: errors.jsonl
+      writes: gaps.yaml
+      top_n: 3
+    - phase: hypothesize
+      primitive: hypothesize
+      agent: swarm
+      prompt: prompts/base/hypothesize.md
+      reads: gaps.yaml
+      writes: hypotheses.yaml
+      per: gap
+      max_concurrent: 3
+    - phase: plan
+      primitive: plan
+      agent: planner
+      prompt: prompts/base/plan.md
+      reads: hypotheses.yaml
+      writes: experiments.yaml
+    - phase: falsify
+      primitive: falsify
+      agent: critic
+      prompt: prompts/base/falsify.md
+      reads: experiments.yaml
+      writes: falsification.yaml
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      reads: falsification.yaml
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: [falsification.yaml, results.jsonl]
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: glm
+    lane: lock-impl
+    collab: build
+    prompt: prompts/dev/w1-lock.md
+    knowledge: partial
+    budget: {minutes: 25}
+  - name: w2
+    route: glm
+    lane: lock-tests
+    collab: build
+    prompt: prompts/dev/w2-lock-tests.md
+    knowledge: partial
+    budget: {minutes: 25}
+  - name: w3
+    route: glm
+    lane: list
+    prompt: prompts/dev/w3-list.md
+    knowledge: partial
+    budget: {minutes: 25}
+stop:
+  "on": [all_exited, {stall_minutes: 20}, budget_exhausted]

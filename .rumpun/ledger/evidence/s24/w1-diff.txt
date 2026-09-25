@@ -1,0 +1,173 @@
+diff --color -ru '--exclude=__pycache__' base/src/rumpun/cli.py patched/src/rumpun/cli.py
+--- base/src/rumpun/cli.py	2026-09-15 00:30:09.728728993 +0800
++++ patched/src/rumpun/cli.py	2026-09-15 01:24:38.349757743 +0800
+@@ -5,7 +5,9 @@
+ evolve plan/approve/apply/reject/rollback.
+ Implemented (v0.11.0): init, lint, graph, models, board, harvest,
+ direct [--list], audit [--last], season start/status/stop/list/show/report
+-(report --serve), evolve plan/apply/approve/reject/rollback.
++(report --serve), evolve plan/apply/approve/reject/rollback. harvest
++carries optional --band/--observed (s24): the season verdict row keeps the
++declared band and observed result again instead of empty strings.
+ The stub registry is empty: every P36 D9 verb exists; unknown verbs exit 2.
+ audit is the phase-2 reflection verb (DESIGN section 15): it reads the
+ season ledger and appends evidence-cited candidate mutations.
+@@ -344,7 +346,10 @@
+ 
+ def cmd_harvest(args: argparse.Namespace) -> int:
+     root = _project_root(Path.cwd())
+-    path = harvest_mod.harvest_season(root, args.id, args.verdict, args.implies)
++    path = harvest_mod.harvest_season(
++        root, args.id, args.verdict, args.implies,
++        band=args.band, observed=args.observed,
++    )
+     logger.info("season %s harvested -> %s", args.id, path)
+     return 0
+ 
+@@ -471,6 +476,14 @@
+     p_harvest.add_argument("--verdict", required=True,
+                            choices=["WIN", "LOSS", "NEUTRAL", "INVALID"])
+     p_harvest.add_argument("--implies", required=True)
++    p_harvest.add_argument(
++        "--band", default="",
++        help="expected band for the season metric; recorded verbatim in the verdict row",
++    )
++    p_harvest.add_argument(
++        "--observed", default="",
++        help="observed result for the season metric; recorded verbatim in the verdict row",
++    )
+     p_harvest.set_defaults(func=cmd_harvest)
+ 
+     p_audit = sub.add_parser(
+diff --color -ru '--exclude=__pycache__' base/src/rumpun/engine.py patched/src/rumpun/engine.py
+--- base/src/rumpun/engine.py	2026-09-15 01:06:49.006687247 +0800
++++ patched/src/rumpun/engine.py	2026-09-15 01:24:32.757636997 +0800
+@@ -5,7 +5,9 @@
+ their resolved workspace (H3, codex-review-2026-09-14); the shell wrapper
+ writes an exit file, so completion is durable and stateless to read. Liveness = pid plus
+ /proc starttime (PID-reuse guard). Stall = no durable progress (no exit file)
+-for stall_minutes. No token values ever logged. State writes hold an exclusive
++for stall_minutes. Progress is content-based (s24): the watcher tracks each
++live agent's last-seen agent.log byte size; only growth counts, mtime-only
++touches do not. No token values ever logged. State writes hold an exclusive
+ flock on _season/state.lock, so two watchers of one season id serialize
+ instead of losing updates, and _finalize holds that lock across its whole
+ terminal transaction (terminal check, kill decisions, final write).
+@@ -373,8 +375,22 @@
+     return stall_s, budget_s
+ 
+ 
+-def _agent_snap(ws: Path, stall_s: float) -> dict[str, Any]:
+-    """Recompute one agent's state from disk and /proc. Never mutates."""
++def _agent_snap(
++    ws: Path, stall_s: float,
++    last_size: int | None = None, last_progress: float | None = None,
++) -> dict[str, Any]:
++    """Recompute one agent's state from disk and /proc. Never mutates.
++
++    Content-based stall progress (s24, closes the M10 trade-off): the
++    watcher passes its per-agent history -- last_size, the agent.log byte
++    size seen on the previous cycle, and last_progress, the time that size
++    last grew. Growth past last_size is durable progress; an unchanged size
++    provides none regardless of mtime, so touching the log without
++    appending no longer defeats stall detection (akar
++    stall-rule-fired-on-runtime). last_size=None (first cycle, reattach,
++    or a history-less caller such as read_status) keeps the s15 mtime
++    estimate; a missing or unreadable log floors at started_at.
++    """
+     meta = json.loads((ws / "state.json").read_text(encoding="utf-8"))
+     exit_file = ws / "exit"
+     code: int | None = None
+@@ -385,15 +401,22 @@
+     elif (ws / "terminated").is_file():
+         state = "terminated"
+     elif _alive(meta["pid"], meta["proc_start"]):
+-        # Accepted trade-off (M10, codex-review-2026-09-14): progress is
+-        # mtime-based, so touching agent.log without writing content defeats
+-        # stall detection until the budget expires. Content-based progress is
+-        # a recorded candidate for a future season (stall-rule record).
+-        last_progress = meta["started_at"]
+-        with contextlib.suppress(OSError):
+-            last_progress = max(last_progress, (ws / "agent.log").stat().st_mtime)
++        last = meta["started_at"]  # floor: no log (yet)
++        try:
++            st = (ws / "agent.log").stat()
++        except OSError:
++            st = None
++        if st is not None:
++            if last_size is None:
++                # No cross-cycle size history: the s15 mtime estimate (the
++                # M10 pin contract for single-shot callers).
++                last = max(last, st.st_mtime)
++            elif st.st_size > last_size:
++                last = time.time()  # appended bytes: durable progress now
++            elif last_progress is not None:
++                last = max(last, last_progress)  # quiet: hold at last growth
+         state = (
+-            "stalled" if time.time() - last_progress > stall_s else "running"
++            "stalled" if time.time() - last > stall_s else "running"
+         )
+     else:
+         state = "crashed"
+@@ -412,14 +435,23 @@
+     return snap
+ 
+ 
+-def _agents_snaps(root: Path, sid: str, stall_s: float) -> dict[str, dict[str, Any]]:
++def _agents_snaps(
++    root: Path, sid: str, stall_s: float,
++    log_hist: dict[str, tuple[int, float]] | None = None,
++) -> dict[str, dict[str, Any]]:
++    """Per-agent snaps; log_hist carries the watcher's content history.
++
++    log_hist maps agent name -> (last-seen agent.log byte size, time that
++    size last grew); names missing from it are history-less (mtime estimate).
++    """
+     sdir = season_dir(root, sid)
+     out: dict[str, dict[str, Any]] = {}
+     if not sdir.is_dir():
+         return out
+     for ws in sorted(sdir.iterdir()):
+         if ws.is_dir() and ws.name != "_season" and (ws / "state.json").is_file():
+-            out[ws.name] = _agent_snap(ws, stall_s)
++            size, grew_at = (log_hist or {}).get(ws.name, (None, None))
++            out[ws.name] = _agent_snap(ws, stall_s, size, grew_at)
+     return out
+ 
+ 
+@@ -725,6 +757,11 @@
+         str(b["name"]): float((b.get("budget") or {}).get("minutes", 0))
+         for b in season["benih"]
+     }
++    # Content-based stall progress (s24): per live agent, the last-seen
++    # agent.log byte size and the time that size last grew. A grown size is
++    # durable progress; an unchanged size provides none whatever mtime says.
++    # The stat rides the existing cycle -- zero new polling.
++    log_hist: dict[str, tuple[int, float]] = {}
+     while True:
+         state = _load_state(root, sid) or state
+         if state.get("status") != "running":
+@@ -734,7 +771,7 @@
+                 state_hook()
+             except Exception:
+                 logger.exception("state hook failed (ignored)")
+-        snaps = _agents_snaps(root, sid, stall_s)
++        snaps = _agents_snaps(root, sid, stall_s, log_hist)
+         # Stream tool evidence: one scan per live agent per existing cycle.
+         # _scan skips agents already marked, at EOF, or without a complete
+         # line; terminal agents classify once at finalize.
+@@ -765,6 +802,14 @@
+                     _write_agent_state_guarded(root, sid, ws, meta, None)
+                     snap["state"] = "terminated"
+                     snap["terminated_budget"] = True
++            # Record this cycle's observed log size for the next snap (the
++            # content rule compares across cycles); a grown size moves the
++            # agent's progress time forward.
++            with contextlib.suppress(OSError):
++                size = (ws / "agent.log").stat().st_size
++                prev_size, prev_at = log_hist.get(aname, (size, 0.0))
++                grew = size > prev_size and aname in log_hist
++                log_hist[aname] = (size, time.time() if grew else prev_at)
+         states = {s["state"] for s in snaps.values()}
+         if states and states <= TERMINAL | {"terminated"}:
+             return _finalize(root, sid, "completed", snaps)

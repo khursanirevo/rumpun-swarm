@@ -1,0 +1,112 @@
+diff --git a/src/rumpun/harvest.py b/src/rumpun/harvest.py
+index 3c87dd4..d757e07 100644
+--- a/src/rumpun/harvest.py
++++ b/src/rumpun/harvest.py
+@@ -4,16 +4,22 @@
+ season close: status, duration, per-agent state table, verdict, implies line.
+ Manual verdict entry first (build order step 4); the body is derived from
+ harness-observed state only ([H] per P36), never from agent-authored text.
++
++M3 (codex-review-2026-09-14): the close ALSO appends the season-level row to
++rimba/<sid>/verdicts.jsonl — the file report and audit already read — so one
++harvest call writes both books. band/observed/implies are caller-supplied
++verdict content ([A]); the row write itself is harness-side.
+ """
+ 
+ from __future__ import annotations
+ 
++import json
+ import logging
+ import time
+ from pathlib import Path
+ from typing import Any
+ 
+-from rumpun import akar, engine
++from rumpun import akar, engine, yamlio
+ 
+ logger = logging.getLogger(__name__)
+ 
+@@ -48,16 +54,81 @@ def _render_body(state: dict[str, Any], verdict: str, implies: str) -> str:
+     return "\n".join(lines)
+ 
+ 
+-def harvest_season(root: Path, sid: str, verdict: str, implies: str) -> Path:
+-    """Close season `sid`: append its harvest record to akar, return the path."""
++def _season_metric(root: Path, sid: str) -> str:
++    """Campaign metric from musim/<sid>.yaml; '' when the file or key is absent."""
++    try:
++        cfg = yamlio.load(root / "musim" / f"{sid}.yaml")
++    except (OSError, yamlio.YamlError):
++        return ""
++    value = cfg.get("metric") if isinstance(cfg, dict) else None
++    return "" if value is None else str(value)
++
++
++def _has_season_row(root: Path, sid: str) -> bool:
++    """True when rimba/<sid>/verdicts.jsonl already carries a season-level row.
++
++    Corrupt lines are skipped, the same reader contract as report._verdict_of.
++    """
++    path = root / "rimba" / sid / "verdicts.jsonl"
++    if not path.is_file():
++        return False
++    with path.open(encoding="utf-8") as fh:
++        for line in fh:
++            if not line.strip():
++                continue
++            try:
++                if json.loads(line).get("season") == sid:
++                    return True
++            except ValueError:
++                continue
++    return False
++
++
++def harvest_season(
++    root: Path,
++    sid: str,
++    verdict: str,
++    implies: str,
++    band: str = "",
++    observed: str = "",
++) -> Path:
++    """Close season `sid`: append its akar record AND the season verdict row.
++
++    M3 (codex-review-2026-09-14): report and audit read
++    rimba/<sid>/verdicts.jsonl; harvest is the single verdict writer — one
++    close writes both books, no hand-maintained rows. A second harvest of a
++    terminal season that already carries a season-level row is refused
++    (M4, minimal form). Returns the akar record path.
++    """
+     if verdict not in VERDICTS:
+         msg = f"verdict must be one of {'|'.join(VERDICTS)}, got '{verdict}'"
+         raise ValueError(msg)
+     state = engine.read_status(root, sid)
+     if state["status"] == "running":
+         logger.warning("season %s still running; harvesting a live snapshot", sid)
++    elif _has_season_row(root, sid):
++        msg = (
++            f"season {sid} is terminal (status: {state['status']}) and"
++            f" rimba/{sid}/verdicts.jsonl already carries a season-level"
++            " row; refusing second harvest"
++        )
++        raise akar.AkarError(msg)
+     record_id = f"{sid}-harvest"
+     body = _render_body(state, verdict, implies)
+     path = akar.append_record(root, record_id, f"season {sid} harvest", body)
++    row = {
++        "season": sid,
++        "verdict": verdict,
++        "metric": _season_metric(root, sid),
++        "band": band,
++        "observed": observed,
++        "implies": implies,
++    }
++    verdicts = root / "rimba" / sid / "verdicts.jsonl"
++    verdicts.parent.mkdir(parents=True, exist_ok=True)
++    with verdicts.open("a", encoding="utf-8") as fh:
++        fh.write(json.dumps(row) + "\n")
++        fh.flush()
++    logger.info("season %s verdict row appended -> %s", sid, verdicts)
+     logger.info("season %s harvested (%s) -> %s", sid, verdict, path)
+     return path

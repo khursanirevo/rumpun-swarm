@@ -1,0 +1,46 @@
+# seasons/s101.yaml — drafted by evolve v0 from s100; filled by harness 2026-09-18 (the loop resumes per the operator's go: the standing assessment, the epic extension, the maintenance rhythm)
+id: s101
+parent: s100
+goal: "the loop resumes on the operator's go: the standing assessment seals through the module for s101 (the third application - the vocabulary enforced, the fronts read live), the board-arc epic extends with s100, the pack digest is checked fresh, and the maintenance inventory records what remains after the pause"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author seals the s101 assessment through the module (the fronts read from the live board, the verdict per the live read - the operator's go recorded as the resume input) and extends the board-arc epic with s100 preserving every verdict; one author checks the pack digest fresh (reinstall only if the draft moved) and takes the maintenance inventory (what remains after the pause, named honestly); fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s100-harvest@7e08adac6e2837d1ce74e755f38ec472a2317bfa79cb329b582ab3cf5bd2e3ff"
+  primary_change:
+    type: retune
+    node: process
+    baseline: "s100 best: the loop paused with the pause condition met and the resume triggers precise (suite 496/496) - the operator's go is the resume input, and the paused season's maintenance rhythm has never run after a pause"
+    expected_band: "WIN if the s101 assessment seals through the module and reads back whole AND the board-arc epic carries s100 with the sum preserved AND the pack digest check lands (reinstall or the recorded equality) AND the maintenance inventory names what remains honestly AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s101 commits; the assessment record is append-only history; the epic edit preserves history"
+    eval_window: "w2 pins + merged-tree full pytest + the sealed record and the epic view in the writers' notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: assessment-seal-epics
+    collab: build
+    prompt: prompts/dev/w1-assessment-seal-epics.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: resume-inventory
+    collab: build
+    prompt: prompts/dev/w2-resume-inventory.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

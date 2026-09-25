@@ -1,0 +1,16 @@
+INFO appended akar record audit-1 -> /mnt/data/tmp/tmpubttiulo/custom/.rumpun/akar/2026-09-15_audit-1.md
+INFO PASS: S1 F1 counts 2 of 2
+INFO PASS: S1 no dead-phase candidate
+INFO appended akar record audit-1 -> /mnt/data/tmp/tmpubttiulo/prephase/.rumpun/akar/2026-09-15_audit-1.md
+INFO PASS: S2 F1 counts 1 of 1
+INFO PASS: S2 no dead-phase candidate
+INFO appended akar record audit-1 -> /mnt/data/tmp/tmpubttiulo/running/.rumpun/akar/2026-09-15_audit-1.md
+INFO PASS: S3 F1 counts 1 of 1
+INFO PASS: S3 no dead-phase candidate
+INFO GREEN S1 F1 counts 2 of 2
+INFO GREEN S1 no dead-phase candidate
+INFO GREEN S2 F1 counts 1 of 1
+INFO GREEN S2 no dead-phase candidate
+INFO GREEN S3 F1 counts 1 of 1
+INFO GREEN S3 no dead-phase candidate
+INFO M2 liveness: 6/6 checks green

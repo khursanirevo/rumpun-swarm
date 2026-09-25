@@ -1,0 +1,46 @@
+# seasons/s78.yaml — drafted by evolve v0 from s77; filled by harness 2026-09-17 (the board map: sync reads lanes first, the s76 recorded gap)
+id: s78
+parent: s77
+goal: "sync stops refusing on unmapped seasons: the close records which issue a season's lanes answer (board-map.json, merge-not-clobber, via rumpun board --map), sync reads the map before the lane-title fallback, and the s75 dry-run proves the loop on the real board"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands emit_lane_map, the board --map verb (rc-gated issue check before any write), and the sync wiring end to end, verifying with the s75 dry-run live; one author pins the contract offline (map shape, merge semantics, lookup order, dry-run over fixtures); fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s77-harvest@90270de0c5b457d9a1da3c0878bc91519a401b67e4ebc966c1019865a49e785c"
+  primary_change:
+    type: rewire
+    node: tooling
+    baseline: "s77 best: the kancil manual and version tracking landed (suite 351/351) - but board --sync still BoardErrors on any season whose lanes have no map entry and no lane-title issue match (the s76 recorded gap), so the lifecycle works only for title-matched issues"
+    expected_band: "WIN if the map pins hold (shape, merge-not-clobber, lookup order, dry-run over fixtures) AND the s75 dry-run on the live board renders the issue #1 comment and close without writing AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s78 commits; board-map.json is campaign state deletable without ceremony; the verb and wiring are additive"
+    eval_window: "w2 pins + merged-tree full pytest + the s75 dry-run output in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: board-map
+    collab: build
+    prompt: prompts/dev/w1-board-map.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: board-map-pins
+    collab: build
+    prompt: prompts/dev/w2-board-map-pins.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

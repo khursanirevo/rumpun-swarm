@@ -1,0 +1,48 @@
+# musim/s42.yaml — drafted by evolve v0 from s41; filled by harness from audit-31's F7 decade finding (the operator-directed mechanism triggering on schedule)
+id: s42
+parent: s41
+goal: "decade-4 usefulness audit, executed on schedule: the runner invokes the different-model route against the full ledger, the verdict and residuals land as usefulness-decade-4, and both writers triage the residuals against source"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "the runner (tools/usefulness_audit.py) executes the gpt-6-astra route against the 42-season ledger - the operator-directed decadal check firing for real; w1 triages each residual against source (confirmed/refuted with evidence); w2 independently verifies a sample and pins the decade contract; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-31@df49f68021907165e4e479a0aee7716668a926de4631c54e381cce6f814e4dd2
+    - akar:s41-harvest@d49d04c5dbe96df8b0923a0c188c8f0587ea1fe9e25618e537a261334c2889e4
+    - akar:codex-usefulness-2026-09-15@6d1b7334022b8d3240334907a7554a2ea14e5082cc6acbe7b6c1bbbdfa7fc301
+  primary_change:
+    type: add
+    node: audit
+    baseline: "audit-31's F7 finding: 42 musim seasons owe 4 decade reviews, 3 covered - the operator-directed mechanism (s33) is triggering on schedule for the first time, and no decade-4 different-model verdict exists"
+    expected_band: "WIN if tools/usefulness_audit.py lands usefulness-decade-4 with a parsed verdict against the real ledger via the gpt-6-astra route (record + evidence pointer on the ledger) AND w1's triage confirms or refutes every residual against source with cited evidence AND w2 independently verifies a sample AND the decade finding retires (the record covers decade 4) AND the suite is green (171+ tests); LOSS otherwise"
+    rollback: "git revert s42 commits; the audit run is additive ledger input"
+    eval_window: "the decade-4 run + the triage record + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: decade4-triage
+    collab: build
+    prompt: prompts/dev/w1-decade4-triage.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: decade4-verify
+    collab: build
+    prompt: prompts/dev/w2-decade4-verify.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

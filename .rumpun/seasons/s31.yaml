@@ -1,0 +1,47 @@
+# musim/s31.yaml — drafted by evolve v0 from s30; filled by harness from audit-19 + the s30 launch evidence (operator standing order: continuous loop)
+id: s31
+parent: s30
+goal: "render on change: the watcher's state hook renders the dashboard only when the season's persisted bytes changed, and logs one line per render instead of one per cycle"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author adds change-gated rendering (hash the persisted state.json bytes per cycle; render only on change) to the state hook; one spec-first tester pins the gating; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-19@7f8b8ddaf11c969db227c7cd705a89f8e94591c9b54a7a1fef4800e2b255dea9
+    - akar:s30-harvest@0119b955180f8f836c891b23f8788e137f3a6a07d1bf4b480080462a2e362901
+  primary_change:
+    type: retune
+    node: tooling
+    baseline: "the s24 state hook renders the dashboard on EVERY watcher cycle: the s30 launch log carried ~1600 campaign-index renders for one season (one disk write plus one INFO line per second for 27 minutes), and the audit-19 corpus run then proved the gate green on unchanged main - the renders between changes wrote identical bytes ~1600 times"
+    expected_band: "WIN if the state hook renders only when the persisted state.json bytes changed since the last render (repro: a stub agent whose bytes never change triggers exactly one render across multiple cycles; a byte change triggers a re-render) AND each render logs one INFO line (repro: caplog count matches) AND the corpus gate stays green AND the suite is green (142+ tests); LOSS otherwise"
+    rollback: "git revert s31 commits; the hook reverts to per-cycle rendering"
+    eval_window: "repro pins over stub fixtures + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: render-on-change
+    collab: build
+    prompt: prompts/dev/w1-render-on-change.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: render-change-pins
+    collab: build
+    prompt: prompts/dev/w2-render-change-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

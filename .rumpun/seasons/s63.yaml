@@ -1,0 +1,47 @@
+# seasons/s63.yaml — drafted by evolve v0 from s62; filled by harness 2026-09-16 (check-s61's diagnosed false positive: the ships classifier learns runtime artifacts)
+id: s63
+parent: s62
+goal: "the artifact check's ships diff stops false-positive on prose: a file-shaped token naming a run-time artifact (written at close into runs/<sid>/) verifies against the campaign's runs state or is recorded as observed behavior, and a genuinely missing committed file still yields DELTA"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the classifier distinction in the ships-diff clause judge (a file-shaped token framed as run-time output checks the campaign's runs/<sid>/ state and records the classification; committed-tree claims bind as before); one tester pins the s61 clause checking through, the genuine-missing case still delta, and the classification recorded; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - ledger:s61-harvest@ec94b7acd99f603247631fbaf92f385885fde03294998d4bd75241e9e978bf07
+    - ledger:check-s61@d4be817ffb6acc36df70477acbe43611cb6c2b07b733e2bd6107fcb8c8e6cabe
+  primary_change:
+    type: rewire
+    node: tooling
+    baseline: "check-s61 recorded DELTA on a green close: the ships clause 'the engine's finalize writes results.jsonl' names a run-time artifact, and the classifier demanded the token in the committed tree - the pins ran 4/4 green and the seal matched, so the delta is the parser's, not the work's"
+    expected_band: "WIN if the s61 clause checks through without DELTA when the artifact exists in the campaign's runs state AND the classification is recorded in the clause evidence AND a genuinely missing committed file still yields DELTA exit 1 AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s63 commits; the classifier rewires with committed-tree binding untouched"
+    eval_window: "w2 pins + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: ships-classifier
+    collab: build
+    prompt: prompts/dev/w1-ships-classifier.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: ships-classifier-pins
+    collab: build
+    prompt: prompts/dev/w2-ships-classifier-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

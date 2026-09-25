@@ -1,0 +1,47 @@
+# musim/s33.yaml — drafted by evolve v0 from s32; filled by harness from the operator directive (direct channel, 2026-09-15) + codex-usefulness-2026-09-15 (operator standing order: continuous loop)
+id: s33
+parent: s32
+goal: "decadal usefulness audit, permanent: every 10 seasons a DIFFERENT-model auditor reviews whether the loop is doing something useful; the verdict and its residuals land in akar and arm candidates"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands tools/usefulness_audit.py (compose the ledger brief - season count, verdict history, DESIGN claims - invoke the different-model route from rumpun.yaml, parse the verdict line, append the akar record with residuals) plus the audit decade trigger; one spec-first tester pins both; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-19@7f8b8ddaf11c969db227c7cd705a89f8e94591c9b54a7a1fef4800e2b255dea9
+    - akar:codex-usefulness-2026-09-15@6d1b7334022b8d3240334907a7554a2ea14e5082cc6acbe7b6c1bbbdfa7fc301
+  primary_change:
+    type: add
+    node: audit
+    baseline: "the usefulness check exists only as a harness-run session command: nothing in the tool triggers it, nothing schedules it, and its five verified residuals (M4 harvest residue, corpus acceptance, freshness sentinel, DRIFT-all-green, DESIGN misattribution) arm nothing - audit-19 through audit-20 certified a main whose harvest residue still reproduced"
+    expected_band: "WIN if audit arms a decade finding when a multiple-of-10 season closes without a usefulness record for that decade (repro) AND tools/usefulness_audit.py composes the brief from the ledger, invokes the configured different-model route as an isolated subprocess, parses the verdict line, and appends an akar record carrying residuals (repro with a stub route) AND the five verified residuals arm as candidates from the verdict record (repro) AND the suite is green (150+ tests); LOSS otherwise"
+    rollback: "git revert s33 commits; the trigger and runner are additive"
+    eval_window: "repro pins over fixture ledgers and a stub route + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: decadal-audit
+    collab: build
+    prompt: prompts/dev/w1-decadal-audit.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: decadal-pins
+    collab: build
+    prompt: prompts/dev/w2-decadal-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

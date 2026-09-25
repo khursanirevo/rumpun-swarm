@@ -1,0 +1,46 @@
+# seasons/s83.yaml — drafted by evolve v0 from s82; filled by harness 2026-09-17 (the distill-lint placement fix + the #8/#9 retirements)
+id: s83
+parent: s82
+goal: "the gate placement fixes itself and the findings retire: plugin distill runs the content lint install runs - an uninstallable draft cannot seal silently - and issues #8 and #9 close on the landed evidence (the version-surface fix, the one-request rule as design)"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author fixes the placement (the same content lint at distill as at install, per the code's shape) and retires #8 and #9 with evidence comments; one author pins the never-again contract adversarially (code-span tokens, absolute paths, parent escapes cannot seal silently; distill and install cannot disagree); fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s82-harvest@d19dad3b432984519381412e679d3b482efbcfbc32d6c05c5faaf26e7a2feaa5"
+  primary_change:
+    type: rewire
+    node: tooling
+    baseline: "s82 best: the pack promoted and the version surface fixed (suite 391/391) - but distill still skips the content lint install runs (issue #10: a draft sealed uninstallable for three seasons), and issues #8/#9 stay open although their evidence landed"
+    expected_band: "WIN if the distill-lint pins hold (adversarial shapes never seal silently, the digest invariant, distill and install agreeing) AND the kancil-base re-distill passes the lint it never saw AND issues #8 and #9 close on evidence AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s83 commits; issues reopen via gh"
+    eval_window: "both pins files + merged-tree full pytest + the issue urls in the writers' notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: distill-lint
+    collab: build
+    prompt: prompts/dev/w1-distill-lint.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: distill-lint-pins
+    collab: build
+    prompt: prompts/dev/w2-distill-lint-pins.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

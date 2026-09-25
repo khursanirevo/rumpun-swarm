@@ -1,0 +1,47 @@
+# seasons/s64.yaml — drafted by evolve v0 from s63; filled by harness 2026-09-16 (decade-5's count honesty: the usefulness counts read the whole ledger)
+id: s64
+parent: s63
+goal: "the usefulness counts stop flattering: the decade-5 residual stands - the ledger holds 24 WIN, eight LOSS, and two missing verdicts, not 34 completed improvements - so the counts read the whole ledger, count missing verdicts as missing, and propagate the salvaged split"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the count fix in the usefulness brief path (tools/usefulness_audit.py's composer + any report surface: missing verdicts counted as missing, the salvaged split carried into the counts, stale windows widened to the whole ledger); one tester pins the counts against a fixture ledger with known gaps; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - ledger:s63-harvest@759c478e5c1294f04005ad6b9dac9e2d322559f47398b5176728ef25cf817ed3
+    - ledger:usefulness-decade-5@bfecf80940a3d112c846144dd97691052bebafabae4e12af6b709414f5ab2739
+  primary_change:
+    type: rewire
+    node: tooling
+    baseline: "the usefulness counts understate honestly: the decade-5 residual names 24 WIN, eight LOSS, and two missing verdicts where the campaign claims 34 completed improvements - the composer reads a stale window, missing verdicts blur into the totals, and the salvaged split (s62) never reached the counts"
+    expected_band: "WIN if the usefulness counts read the whole ledger (every season yaml counted), missing verdicts appear as missing (never folded into completions), the salvaged split propagates into the counts, and the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s64 commits; the counts are a reporting rewire"
+    eval_window: "w2 pins + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: count-honesty
+    collab: build
+    prompt: prompts/dev/w1-count-honesty.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: count-pins
+    collab: build
+    prompt: prompts/dev/w2-count-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

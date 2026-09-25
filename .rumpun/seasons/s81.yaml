@@ -1,0 +1,46 @@
+# seasons/s81.yaml — drafted by evolve v0 from s80; filled by harness 2026-09-17 (the kancil-base promotion + the panel sweep over s74-s79)
+id: s81
+parent: s80
+goal: "the pack graduates and the panel patrols: kancil-base promotes from draft to installable release (the campaign itself runs it, a fresh init --plugin proves the path), and the panel runs as a sweep over s74-s79 - six bounded second opinions, any non-WIN filed to the board"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author reviews the draft as a release, promotes it into the live campaign digest-verified, and proves the fresh-campaign install path in /tmp; one author runs six bounded panel calls in season order, reads every sealed verdict, and files non-WINs as board issues (three max, the rest recorded); fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s80-harvest@ed4d22e4ed5ceac72915986cf688404f18d91cb8299eb5567db242e5e7288e3b"
+  primary_change:
+    type: retune
+    node: tooling
+    baseline: "s80 best: the audit residuals resolved either way and the repro-backed closure is a standing standard (suite 385/385) - but the kancil-base pack is still a draft no fresh campaign installs, and the panel has spoken only once"
+    expected_band: "WIN if the pack installs digest-verified into the live campaign and a fresh init --plugin campaign (throwaway, verified then deleted) AND the panel sweep seals six verdict records in order with non-WINs filed to the board AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s81 commits; the install is reversible (plugin uninstall convention); the panel records are append-only history"
+    eval_window: "w2 pins-equivalent sweep table + merged-tree full pytest + the install receipt in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: pack-promote
+    collab: build
+    prompt: prompts/dev/w1-pack-promote.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: panel-sweep
+    collab: build
+    prompt: prompts/dev/w2-panel-sweep.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

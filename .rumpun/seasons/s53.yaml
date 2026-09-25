@@ -1,0 +1,47 @@
+# seasons/s53.yaml — drafted by evolve v0 from s52; filled by harness 2026-09-16 (hub v1: publish + pull)
+id: s53
+parent: s52
+goal: "the hub arc closes: rumpun plugin publish and pull move a pack over a git remote with the guardrails on the wire - lint-gated push, digest-verified pull, campaign/ structurally invisible"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands plugin_publish + plugin_pull (lint gate + digest verify before push; fetch + digest verify + the s46 install path on pull; subprocess git, file-path remotes in tests) with minimal documented cli wiring; one spec-first tester pins the round trip and the on-the-wire guardrails over a local bare remote; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:s52-harvest@8084d0a3ecb5e3e099de670ad92d603fd2ce8be1358b0c0048283f63fafb3c9d
+    - akar:audit-38@790b2c0f8dd7225c107c57c50a387369d6e61cc3ba993ee8492c57c18feaf6a6
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "the pack exists and installs locally (s44 boundary, s46 install, s50/s51 export) but cannot move between campaigns: no publish verb, no pull verb - sharing is a manual git dance outside the tool, unguarded"
+    expected_band: "WIN if the publish->pull round trip over a local bare git remote lands an identical verified pack (digest equal, plugin_list records it) AND the guardrails hold on the wire (lint-failing pack refuses to publish, campaign/ never at the remote, tampered digest fails the pull) AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s53 commits; the verbs are additive tooling"
+    eval_window: "w2 pins + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: hub-publish
+    collab: build
+    prompt: prompts/dev/w1-hub-publish.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: hub-pins
+    collab: build
+    prompt: prompts/dev/w2-hub-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

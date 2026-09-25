@@ -1,0 +1,62 @@
+F.F                                                                      [100%]
+=================================== FAILURES ===================================
+________ test_harvest_writes_season_verdict_row_and_report_renders_win _________
+
+tmp_path = PosixPath('/mnt/data/tmp/pytest-of-sani/pytest-2383/test_harvest_writes_season_ver0')
+
+    def test_harvest_writes_season_verdict_row_and_report_renders_win(tmp_path):
+        """M3 pin: harvest_season writes the season verdict where reports read it.
+    
+        After harvest_season(...) on a completed WIN season, rimba/<sid>/
+        verdicts.jsonl carries exactly one season-level WIN row (the row rule
+        report._verdict_of reads: row["season"] == sid), and the rendered season
+        report shows WIN in its verdict headline. Red at s21 base: harvest only
+        appends the akar record; rimba/<sid>/verdicts.jsonl is never written.
+        """
+        _write_season_state(tmp_path)
+        harvest.harvest_season(tmp_path, "s1", "WIN", "note")
+        verdicts = tmp_path / "rimba" / "s1" / "verdicts.jsonl"
+>       assert verdicts.is_file(), "harvest must write rimba/<sid>/verdicts.jsonl"
+E       AssertionError: harvest must write rimba/<sid>/verdicts.jsonl
+E       assert False
+E        +  where False = is_file()
+E        +    where is_file = PosixPath('/mnt/data/tmp/pytest-of-sani/pytest-2383/test_harvest_writes_season_ver0/rimba/s1/verdicts.jsonl').is_file
+
+tests/test_rumpun.py:2505: AssertionError
+____________________ test_write_routes_commands_spawn_clean ____________________
+
+tmp_path = PosixPath('/mnt/data/tmp/pytest-of-sani/pytest-2383/test_write_routes_commands_spa0')
+
+    def test_write_routes_commands_spawn_clean(tmp_path):
+        """M11 pin: write_routes generates spawn-clean commands, scaffold intact.
+    
+        Every command write_routes writes into a scaffolded rumpun.yaml contains
+        no "<model>" placeholder and, with {prompt} resolved, passes /bin/sh -n.
+        The rest of the scaffold survives the patch and the file still parses.
+        Red at s21 base: the claude login route is generated with a literal
+        --model <model> placeholder (the defect fixed ad hoc in the campaign
+        copy at s15 lives on in the generator).
+        """
+        target = tmp_path / "proj"
+        scaffold.init_project(target)
+        cfg = target / ".rumpun" / "rumpun.yaml"
+        before = cfg.read_text(encoding="utf-8").splitlines()
+        count = routes.write_routes(cfg)
+        assert count >= 1
+        commands = list(
+            (yaml.safe_load(cfg.read_text(encoding="utf-8")).get("routes") or {}).values()
+        )
+        assert commands, "write_routes wrote no route commands"
+        offenders = [cmd for cmd in commands if "<model>" in cmd]
+>       assert offenders == [], f"<model> placeholder still generated: {offenders}"
+E       AssertionError: <model> placeholder still generated: ["env -u ANTHROPIC_BASE_URL -u ANTHROPIC_AUTH_TOKEN -u ANTHROPIC_API_KEY -u ANTHROPIC_DEFAULT_SONNET_MODEL -u ANTHROPIC_DEFAULT_OPUS_MODEL -u ANTHROPIC_DEFAULT_HAIKU_MODEL -u ANTHROPIC_DEFAULT_FABLE_MODEL sh -c 'cat {prompt} | claude -p --dangerously-skip-permissions --model <model>'"]
+E       assert ["env -u ANTH...del <model>'"] == []
+E         
+E         Left contains one more item: "env -u ANTHROPIC_BASE_URL -u ANTHROPIC_AUTH_TOKEN -u ANTHROPIC_API_KEY -u ANTHROPIC_DEFAULT_SONNET_MODEL -u ANTHROPIC...MODEL -u ANTHROPIC_DEFAULT_FABLE_MODEL sh -c 'cat {prompt} | claude -p --dangerously-skip-permissions --model <model>'"
+E         Use -v to get more diff
+
+tests/test_rumpun.py:2560: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_rumpun.py::test_harvest_writes_season_verdict_row_and_report_renders_win
+FAILED tests/test_rumpun.py::test_write_routes_commands_spawn_clean - Asserti...
+2 failed, 1 passed, 100 deselected in 0.41s

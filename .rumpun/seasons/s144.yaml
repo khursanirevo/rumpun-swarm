@@ -1,0 +1,57 @@
+# seasons/s144.yaml — drafted by evolve v0 from s143; fill primary_change + evidence, then apply
+id: s144
+parent: s143
+goal: "the steady-state cycle's next iteration: the light lanes and the rehearsals re-run current proving the maintenance cadence holds, and any drift names itself"
+metric: "light-lane re-proofs"
+mode: fight
+methodology:
+  approach: "one author re-runs the light lanes (the full-guide lint, the readme proof, the route-probe pins, one bounded glm-5.3 probe re-confirmed) naming any drift; one author re-runs the rehearsals fresh naming any drift; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s143-harvest@9e36a9412925bd2069ae1d8f5f262e5bbbd9cb39ebce2d729f2f8a0ce1c5d07c"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: execute
+    baseline: "s143 WIN (the per-lane briefs landed in the scaffold and the fixed pipeline proven in a tmp campaign; the s95 driver filter repaired; merged-tree suite 860 passed 1 xfailed; measured by the sealed harvest record s143-harvest)"
+    expected_band: "WIN if the light lanes re-confirm green (the guards green, one route probe re-confirmed) and the rehearsals re-run green with any drift named, and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s144 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the re-confirmations read from the writers notes.md"
+  pipeline:
+    - phase: lint-sweep
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: sweep.jsonl
+    - phase: route-probes
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: probes.jsonl
+    - phase: rehearsals
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      reads: [sweep.jsonl, probes.jsonl]
+      writes: rehearsals.jsonl
+    - phase: decision-gate
+      primitive: evaluate
+      agents: writers
+      prompt: prompts/base/evaluate.md
+      reads: rehearsals.jsonl
+      writes: gate-report.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: light-lanes-2
+    collab: build
+    prompt: prompts/dev/w1-light-lanes-2.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: rehearsals-2
+    collab: build
+    prompt: prompts/dev/w2-rehearsals-2.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 30}, budget_exhausted]

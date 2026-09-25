@@ -1,0 +1,47 @@
+# musim/s49.yaml — drafted by evolve v0 from s48; filled by harness from audit-37's DRIFT candidate + the s48 re-seal (operator standing order: continuous loop)
+id: s49
+parent: s48
+goal: "superseded-repro handling in the corpus runner: the s22 archived repro is marked superseded by the s48 re-seal, the runner skips it with the reason, and the DRIFT row retires honestly"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the superseded-repro handling in the corpus runner's adapter (the s22 archived repro skipped with the reason: superseded by the s48 re-seal at evidence/s48/) and pins it; one spec-first tester pins the skip and the honest reason; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-37@db8046c1e5a636948bfaa01ed038a3fe9322ab1f84464bf2bef6ce5d63c6f402
+    - akar:s48-harvest@2ccf2088a91e43ffb4a751bf9f0b781c5f7d660ea5c6c255bd70d0b8a9df313f
+  primary_change:
+    type: retune
+    node: tooling
+    baseline: "the corpus runner discovers every evidence/<s*>/*.py and runs each against current main: the s22 archived repro asserts the pre-M5 contract (a both-agents-fail season exits 0) which the ratified M5 change reversed - the archived repro fails on main every run, arming the DRIFT row permanently, when the honest state is superseded (the s48 re-seal replaced the repro's contract with the M5 behavior, verified 23/23 GREEN)"
+    expected_band: "WIN if the corpus runner skips the s22 archived repro with the superseded reason recorded in the matrix (a SKIP row citing the s48 re-seal) AND the DRIFT row for that script retires from the audit's candidates (repro: the audit --corpus after the skip carries no s22 m5 DRIFT candidate) AND the other five repros still run and pass AND the suite is green (188+ tests); LOSS otherwise"
+    rollback: "git revert s49 commits; the skip is one adapter-table entry"
+    eval_window: "repro pins + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: superseded-skip
+    collab: build
+    prompt: prompts/dev/w1-superseded-skip.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: superseded-skip-pins
+    collab: build
+    prompt: prompts/dev/w2-superseded-skip-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

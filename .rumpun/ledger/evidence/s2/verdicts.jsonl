@@ -1,0 +1,5 @@
+{"unit": "w1 akar.py", "verdict": "WIN", "implies": "akar records now writer-enforced: id uniqueness, atomic append, body sha256 for P11 citations"}
+{"unit": "w2 harvest.py", "verdict": "WIN", "implies": "season close is one verb; body is harness-observed only per P36"}
+{"unit": "w3 evolve.py", "verdict": "WIN", "implies": "deterministic draft + lint-gated apply; empty primary_change cannot slip through; one-line convention patch by harness noted"}
+{"unit": "w4 report.py", "verdict": "WIN", "implies": "P36 surface 2 shipped: deterministic self-contained HTML with provenance legend"}
+{"season": "s2", "verdict": "WIN", "metric": "modules_integrated", "band": "WIN >= 3 of 4", "observed": "4 of 4 integrated", "implies": "build order steps 4-5 and P36 surfaces 0-2 shipped; the swarm built its own missing organs; next season s3 drafted and lint-gated"}

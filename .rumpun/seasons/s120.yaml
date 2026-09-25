@@ -1,0 +1,46 @@
+# seasons/s120.yaml — drafted by evolve v0 from s119; fill primary_change + evidence, then apply
+id: s120
+parent: s119
+goal: "the hand-off pass: the loop drafts the next season for the close worker to fill and launch, and the plugin priors absorb the campaign's new conventions so the pack teaches what the loop learned"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author extends the loop's close-prep with the next-season draft (the prep record carries a drafted yaml the worker fills, while the loop still never harvests, seeds, or commits) with red-first pins; one author refreshes the kancil-base priors with the campaign's new conventions (the rerun derivation, the notes gate, the dissent marks, the adjusted truth) with the digest reseal probe-first and moving in the same close; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s119-harvest@5d57982dbac7f7e6b40bc046df6cd792769f95473e7399e510d9b9845088112a"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: execute
+    baseline: "s119 best (both fable writers exited 0 at 1374.9s; the loop prepares the close and the board mirrors the ledger; merged-tree suite 645/645; measured by the sealed harvest record s119-harvest)"
+    expected_band: "WIN if the loop's prep record carries the drafted next-season yaml for the worker to fill while the loop still never harvests, seeds, or commits (pinned red-first), the priors absorb the new conventions campaign-agnostically with the pack digest resealed probe-first and moving in the same close (verified by the close check's digest pass), and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s120 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the draft prep and the digest state read from the writers notes.md and the close check"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: draft-prep
+    collab: build
+    prompt: prompts/dev/w1-draft-prep.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: priors-refresh
+    collab: build
+    prompt: prompts/dev/w2-priors-refresh.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

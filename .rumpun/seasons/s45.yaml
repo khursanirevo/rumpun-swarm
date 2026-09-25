@@ -1,0 +1,47 @@
+# musim/s45.yaml — drafted by evolve v0 from s44; filled by harness from the operator's rename confirmation (direct channel) + the hub adoption goal
+id: s45
+parent: s44
+goal: "the English rename, one clean switch: writers, seasons/, ledger/ (the ledger: citation prefix), runs/ - rumpun stays, back-compat aliases resolve the old names for the 45 historical seasons, and a glossary maps old to new"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the path and state renames in engine/report/audit/harvest/evolve/lint with old-name aliases accepted everywhere; one author lands the yaml key renames (benih -> writers), the scaffold's new-name output, the citation prefix acceptance, the glossary, and the pins; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-33@8e2939b38aceb14988b8fca4bfb29c54e5f265ce66aeb6e97af4af43dc218359
+    - akar:s39-harvest@2622c0c3fb400d3db2372b617a6a752117e660f4e8b3234bc130172c7913f9e7
+  primary_change:
+    type: retune
+    node: core
+    baseline: "the component vocabulary is Malay (benih, musim/, akar/, rimba/) while the CLI, the artifacts, and half the code are English - the mix reads as inconsistency, and the hub plan makes outside contributors the primary audience: benih is a wall they hit in their first five minutes, and a glossary taxes them forever"
+    expected_band: "WIN if the engine, scaffold, lint, audit, report, harvest, evolve, and tools all resolve the new names AND the old names still resolve via aliases (a musim/ directory and an akar: citation on a historical season still work) AND init scaffolds the new names only AND the glossary maps old to new AND the suite is green (188+ tests); LOSS otherwise"
+    rollback: "git revert s45 commits; the aliases make the rename reversible"
+    eval_window: "alias repros (old paths still resolve) + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: english-rename
+    collab: build
+    prompt: prompts/dev/w1-english-rename.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: rename-pins
+    collab: build
+    prompt: prompts/dev/w2-english-rename-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

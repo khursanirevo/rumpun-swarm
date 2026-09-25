@@ -1,0 +1,98 @@
+6111a6112,6208
+> # --- s41 w2 pins (spec-first): harvest integrity ------------------------------
+> # Spec: M4 full + write-order repair over harvest_season (akar audit-29 and
+> # s29-harvest lineage; the s32 stranding incident). Pin 1 is RED against the
+> # s41 base (5de2f24) by design: w1's harvest.py work turns it green at
+> # integration. Pins 2-3 are regression locks; the measured set against base
+> # is recorded in .rumpun/rimba/s41/w2/notes.md.
+> 
+> 
+> def _write_running_season_state(tmp_path):
+>     """Running season state for s1: agents still working, no ended_at.
+> 
+>     engine.read_status recomputes agent snaps only for running seasons; with
+>     no agent workspaces present the snap table is empty and harvest renders
+>     an empty agent table from the live snapshot.
+>     """
+>     state_dir = tmp_path / "rimba" / "s1" / "_season"
+>     state_dir.mkdir(parents=True)
+>     (state_dir / "state.json").write_text(
+>         json.dumps(
+>             {
+>                 "id": "s1",
+>                 "status": "running",
+>                 "started_at": 1.0,
+>                 "agents": {},
+>             }
+>         ),
+>         encoding="utf-8",
+>     )
+> 
+> 
+> def test_harvest_running_season_refuses_before_any_write(tmp_path):
+>     """M4-full pin: harvest of a running season refuses before any write.
+> 
+>     harvest_season on a season whose persisted status is "running" raises
+>     akar.AkarError naming the season and its status, with the permanent
+>     <sid>-harvest akar id unconsumed and rimba/<sid>/verdicts.jsonl
+>     unwritten. Red at s41 base: harvest logs a warning and harvests the
+>     live snapshot anyway, consuming the permanent id and writing the row.
+>     """
+>     _write_running_season_state(tmp_path)
+>     with pytest.raises(akar.AkarError) as excinfo:
+>         harvest.harvest_season(tmp_path, "s1", "WIN", "note")
+>     msg = str(excinfo.value)
+>     assert "s1" in msg, f"refusal does not name the season: {msg}"
+>     assert "running" in msg, f"refusal does not name the status: {msg}"
+>     assert not list((tmp_path / "akar").glob("*_s1-harvest.md")), (
+>         "refused harvest consumed the permanent <sid>-harvest id"
+>     )
+>     assert not (tmp_path / "rimba" / "s1" / "verdicts.jsonl").exists(), (
+>         "refused harvest wrote a verdicts row"
+>     )
+> 
+> 
+> def test_harvest_akar_failure_leaves_no_verdicts_row(tmp_path, monkeypatch):
+>     """Write-order pin: an akar append fault leaves no verdicts row.
+> 
+>     An injected fault at akar.append_record (the s32 stranding shape: the
+>     record append never lands) propagates as akar.AkarError and leaves no
+>     verdicts row behind: the row cannot strand without its record.
+>     """
+>     _write_season_state(tmp_path)
+> 
+>     def _s41_fail_append(*_args, **_kwargs):
+>         raise akar.AkarError("injected akar fault")
+> 
+>     monkeypatch.setattr(akar, "append_record", _s41_fail_append)
+>     with pytest.raises(akar.AkarError):
+>         harvest.harvest_season(tmp_path, "s1", "WIN", "note")
+>     assert not (tmp_path / "rimba" / "s1" / "verdicts.jsonl").exists(), (
+>         "a failed record append stranded a verdicts row"
+>     )
+>     assert not list((tmp_path / "akar").glob("*_s1-harvest.md")), (
+>         "a failed record append consumed the permanent <sid>-harvest id"
+>     )
+> 
+> 
+> def test_harvest_second_harvest_refusal_keeps_single_row(tmp_path):
+>     """Regression pin: the s21 second-harvest refusal keeps holding.
+> 
+>     A terminal season whose verdicts.jsonl already carries the season-level
+>     row refuses a second harvest with akar.AkarError; exactly one
+>     <sid>-harvest record and one season-level row remain.
+>     """
+>     _write_season_state(tmp_path)
+>     harvest.harvest_season(tmp_path, "s1", "WIN", "note")
+>     with pytest.raises(akar.AkarError):
+>         harvest.harvest_season(tmp_path, "s1", "WIN", "note")
+>     records = list((tmp_path / "akar").glob("*_s1-harvest.md"))
+>     assert len(records) == 1, f"expected one harvest record, got: {records}"
+>     verdicts = tmp_path / "rimba" / "s1" / "verdicts.jsonl"
+>     rows = [
+>         json.loads(line)
+>         for line in verdicts.read_text(encoding="utf-8").splitlines()
+>         if line.strip()
+>     ]
+>     season_rows = [row for row in rows if row.get("season") == "s1"]
+>     assert len(season_rows) == 1, f"expected one season-level row, got: {rows}"

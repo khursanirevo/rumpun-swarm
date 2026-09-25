@@ -1,0 +1,46 @@
+# seasons/s80.yaml — drafted by evolve v0 from s79; filled by harness 2026-09-17 (the audit residuals triaged: two factual, one scoped honestly)
+id: s80
+parent: s79
+goal: "the audit's residuals resolve either way: issues #3 and #4 are measured against today's tree and close on evidence or file precise children, and issue #5 - the epistemics residual - gains the repro-backed-closure contract, its first pin, and a public comment, staying open as the standing standard it is"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author measures #3 and #4 fresh (the absent-path check by name, the counts composer's fresh slots) and resolves each on evidence; one author designs the repro-backed-closure contract into the pack, pins claim_set's repro: absent flag, and comments issue #5; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s79-harvest@80e83edcee375993679ddb84cca15482d1dfad457aa82e5a4cdfc800eb88e66c"
+  primary_change:
+    type: retune
+    node: tooling
+    baseline: "s79 best: the first board-pulled season fixed the first board-filed defect and the lifecycle closed it (suite 381/381) - but the audit's three residual issues are untriaged, and the deep one (verdicts vs correctness) has no standing standard"
+    expected_band: "WIN if #3 and #4 each resolve on measurement (close-with-evidence or a precise child issue) AND the repro-backed-closure contract lands with its pin (claim_set flags repro: absent) AND issue #5 carries the contract comment staying open AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s80 commits; closed issues reopen via gh; the contract file is additive to the pack draft"
+    eval_window: "w2 pins + merged-tree full pytest + the resolution comments and urls in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: residual-triage
+    collab: build
+    prompt: prompts/dev/w1-residual-triage.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: residual-five
+    collab: build
+    prompt: prompts/dev/w2-residual-five.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

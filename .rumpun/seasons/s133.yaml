@@ -1,0 +1,46 @@
+# seasons/s133.yaml — drafted by evolve v0 from s132; fill primary_change + evidence, then apply
+id: s133
+parent: s132
+goal: "the deliberate-tenth pass: the standing assessment seals with both stopping signals in the basis (the detector's repetition and the operator's standing choice), and the dashboard carries the audit's current candidates beside the decisions"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author composes and seals the tenth usefulness assessment through the module over the s122-s132 ledger with the repetition signal and the operator's standing choice in the basis and the adjusted counts in the body; one author extends the operator dashboard to render the newest audit's candidates beside the fronts (the decisions and the candidates in one read); fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s132-harvest@4452f2c210ba26ab5b17bd285f788bdec09ee72ce77653268c8c4e1837e471f0"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: execute
+    baseline: "s132 best (both fable writers exited 0 at 1133.3s; the stopping rule fired live and the dashboard carries the spend; merged-tree suite 771 passed 1 xfailed; measured by the sealed harvest record s132-harvest)"
+    expected_band: "WIN if the tenth assessment seals through the module over the s122-s132 ledger with both signals in the basis and the adjusted counts in the body (the inputs pinned red-first), the dashboard renders the newest audit's candidates beside the fronts (pinned red-first), and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s133 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the assessment record and the dashboard render read from the sealed records and the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: tenth-assessment
+    collab: build
+    prompt: prompts/dev/w1-tenth-assessment.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: audit-candidates-dashboard
+    collab: build
+    prompt: prompts/dev/w2-audit-candidates-dashboard.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

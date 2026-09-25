@@ -1,0 +1,47 @@
+# seasons/s59.yaml — drafted by evolve v0 from s58; filled by harness 2026-09-16 (the close check reads the fresh row)
+id: s59
+parent: s58
+goal: "the check-at-close completes honestly: the checker's ships-row lookup falls back to the live worktree for the just-closed season's entry, records that fact in the check record, and never lets the fallback weaken tamper detection"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the live-row fallback in ships_row (extracted tree first, live DESIGN only for the missing fresh row, the disclosure line in the record) with the checker's tamper paths untouched; one tester pins the close case, the tamper-bound case, and the both-sources case; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - ledger:s58-harvest@6d15c134082681397e524ddf132feadcdde3665698fa6097547749fbfb03fb87
+    - ledger:audit-40@13f559b61e4ea7db7f261b7f1e9a029fe489dc33424438f92463da329dca4b97
+  primary_change:
+    type: rewire
+    node: tooling
+    baseline: "the check-at-close refuses on every fresh close (s57's live fire, exit 2): the checker extracts HEAD's tree, whose DESIGN.md cannot contain the season's own entry, so no check record lands at close and the ride-along check never verifies the freshest season (DESIGN s57 entry)"
+    expected_band: "WIN if the close case produces the check-<sid> record (the live-row disclosure line recorded, exit 0 on an otherwise green close) AND tamper detection stays bound to the extracted tree (a tampered file, digest, or seal still yields DELTA exit 1) AND the extracted row wins when both sources have it AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s59 commits; the fallback is a checker rewire with tamper paths untouched"
+    eval_window: "w2 pins + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: check-order
+    collab: build
+    prompt: prompts/dev/w1-check-order.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: check-order-pins
+    collab: build
+    prompt: prompts/dev/w2-check-order-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

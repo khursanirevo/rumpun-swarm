@@ -1,0 +1,46 @@
+# seasons/s74.yaml — drafted by evolve v0 from s73; filled by harness 2026-09-17 (the board lands with the live scope + the harvest-to-issue lifecycle)
+id: s74
+parent: s73
+goal: "the seq-14 loop closes: with the read:project scope live, w1 completes the board (project create, issue #1 item-add, live pickup verification) and w2 lands the lifecycle - a sealed harvest comments its issue and closes it, argv-pinned offline with one bounded live seam"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author re-probes from its own session then runs the full board flow (create, item-add, item-list verified through the pinned parser, pins re-green); one author lands harvest_comment_argv, close_issue_argv, issue_for_season, and rumpun board --sync with a dry-run surface, all argv-pinned offline; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s73-harvest@fedf8d36bb92f12f85f774593f29530754dd766b5e1c95d630dbfb3fa475983f"
+  primary_change:
+    type: rewire
+    node: tooling
+    baseline: "s73 best: the panel speaks (panel-s70-verdict WIN sealed, suite 316/316) and the scope blocker is gone (rc=0 probe post-s73) - but no board exists yet and a sealed harvest has no path back to its issue"
+    expected_band: "WIN if the board exists with issue #1 on it and pickup verifies live AND the lifecycle pins hold (builders argv-exact, issue_for_season on fixtures, --sync --dry-run writes nothing) AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s74 commits; the board is deletable via gh; the lifecycle builders are additive"
+    eval_window: "w2 pins + merged-tree full pytest + the project url/number in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: board-complete-live
+    collab: build
+    prompt: prompts/dev/w1-board-complete-live.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: board-lifecycle
+    collab: build
+    prompt: prompts/dev/w2-board-lifecycle.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

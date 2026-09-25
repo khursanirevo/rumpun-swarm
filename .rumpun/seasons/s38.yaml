@@ -1,0 +1,47 @@
+# musim/s38.yaml — drafted by evolve v0 from s37; filled by harness from audit-27 + the control-baseline residual (operator standing order: continuous loop)
+id: s38
+parent: s37
+goal: "the loop, verified looping externally: the cold-start checker gains the second-season pass - audit arms, evolve drafts, the cycle propagates - proving self-propagation outside the campaign ledger"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author extends tools/coldstart_check.py with the propagation steps (audit, evolve plan, the drafted s2 started and completed against the stub model) and wires the stall-resume citation; one spec-first tester pins the propagation contract; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-27@cdaa7e16a1d66ab8c9cb64cd6244574192cff9df8230a6071f8437bfb8716b4f
+    - akar:usefulness-decade-3@3d4d28d7004c75d23a3ebcf383ef4562123d535965645cb4f2af318e4bf4857b
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "the cold-start checker (s37) proves one lifecycle from cold start, but stops at the first harvest+audit: the loop's defining property - that reflection seeds the NEXT season - has never been verified outside the campaign ledger; the usefulness auditor's control-baseline residual names exactly this"
+    expected_band: "WIN if the extended checker, in its isolated temp dir, completes the second season after the first (audit -> evolve plan -> drafted s2 started and completed against the stub model) AND every propagation step PASS/FAIL-logs AND exiting nonzero on the first failed step AND the suite is green (178+ tests); LOSS otherwise"
+    rollback: "git revert s38 commits; the propagation steps extend the checker additively"
+    eval_window: "the extended cold-start run + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: loop-propagation
+    collab: build
+    prompt: prompts/dev/w1-loop-propagation.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: propagation-pins
+    collab: build
+    prompt: prompts/dev/w2-loop-propagation-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

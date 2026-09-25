@@ -1,0 +1,46 @@
+# seasons/s90.yaml — drafted by evolve v0 from s89; filled by harness 2026-09-17 (the decade-8 audit with the s84 fix's first live test + the s49 flake stabilized)
+id: s90
+parent: s89
+goal: "the boundary season proves its own fixes: the decade-8 audit runs through the s84 trail-checking composer - audit-43's resolved residuals must not re-emerge as candidates, the fix's first live test - and the s49 repro pin stabilizes into a swarm-tolerant contract, proven under induced load, not hoped for"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author runs the decade-8 audit through the verb's own path, records audit-45's candidate/resolved lines, and files any genuine newcomers as board issues; one author finds the s49 pin's exact wobble from evidence, stabilizes minimally per the shape, and proves the stabilization under induced load; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s89-harvest@e18628715c0d57d99147dfd452591a5f18c0a61d06858edbd2ac2859d6673b26"
+  primary_change:
+    type: retune
+    node: tooling
+    baseline: "s89 best: maintenance landed with live verification (suite 442/442) - but the s84 composer fix has never met the data that motivated it (a decade audit's re-emergence test), and the s49 repro pin flakes under swarm load twice recorded"
+    expected_band: "WIN if audit-45 runs through the trail-checking composer and audit-43's resolved lines stay buried (or a precise live hole is filed) AND the s49 pin is swarm-tolerant, proven under induced load with the contract still asserted AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s90 commits; the stabilization is a test-side change; audit-45 is append-only history"
+    eval_window: "both pins files + merged-tree full pytest + audit-45's lines and the load-test evidence in the writers' notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: decade8-audit
+    collab: build
+    prompt: prompts/dev/w1-decade8-audit.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: s49-pin-stabilize
+    collab: build
+    prompt: prompts/dev/w2-s49-pin-stabilize.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

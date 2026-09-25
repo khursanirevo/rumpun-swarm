@@ -1,0 +1,47 @@
+# musim/s48.yaml — drafted by evolve v0 from s47; filled by harness from audit-36's DRIFT candidate + s47-harvest (operator standing order: continuous loop)
+id: s48
+parent: s47
+goal: "DRIFT triage: the s22 m5 repro's assumptions are re-sealed to current main behavior, and the drift classification is verified as honest (a regression would re-arm as FAIL)"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author re-seals the m5 repro to current main (the failed-exit contract it pins: a both-agents-fail season maps to nonzero) and verifies the DRIFT classification is honest (the repro fails on main for its own reason, not the rename); one spec-first tester pins the re-sealed repro; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-36@29a2a594e1e3f8864cec19658cb39824735ad4c26e8e124f1851a9ce6244c70d
+    - akar:s47-harvest@470fba9666e67d3b9e24ef43d3513108b9a6a9e06e6826e644529601f7d0710a
+  primary_change:
+    type: retune
+    node: tooling
+    baseline: "the s22 m5 repro (repro_m5_failed_exit) asserts the pre-M5 contract (a both-agents-fail season exits 0); the M5 change (s22-era) made it exit nonzero - the repro's assumptions moved, the audit's DRIFT arming caught it, and the repro needs re-sealing to current main behavior"
+    expected_band: "WIN if the re-sealed repro passes against current main (the both-agents-fail season maps to nonzero per M5) AND the DRIFT classification is verified honest (the audit's DRIFT row retired: the repro passes, the arming was correct) AND the suite is green (188+ tests); LOSS otherwise"
+    rollback: "git revert s48 commits; the re-seal is a test-file change"
+    eval_window: "the re-sealed repro + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: drift-reseal
+    collab: build
+    prompt: prompts/dev/w1-drift-reseal.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: reseal-pins
+    collab: build
+    prompt: prompts/dev/w2-reseal-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

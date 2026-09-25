@@ -1,0 +1,48 @@
+# musim/s22.yaml — drafted by evolve v0 from s21; filled by harness from audit-10 + codex-review-2026-09-14 M-tier core (operator standing order: continuous loop)
+id: s22
+parent: s21
+goal: "core M-tier: reports render from persisted state only (M1), failed agents produce honest nonzero exits (M5), lanes resist forged fields and partial reads (M6/M7)"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author fixes M1 (report renders running seasons from persisted state.json, no /proc) + M5 (terminal-status to exit-code mapping); one author fixes M6 + M7 in collab (authoritative harness fields, shared-lock reads, partial-tail recovery) and pins all four spec-first; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-10@51705a5ba23cb075bddd13d5c5016593dcae2f51cfcc90e572ed55e8006f1bab
+    - akar:s21-harvest@f0783ffaf64381e7c7fb3a9d2c0517db99041cc0a824e3fe2440d499dccf152b
+    - akar:codex-review-2026-09-14@23bcca3defbf8c9645b74143ad7536ae173c21ef6cd7cd30f48915a81ff709cd
+  primary_change:
+    type: retune
+    node: gate
+    baseline: "report calls read_status which recomputes snaps from /proc and clocks for running seasons, so identical ledger bytes render different pages (reviewer reproduced; the self-identifying footer hash is computed over state.json the page does not fully reflect); workspace links follow unsorted rglob order; any all-terminal snapshot finalizes completed and cli exits 0 even when every agent failed; collab payloads override harness seq/from fields and readers hold no shared lock so partial appends are observable"
+    expected_band: "WIN if rendering a running season twice from unchanged persisted bytes yields identical pages (repro) AND workspace links are sorted deterministically AND a season whose agents all fail exits nonzero with a failed status (repro) AND collab rejects or overrides forged seq/from payload keys AND a reader never observes a partial row under concurrent append (barrier repro) AND the suite is green (103+ tests); LOSS otherwise"
+    rollback: "git revert s22 commits; behavior tightening inside existing modules"
+    eval_window: "repro tests from the review's reproductions + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: render-exit
+    collab: build
+    prompt: prompts/dev/w1-render-exit.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: lane-integrity
+    collab: build
+    prompt: prompts/dev/w2-lane-integrity.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

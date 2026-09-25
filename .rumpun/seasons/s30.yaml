@@ -1,0 +1,47 @@
+# musim/s30.yaml — drafted by evolve v0 from s29; filled by harness from audit-18 + the stale-matrix gap (operator standing order: continuous loop)
+id: s30
+parent: s29
+goal: "fresh-matrix audits: rumpun audit --corpus re-runs the repro gate itself before ingesting, so reflection judges current main instead of the last close's committed snapshot"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author wires the --corpus flag through cli and audit (run tools/replay_corpus.py as an isolated subprocess with a timeout, ingest the fresh matrix it writes, refuse honestly if the runner fails); one spec-first tester pins the fresh-run contract; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-18@40d4290d49e903c81f5a3058fdcfda3f6fca9acceab07a00b133ffad1d638d94
+    - akar:s29-harvest@70b9f90eaf263c279c2ba45c9ad27f981d616b2ef164fdf6b3efb763d60caef5
+  primary_change:
+    type: add
+    node: audit
+    baseline: "the s26 matrix ingestion reads the newest COMMITTED replay-matrix.md, which only changes when the harness re-runs the corpus by hand between seasons: audit-18 judged a matrix captured before s29's own report.py change landed, so reflection can certify a main that has already drifted"
+    expected_band: "WIN if audit --corpus executes the runner as an isolated subprocess before ingestion AND the audit then reads the FRESH matrix (a regression introduced between closes arms a candidate without any human rerun) AND a runner failure (nonzero exit or timeout) produces an honest finding, never a silent skip AND default audit behavior without the flag is byte-identical AND the suite is green (138+ tests); LOSS otherwise"
+    rollback: "git revert s30 commits; the flag is additive"
+    eval_window: "repro pins over fixture matrices and a stub runner + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: fresh-audit
+    collab: build
+    prompt: prompts/dev/w1-fresh-audit.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: fresh-audit-pins
+    collab: build
+    prompt: prompts/dev/w2-fresh-audit-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,47 @@
+# seasons/s132.yaml — drafted by evolve v0 from s131; fill primary_change + evidence, then apply
+# resumed from stopped_stall parent s131; budget 60 -> 90 min
+id: s132
+parent: s131
+goal: "the stopping-rule pass: the campaign detects its own candidate-pool exhaustion and surfaces it for the operator's decision, and the measurable half of the cost accounting lands on the operator dashboard"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the candidates-exhausted detector (when the recent audit records name only candidates the prior records already named, the plan output surfaces the repetition for the operator's decision) with red-first pins; one author extends the operator dashboard with the spend aggregation (total writer-seconds across the committed season record, the measurable half of issue #18) with red-first pins; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s131-harvest@1200264269bbde8979da43390f062fdbd1a7e7430319f1b3ba8a8e9d019c575e"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: tooling
+    baseline: "s131 partial (w1's operator dashboard landed and verified; w2 budget-terminated mid-lane with the close worker completing the reseal; the season state stopped_stall; merged-tree suite 762 passed 1 xfailed; measured by the sealed harvest record s131-harvest)"
+    expected_band: "WIN if the plan surfaces candidate-pool repetition when the recent audit records name only prior candidates and stays silent on fresh ones (pinned red-first), the operator dashboard carries the spend aggregation parsed from the committed season record (pinned red-first), and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s132 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the repetition surface and the spend cell read from the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: exhaustion-detector
+    collab: build
+    prompt: prompts/dev/w1-exhaustion-detector.md
+    knowledge: partial
+    budget: {minutes: 90}
+  - name: w2
+    route: fable
+    lane: spend-aggregation
+    collab: build
+    prompt: prompts/dev/w2-spend-aggregation.md
+    knowledge: partial
+    budget: {minutes: 90}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

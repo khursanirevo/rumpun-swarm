@@ -1,0 +1,85 @@
+diff --git a/src/rumpun/routes.py b/src/rumpun/routes.py
+index d29dfdc..406fdeb 100644
+--- a/src/rumpun/routes.py
++++ b/src/rumpun/routes.py
+@@ -38,6 +38,12 @@ STRIP_ENV = (
+ 
+ KNOWN_CLIS = ("claude", "codex", "gemini", "opencode", "aider")
+ 
++# M11 (codex-review-2026-09-14): generated commands carry a concrete default
++# model, never a `<model>` placeholder. Documented default is the operator's
++# current fable id; ANTHROPIC_DEFAULT_FABLE_MODEL overrides it when set
++# (claude_routes).
++DEFAULT_CLAUDE_MODEL = "claude-fable-5-1"
++
+ # Well-known proxy hosts -> family label. Unknown hosts fall back to hostname.
+ _PROXY_HOST_LABELS = {
+     "api.z.ai": "glm",
+@@ -154,7 +160,9 @@ def claude_routes(env: dict[str, str] | None = None) -> list[dict[str, str]]:
+     Returns spawn-ready dicts: family label, one-line description, and the
+     exact spawn command template. The env-strip route is ALWAYS listed when
+     a claude binary exists — it is how the claude.ai login is reached from
+-    a proxied shell.
++    a proxied shell. The env-strip route carries a CONCRETE default model
++    (ANTHROPIC_DEFAULT_FABLE_MODEL when set, else DEFAULT_CLAUDE_MODEL) —
++    M11 (codex-review-2026-09-14).
+     """
+     env = dict(os.environ if env is None else env)
+     routes: list[dict[str, str]] = []
+@@ -179,12 +187,13 @@ def claude_routes(env: dict[str, str] | None = None) -> list[dict[str, str]]:
+     tier_note = ""
+     if tiers:
+         tier_note = " + --model <name> (tier defaults are ALSO env-pinned and must be stripped)"
++    model = tiers.get("fable") or DEFAULT_CLAUDE_MODEL
+     routes.append({
+         "family": "claude",
+         "desc": login_desc + (tier_note if tiers else ""),
+         "command": (
+             f"{_strip_prefix()} sh -c 'cat {{prompt}} | claude -p "
+-            "--dangerously-skip-permissions --model <model>'"
++            f"--dangerously-skip-permissions --model {model}'"
+         ),
+         "env_note": f"strip prefix removes {len(STRIP_ENV)} routing vars",
+     })
+@@ -198,15 +207,40 @@ def route_table() -> list[dict[str, str]]:
+     return table
+ 
+ 
++def _sh_check(cmd: str) -> None:
++    """Syntax-check one route command with /bin/sh -n; raise on non-zero.
++
++    M11: a command that cannot parse as sh is never written to the config.
++    ``{prompt}`` is a plain sh word (no brace expansion in /bin/sh), so
++    command templates are checked exactly as written.
++    """
++    proc = subprocess.run(
++        ["/bin/sh", "-n"],
++        input=cmd,
++        capture_output=True,
++        text=True,
++        check=False,
++    )
++    if proc.returncode != 0:
++        msg = (
++            f"route command fails /bin/sh -n (rc={proc.returncode}):"
++            f" {proc.stderr.strip()}\n  cmd: {cmd}"
++        )
++        raise RoutesError(msg)
++
++
+ def write_routes(cfg_path: Path) -> int:
+     """Fill the ``routes: {}`` placeholder line of rumpun.yaml.
+ 
+     Text-level single-line patch so scaffold comments survive. Raises
+     RoutesError when the placeholder is missing (already filled, or not a
+-    scaffolded config).
++    scaffolded config), or when any generated command fails /bin/sh -n
++    (M11) — checked before any byte of the config is written.
+     """
+     text = cfg_path.read_text(encoding="utf-8")
+     table = route_table()
++    for route in table:
++        _sh_check(route["command"])
+     out: list[str] = []
+     patched = False
+     for line in text.splitlines():

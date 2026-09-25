@@ -1,0 +1,46 @@
+# rumpun.yaml — campaign-level config. Season-level config lives in musim/s<N>.yaml.
+schema: 1   # campaign schema version (s68; unknown versions refuse mutating verbs)
+campaign:
+  goal: "rumpun evolves itself: reflect on the ledger every season and mutate its own pipeline and parameters, one evidence-cited step at a time"
+  metric: "evidence_cited_mutations_per_season"
+autonomy:             # P33 ratified 2026-09-14
+  stage: manual       # manual | panel | free (promotion criteria below)
+  promote_after: {clean_audits: 5}
+  demote_on: {consecutive_rejects: 2}
+  panel:
+    families: [fable, glm, gpt-5.6-sol]
+    rule: majority
+    blinded: true
+  invariants: [goal_immutable, budget_cap, falsify_required]   # panel cannot waive
+  on_reject:
+    action: rollback_to_last_good
+    pause: true
+    escalate_after: {consecutive_rejects: 2}
+budget:
+  campaign_cost_cap: null   # P9: set a number before 'rumpun start'
+routes:
+  # Tool guards (s105 w1, issue #21): a spawned claude route must unset the
+  # ANTHROPIC_DEFAULT_*_MODEL vars (env -u) and pin --model. The [1m]-suffixed
+  # model env reaches the relay and its degraded toolset strips the writer's
+  # core tools (akar glm-toolless-spawn; the a1-era and s13 w1/w2 lanes died
+  # of it). If a lane still boots with only ToolSearch loaded (schema
+  # deferral), the recovery is one ToolSearch probe:
+  #   ToolSearch select:Bash,Read,Edit,Write,Grep
+  # Schemas load; direct calls before it fail InputValidationError.
+  # kancil (s67 w1; directive seq 11): the pip-installed kancil CLI as a
+  # writer route. `kancil loop --prompt F` is the installed CLI's only
+  # prompt-consuming entry: it pipes the prompt file into headless
+  # `claude -p` one iteration at a time and exits on kancil's stop sentinel
+  # when the prompt's work declares completion. The writer budget and the
+  # season stall rule bound it harness-side. Install:
+  #   uv tool install kancil   (or: pip install kancil)
+  kancil: 'kancil loop --prompt {prompt} --iteration-timeout 1800'
+  glm: 'env -u ANTHROPIC_DEFAULT_SONNET_MODEL -u ANTHROPIC_DEFAULT_OPUS_MODEL -u ANTHROPIC_DEFAULT_HAIKU_MODEL -u ANTHROPIC_DEFAULT_FABLE_MODEL sh -c ''cat {prompt} | claude -p --dangerously-skip-permissions --model glm-5.3'''
+  fable: 'env -u ANTHROPIC_BASE_URL -u ANTHROPIC_AUTH_TOKEN -u ANTHROPIC_API_KEY -u ANTHROPIC_DEFAULT_SONNET_MODEL -u ANTHROPIC_DEFAULT_OPUS_MODEL -u ANTHROPIC_DEFAULT_HAIKU_MODEL -u ANTHROPIC_DEFAULT_FABLE_MODEL sh -c ''cat {prompt} | claude -p --output-format stream-json --verbose --dangerously-skip-permissions --model claude-fable-5-1'''
+  gpt-6-astra: 'codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-6-astra {prompt}'
+  gpt-reserve: 'codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-reserve {prompt}'
+  gpt-5.6-sol: 'codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.6-sol {prompt}'
+  gpt-5.6-terra: 'codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.6-terra {prompt}'
+  gpt-5.6-luna: 'codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.6-luna {prompt}'
+  gpt-5.5: 'codex exec --dangerously-bypass-approvals-and-sandbox -m gpt-5.5 {prompt}'
+  codex-auto-review: 'codex exec --dangerously-bypass-approvals-and-sandbox -m codex-auto-review {prompt}'

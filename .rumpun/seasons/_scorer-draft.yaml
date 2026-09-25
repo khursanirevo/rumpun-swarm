@@ -1,0 +1,61 @@
+# seasons/_scorer-draft.yaml — PARKED FRONT (operator-gated), 2026-09-24
+# Not launched. At launch: renumber id to the next free season,
+# set parent to the newest closed season, re-cite the newest sealed
+# harvest sha, apply, then start with the yaml path.
+id: sNEXT
+parent: sPREV
+goal: "process-scoring pass: recent seasons graded against the close protocol and brief compliance, one evidence-cited fix proposed for the operator to merge"
+metric: "process_findings_sealed"
+mode: fight
+methodology:
+  approach: "one author scores the last sixteen completed seasons against the eight-line rubric (harvest, DESIGN entry, seed, commit, check, brief-target match, bounds, notes) sealing findings as pins; one author turns the top failure class into one reviewable diff citing the failing seasons; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s255-harvest@5d316c1666ba0e5f62915a1cf30794d20da768530768d99dffe6b3e105e81a38"
+  primary_change:
+    type: add             # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: evaluate
+    baseline: "the s255 landing fold (d999cf4); corroborated process failures: frozen-brief record targets s214-s255, harvest-only closes s214-s254, s256 orphaned unclosed at draft time"
+    expected_band: "WIN if the score report seals per-season findings with citations and the proposal carries one diff that passes git apply --check citing the failures; LOSS if the report claims compliance where git shows gaps; NEUTRAL if only operator-gated items block"
+    rollback: "git revert the season's commits; the ledger and season state survive untouched"
+    eval_window: "the score record's pins plus the proposal's apply-check; the tallies read from the writers notes.md"
+  pipeline:
+    - phase: process-score
+      primitive: evaluate
+      agents: writers
+      prompt: prompts/base/evaluate.md
+      writes: score.jsonl
+    - phase: triage
+      primitive: evaluate
+      agents: writers
+      prompt: prompts/base/evaluate.md
+      reads: [score.jsonl]
+      writes: triage.jsonl
+    - phase: propose
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      reads: [triage.jsonl]
+      writes: proposal.jsonl
+    - phase: decision-gate
+      primitive: evaluate
+      agents: writers
+      prompt: prompts/base/evaluate.md
+      reads: [proposal.jsonl]
+      writes: gate-report.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: process-score
+    collab: build
+    prompt: prompts/dev/w1-process-score.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: process-diff
+    collab: build
+    prompt: prompts/dev/w2-process-diff.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 30}, budget_exhausted]

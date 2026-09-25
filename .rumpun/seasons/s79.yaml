@@ -1,0 +1,46 @@
+# seasons/s79.yaml — drafted by evolve v0 from s78; filled by harness 2026-09-17 (the first board-pulled season: issue #2's fix, closed through the loop)
+id: s79
+parent: s78
+goal: "the first board-pulled season: issue #2 (append_record writes citations lint cannot resolve, filed from real v0.11.0 use) is the scope - reproduce the divergence from the issue text, fix the smallest surface, pin it, and close the season through the full board loop (map at close, sync commenting the sealed record on the issue)"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author reproduces the divergence, fixes the smallest surface, pins the red-shaped contract and the well-formed path; one author pins the loop's end-to-end composition (map + issue_for_season + sync dry-run over fixtures, nothing written); the close exercises the loop for real on issue #2; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s78-harvest@03551f0d7856b31acdbea9f9665f3c884a2d3c7f31720e65c728e325ee825535"
+  primary_change:
+    type: retune
+    node: tooling
+    baseline: "s78 best: the map and sync work (suite 370/370) - but the loop has never pulled its own scope: issue #2 records that append_record emits citations the lint resolver cannot resolve, a real defect filed from use at v0.11.0"
+    expected_band: "WIN if the divergence is reproduced and fixed (the emitted citations resolve, the well-formed path unchanged) AND the loop pins hold (sync dry-run over fixtures, the composition test) AND the season's own board --map + the close sync run for issue #2 AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s79 commits; issue #2 reopens via gh if the fix proves wrong"
+    eval_window: "both pins files + merged-tree full pytest + the board --map receipt in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: issue2-fix
+    collab: build
+    prompt: prompts/dev/w1-issue2-fix.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: board-loop-pins
+    collab: build
+    prompt: prompts/dev/w2-board-loop-pins.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

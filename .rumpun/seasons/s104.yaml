@@ -1,0 +1,46 @@
+# seasons/s104.yaml — drafted by evolve v0 from s100; filled by harness 2026-09-18 (the loop resumes on the operator's go: the post-pause assessment, the pack check, the inventory)
+id: s104
+parent: s100
+goal: "the loop resumes on the operator's go after its first self-imposed pause: the fourth assessment seals through the module with the pause itself in the record (the fronts read live post-pause), the pack digest is checked fresh, and the inventory names what remains - the operator gates and the standing standards, nothing invented"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author seals the s104 assessment through the module (the fronts read from the live board post-pause, the verdict per the live read, the operator's go recorded as the resume input) ; one author checks the pack digest fresh (reinstall only if the draft moved) and takes the post-pause inventory (what remains, named honestly); fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s100-harvest@7e08adac6e2837d1ce74e755f38ec472a2317bfa79cb329b582ab3cf5bd2e3ff"
+  primary_change:
+    type: retune
+    node: process
+    baseline: "s100 best: the surface gate landed and the loop paused with the resume triggers precise (suite 496/496) - the post-pause season proves the pause-resume cycle's maintenance half: the assessment re-seals, the pack check re-runs, the inventory re-names"
+    expected_band: "WIN if the s104 assessment seals through the module with the pause in the record AND the pack digest check lands (reinstall or the recorded equality) AND the inventory names what remains honestly AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s104 commits"
+    eval_window: "w2 pins + merged-tree full pytest + the sealed record and the inventory in the writers' notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: post-pause-assessment
+    collab: build
+    prompt: prompts/dev/w1-post-pause-assessment.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: post-pause-inventory
+    collab: build
+    prompt: prompts/dev/w2-post-pause-inventory.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

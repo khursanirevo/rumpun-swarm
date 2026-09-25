@@ -1,0 +1,46 @@
+# seasons/s137.yaml — drafted by evolve v0 from s136; fill primary_change + evidence, then apply
+id: s137
+parent: s136
+goal: "the glance pass: the report index shows what is running right now, and the guide describes the steady-state mode a campaign settles into while its operator decides"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author extends the report index to render the running season with its persisted started_at (a running season named, no running season byte-identical) with red-first pins; one author documents the steady-state mode in the guide's keep-going section (the light-lane pattern: lint, probe, rehearse) with the guide lint extended; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s136-harvest@40bf75994f9ff12e426fd80b85275b76a2c69b236c122dcd606ef50101ea154e"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: execute
+    baseline: "s136 best (both fable writers exited 0 at 977.5s; the full guide linted and all nine routes probe-serving; merged-tree suite 817 passed 1 xfailed with the known attestation flake solo-green; measured by the sealed harvest record s136-harvest)"
+    expected_band: "WIN if the report index renders the running season with its persisted started_at when one runs and stays byte-identical when none does (pinned red-first), the guide's steady-state section documents the light-lane pattern with the guide lint green, and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s137 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the index render and the guide section read from the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: running-card
+    collab: build
+    prompt: prompts/dev/w1-running-card.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: steady-state-doc
+    collab: build
+    prompt: prompts/dev/w2-steady-state-doc.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

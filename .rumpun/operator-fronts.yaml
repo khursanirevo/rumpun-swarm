@@ -1,0 +1,8 @@
+# .rumpun/operator-fronts.yaml: the standing decisions, one entry per
+# operator front. The report index renders one cell per entry, verbatim
+# (s131 w1). Maintained by the operator or the close worker. Refreshed
+# at s138; re-confirmed zero-delta at s145 w2; re-run zero-delta at s146 w2 (2026-09-21).
+- "the forge merge decision table (operator)"
+- "issue #18 (the cost accounting, the operator's front, stay-open; the spend aggregation landed as the measurable half)"
+- "the external-outcome residual stands with the operator's (a) keeping internal seasons running"
+- "the kancil upgrade is the operator's (the strict-xfail alarm names it)"

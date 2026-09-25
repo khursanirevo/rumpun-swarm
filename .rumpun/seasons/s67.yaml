@@ -1,0 +1,45 @@
+# seasons/s67.yaml — drafted by evolve v0 from s66; filled by harness 2026-09-16 (the kancil route + the kaggle-base pack, operator directive)
+id: s67
+parent: s66
+goal: "rumpun drives kancil: a kancil route in rumpun.yaml runs kancil as a writer, the kaggle-base pack installs into a fresh competition campaign, and the competition scaffold (baseline, validate, submit, improve with the score as the band) exists as the first research-season template"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the kancil route (inspect ../kancil's CLI entry, add the route to rumpun.yaml's routes map, document the invocation), installs the distilled kaggle-base pack into a scaffolded competition campaign, and lands the competition season template; one tester pins the route spawn, the pack install, and the scaffold shape; shared build lane; fable route, 40-minute budgets"
+  evidence: []
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "rumpun's writers run via claude and codex routes only: kancil - the operator's competition agent - cannot be driven as a writer, the kaggle-base pack has never installed into a fresh campaign, and no competition season template exists - three gaps between the loop and the first research run (directive seq 2 named kaggle-base as the first pack)"
+    expected_band: "WIN if a kancil-routed season completes with the stub proving the prompt handoff AND the kaggle-base pack installs into a fresh scaffolded campaign (digest verified) AND the competition season template lints and starts AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s67 commits; the route and template are additive"
+    eval_window: "w2 pins + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: kancil-route
+    collab: build
+    prompt: prompts/dev/w1-kancil-route.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: kancil-pins
+    collab: build
+    prompt: prompts/dev/w2-kancil-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

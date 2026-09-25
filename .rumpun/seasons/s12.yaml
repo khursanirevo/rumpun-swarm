@@ -1,0 +1,47 @@
+# musim/s12.yaml — drafted by evolve v0 from s11; filled by harness from audit-1 (the first ledger-driven season)
+id: s12
+parent: s11
+goal: "execute audit-1: trim the dead pipeline head to execute -> evaluate, in this season's own declaration and in the init scaffold"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "the mutation is the declaration: this season runs the lean 2-phase pipeline the audit demands; writers port the same shape into the scaffold template and docs"
+  evidence:
+    - akar:audit-1@2977e26f47b253ec7d618853cbc38ab3edcb896d543a6e35093e61928950bf77
+    - akar:s11-harvest@de3a6a985b96159b0334300a030cdbfda83171d3fe8f5820d47dfa9c10bac1f8
+  primary_change:
+    type: remove
+    node: pipeline-head
+    baseline: "audit-1: analyze/rank_gaps/hypothesize wrote artifacts in 0 of 8 engine seasons (s4..s11); plan/falsify unexercised under the candidate cap; the DAG forces the full head removal"
+    expected_band: "WIN if this season file lints with the 2-phase pipeline AND a fresh-init project's s1 lints identically AND the suite stays green; LOSS otherwise"
+    rollback: "git revert s12 commits and remove musim/s12.yaml"
+    eval_window: "s12 lint gate + fresh-init lint + merged-tree suite"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: glm
+    lane: scaffold-trim
+    collab: build
+    prompt: prompts/dev/w1-scaffold-trim.md
+    knowledge: partial
+    budget: {minutes: 20}
+  - name: w2
+    route: glm
+    lane: docs-lean
+    collab: build
+    prompt: prompts/dev/w2-docs-lean.md
+    knowledge: partial
+    budget: {minutes: 20}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

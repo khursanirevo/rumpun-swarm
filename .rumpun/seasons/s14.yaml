@@ -1,0 +1,47 @@
+# musim/s14.yaml — drafted by evolve v0 from s13; filled by harness from audit-2 candidate 1 (route glm tool-check)
+id: s14
+parent: s13
+goal: "spawn tool-check: detect tool-less agent boots from the agent.log signature and mark them in season state at spawn time"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author derives the deterministic log signature empirically and adds the engine-side detector + snap marking; one spec-first tester pins the classifier and watcher contract; shared build lane"
+  evidence:
+    - akar:audit-2@0604ce196d06a5a5a93515527053b8a416a7d1149b35c7395e8351e98db7aea1
+    - akar:glm-toolless-spawn@dbfd74ccd9bd076e3a1de5c0afd244cd461f2ffcfb794dda98764a0a7bf257f9
+  primary_change:
+    type: add
+    node: spawn
+    baseline: "spawn health is judged only at close: audit-2 counts 6 clean-empty of 19 glm spawns (s5-s13); all 7 recorded tool-less boots (akar glm-toolless-spawn) were caught post-hoc, never at spawn time; the engine has no spawn-time mechanism"
+    expected_band: "WIN if the engine sets snap toolless=true in _season/state.json from the agent.log signature for a live tool-less spawn AND replaying the classifier over every recorded s3-s13 agent.log classifies the whole akar tool-less corpus true with zero clean-deliverable logs true AND the suite is green; LOSS otherwise. Detection refines, never gates (lane protocol v2)."
+    rollback: "git revert s14 commits; toolless snap marks are additive keys"
+    eval_window: "replay over recorded rimba s3-s13 agent.logs + s14 live spawns + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: glm
+    lane: toolcheck-engine
+    collab: build
+    prompt: prompts/dev/w1-toolcheck.md
+    knowledge: partial
+    budget: {minutes: 25}
+  - name: w2
+    route: glm
+    lane: toolcheck-tests
+    collab: build
+    prompt: prompts/dev/w2-toolcheck-tests.md
+    knowledge: partial
+    budget: {minutes: 25}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

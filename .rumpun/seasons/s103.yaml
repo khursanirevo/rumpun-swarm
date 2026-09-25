@@ -1,0 +1,46 @@
+# seasons/s103.yaml — drafted by evolve v0 from s102; filled by harness 2026-09-18 (issues #19/#20 retire on the landed evidence + the scaffold's emission contract pinned)
+id: s103
+parent: s102
+goal: "the operator's issues retire on evidence and the contract gets teeth: #19 and #20 close with comments carrying the sealed s102 evidence (the engine-staffs-nothing design truth, the walk-up checker fix, the red-first pins), and the scaffold's emission contract is pinned adversarially - zero singular agent: keys in any emitted tree, the checker byte-real, the refusals loud"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author retires both issues (the evidence comments citing the sealed s102-harvest record, the closes naming v0.11.0 as the repro surface and current main as the fix surface); one author pins the emission contract adversarially (zero singular agent: keys anywhere, the checker passes ruff, a sourceless tree raises, refuse-overwrite holds); fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s102-harvest@afa9d433d20622644d8ccbd5c80b659431754d5a1e8bda2f49a9ddfeddf278e1"
+  primary_change:
+    type: retune
+    node: process
+    baseline: "s102 best: both defects fixed on current main with red-first pins (the issues still open awaiting the evidence comments) - the retirement and the never-again pins are the remaining work"
+    expected_band: "WIN if issues #19 and #20 close on the sealed evidence with the operator-facing summary naming the repro and fix surfaces AND the emission pins hold adversarially (zero singular keys, the checker ruff-clean, the refusals loud) AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s103 commits; issues #19/#20 reopen via gh"
+    eval_window: "w2 pins + merged-tree full pytest + the close confirmations and the pin map in the writers' notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: retire-19-20
+    collab: build
+    prompt: prompts/dev/w1-retire-19-20.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: scaffold-pins
+    collab: build
+    prompt: prompts/dev/w2-scaffold-pins.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,85 @@
+# musim/s4.yaml — drafted by evolve v0 from s3; filled by harness 2026-09-14
+id: s4
+parent: s3
+goal: "dogfood the collab lane live (kill-marker fix coordinated through the lane) and add season report --serve with a self-identifying footer"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "two agents coordinate through the shipped lane module while building one fix; third adds the serve surface; harness integrates and evaluates the lane file as evidence"
+  evidence:
+    - akar:s3-harvest@9a23a04205f90865
+  primary_change:
+    type: rewire
+    node: execute
+    baseline: "s3 shipped collab.py + 15-test suite + README (WIN); harness wired lane env into engine spawn; kill-marker defect open since s2"
+    expected_band: "WIN if lane-build.jsonl holds >=2 events from each of w1,w2 and the kill-marker fix integrates with the suite green and season report --serve serves the s3 report over HTTP; LOSS if any of the three misses"
+    rollback: "git revert s4 commits and remove musim/s4.yaml"
+    eval_window: "s4 season suite + lane file + merged-tree pytest + --serve smoke"
+  pipeline:
+    - phase: analyze
+      primitive: analyze
+      agent: analyst
+      prompt: prompts/base/analyze.md
+      writes: errors.jsonl
+    - phase: rank_gaps
+      primitive: rank_gaps
+      agent: analyst
+      prompt: prompts/base/rank_gaps.md
+      reads: errors.jsonl
+      writes: gaps.yaml
+      top_n: 3
+    - phase: hypothesize
+      primitive: hypothesize
+      agent: swarm
+      prompt: prompts/base/hypothesize.md
+      reads: gaps.yaml
+      writes: hypotheses.yaml
+      per: gap
+      max_concurrent: 3
+    - phase: plan
+      primitive: plan
+      agent: planner
+      prompt: prompts/base/plan.md
+      reads: hypotheses.yaml
+      writes: experiments.yaml
+    - phase: falsify
+      primitive: falsify
+      agent: critic
+      prompt: prompts/base/falsify.md
+      reads: experiments.yaml
+      writes: falsification.yaml
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      reads: falsification.yaml
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: [falsification.yaml, results.jsonl]
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: glm
+    lane: fix-engine
+    collab: build
+    prompt: prompts/dev/w1-kill.md
+    knowledge: partial
+    budget: {minutes: 20}
+  - name: w2
+    route: glm
+    lane: fix-tests
+    collab: build
+    prompt: prompts/dev/w2-kill-tests.md
+    knowledge: partial
+    budget: {minutes: 20}
+  - name: w3
+    route: glm
+    lane: serve
+    prompt: prompts/dev/w3-serve.md
+    knowledge: partial
+    budget: {minutes: 20}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

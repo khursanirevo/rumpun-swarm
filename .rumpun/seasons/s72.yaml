@@ -1,0 +1,46 @@
+# seasons/s72.yaml — drafted by evolve v0 from s71; filled by harness 2026-09-17 (the s71 INVALID retry: panel route + board, same briefs)
+id: s72
+parent: s71
+goal: "the s71 retry: the panel's second-opinion route sends render_review's text to a real route and seals the verdict sha-sealed (issue #1), and w1 re-probes the read:project scope blocker - completing the board or stopping honestly a third time"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "the s71 lanes re-run unchanged: one author wires the panel's route call (subprocess bounded 300s, pluggable seam pinned offline, pending upgrades to verdict, timeout seals pending with the error quoted) plus one real panel run; one author probes gh project list once and completes the board or stops verbatim; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s71-harvest@c44a3dccae62733cc710284f87e87fec0345bf2ed3572c76acd25a2249da1b2b"
+  primary_change:
+    type: rewire
+    node: tooling
+    baseline: "s70 best stands (the panel's input contract and pending seal, suite 308/308): s71 contributed an honest board stop and an INVALID crash record - no route call exists, and the board is still blocked on the read:project scope"
+    expected_band: "WIN if the panel route seam holds in pins (argv, timeout, healthy and timeout record shapes) and one real panel-<sid> record seals with a verdict or an honest pending-plus-error, AND the board either completes live or stops honestly on the verbatim scope error, AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s72 commits; panel.py's route call is additive; the board flow is gh-side and deletable"
+    eval_window: "w2 pins + merged-tree full pytest + the panel-s70 record + w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: board-retry
+    collab: build
+    prompt: prompts/dev/w1-board-retry.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: panel-route
+    collab: build
+    prompt: prompts/dev/w2-panel-route.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

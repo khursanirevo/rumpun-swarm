@@ -1,0 +1,47 @@
+# musim/s32.yaml — drafted by evolve v0 from s32 window's own history; filled by harness from audit-20 + the LOSS-band recalibration candidate's remedy (operator standing order: continuous loop)
+id: s32
+parent: s31
+goal: "band-mask guard: lint warns when a season declares the integration metric but its expected_band never states what counts as integrated - the recalibration candidate's remedy, ratified into the gate"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the lint guard (metric modules_integrated + expected_band lacking integration evidence language -> warning naming the season) and retires the recalibrate candidate when no warned seasons remain in the audit window; one spec-first tester pins it; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-20@7d3a543176912cb3143089dd4e1a57aaeef6ee6f37db57e0ad8f8504e814d59b
+    - akar:s31-harvest@cb6fe78a5b66a27d95329cb85b8d8157b68d890f4066b1efaddfc07fbd772425
+  primary_change:
+    type: retune
+    node: gate
+    baseline: "five seasons (s5, s6, s12, s14, s17-era) declared metric modules_integrated with bands that never defined integration, so LOSS verdicts masked shipped modules - the audit's recalibrate candidate fired three times across windows and its remedy (count integration in bands) was practiced since s17 but never ratified into the gate; the candidate kept aging out of windows without a mechanism"
+    expected_band: "WIN if lint warns on a season declaring metric modules_integrated whose expected_band lacks any integration-evidence token (integration|integrated|suite|tests) AND stays silent on bands that do AND the warning names the season AND the suite is green (145+ tests) AND the recalibrate candidate retires from future windows as compliant bands accumulate; LOSS otherwise"
+    rollback: "git revert s32 commits; the guard is a warning, never an error"
+    eval_window: "repro pins + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: band-guard
+    collab: build
+    prompt: prompts/dev/w1-band-guard.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: band-guard-pins
+    collab: build
+    prompt: prompts/dev/w2-band-guard-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

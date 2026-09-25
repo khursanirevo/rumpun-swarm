@@ -1,0 +1,46 @@
+# seasons/s89.yaml — drafted by evolve v0 from s88; filled by harness 2026-09-17 (the installed pack syncs with the re-sealed draft; the epic arithmetic becomes a pinned contract)
+id: s89
+parent: s88
+goal: "maintenance as a first-class season: the installed kancil-base syncs with the re-sealed draft (the correctness prior rides in, digest-verified), the board-arc epic extends with s85-s88, and the rollup's arithmetic - the views always sum to the whole - becomes a pinned contract"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author reinstalls the pack (digest-verified to ab03f431) and extends the epic, preserving every verdict (the s85 split arithmetic rule); one author pins the sum invariant, the no-double-membership and no-vanish pair, and the extension behavior over fixtures; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s88-harvest@0a7dcf11066de7222b1431271f8be1c0ad1e6fc4e182fafe7622f6d5fb4a1e17"
+  primary_change:
+    type: retune
+    node: tooling
+    baseline: "s88 best: the residuals settled and the assessment is a standing close step (suite 431/431) - but the installed pack trails the re-sealed draft by the correctness prior, and the epic arithmetic has never been pinned"
+    expected_band: "WIN if the installed pack updates to ab03f431 digest-verified AND the board-arc epic carries s85-s88 with the sum preserved AND the arithmetic pins hold over every fixture permutation AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s89 commits; the reinstall is reversible (the old digest reinstalls); the epic edit preserves history"
+    eval_window: "w2 pins + merged-tree full pytest + the epic view output in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: pack-sync-epics
+    collab: build
+    prompt: prompts/dev/w1-pack-sync-epics.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: epics-arith-pins
+    collab: build
+    prompt: prompts/dev/w2-epics-arith-pins.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

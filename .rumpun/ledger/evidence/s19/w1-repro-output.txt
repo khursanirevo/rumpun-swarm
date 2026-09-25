@@ -1,0 +1,13 @@
+warning: `VIRTUAL_ENV=/mnt/data/work/rumpun/.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+INFO --- H2: identity-checked termination ---
+WARNING /mnt/data/tmp/h2-ws-uxh9b38f: pid 3011197 identity mismatch (recorded start 3194489, live 3182144); not signaled
+INFO H2 mismatch: not_signaled=True warned=True marker_absent=True (pid 3011197, recorded start 3194489, live start 3182144)
+INFO H2 control: signaled_and_dead=True marker_written=True
+INFO --- H3: agents run inside their workspace ---
+INFO spawned w1 (stub) pid 3011198
+INFO spawned w2 (stubcat) pid 3011199
+INFO season h3 -> completed
+INFO H3: status=completed pwd_in_log=/mnt/data/tmp/h3-proj-qc5gsybq/.rumpun/rimba/h3/w1 equals_workspace=True cat_route_replayed_prompt=True exits=['0', '0']
+INFO H3 workspace path: /mnt/data/tmp/h3-proj-qc5gsybq/.rumpun/rimba/h3/w1
+INFO RESULT: H2=PASS H3=PASS
+repro-exit=0

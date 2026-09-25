@@ -1,0 +1,47 @@
+# seasons/s66.yaml — drafted by evolve v0 from s65; filled by harness 2026-09-16 (the operator surface: kanban verb + adhd preinstall, directives seq 7/8/10)
+id: s66
+parent: s65
+goal: "the operator sees the campaign at a glance: rumpun kanban renders backlog, doing, need-human, and done from the ledger and runs state, and rumpun init preinstalls the i-have-adhd output rules so every operator reads rumpun in actionable shape"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the kanban verb (four columns derived, no new state file: backlog from armed audit candidates and drafted-only seeds, doing from the running season, need-human from the unset cap plus containment blocks plus stale directive statuses, done from harvest verdicts with salvage marks) and the init-time adhd rules preinstall; one tester pins each column's derivation and the init step; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - ledger:s65-harvest@f3c4b5b1ebc9e7f6750d30d313d201d3647f830d763db8984fd14ba46d42e74d
+    - ledger:audit-42@9bd4f6aa43d34879761db89e296bd75dd685f18ff74dba1f6e027f4dcd1944fb
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "the campaign state is scattered: armed candidates live in audit records, the running season in runs state, waivers in the ledger, verdicts in harvests - no single view answers what is backlog, doing, blocked-on-human, or done; and the adhd output rules the operator relies on are session-local, never shipped with rumpun (directives seq 7, 8, 10)"
+    expected_band: "WIN if rumpun kanban renders the four columns from the real campaign (backlog from armed candidates and drafted-only seeds, doing naming the running season, need-human listing the unset cap and any containment blocks with the four-sentence card format, done counting harvested seasons with salvage marks) AND rumpun init installs the adhd output rules AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s66 commits; the verb and the init step are additive"
+    eval_window: "w2 pins + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: operator-surface
+    collab: build
+    prompt: prompts/dev/w1-kanban.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: kanban-pins
+    collab: build
+    prompt: prompts/dev/w2-kanban-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

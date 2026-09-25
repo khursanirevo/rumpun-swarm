@@ -1,0 +1,47 @@
+# seasons/s58.yaml — drafted by evolve v0 from s57; filled by harness 2026-09-16 (epics as data, operator directive seq 5)
+id: s58
+parent: s57
+goal: "the campaign's arcs become data: .rumpun/epics.yaml declares each epic (id, title, goal, member seasons) and rumpun epics renders the rollup - verdict counts and season spans derived from the records, the records themselves byte-identical, never merged"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the epic declaration format (+lint rules: ids exist, members unique across epics) and the rumpun epics verb (per-epic span, verdict counts from runs state, honest rendering of missing states); one tester pins the rollup arithmetic, the duplicate-member lint error, the missing-state honesty, and the ledger-immutability guarantee; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - ledger:s56-harvest@eceef15ddb560b006137d84c4e675a311bd4ee7054583067538f415faa95408e
+    - ledger:audit-40@13f559b61e4ea7db7f261b7f1e9a029fe489dc33424438f92463da329dca4b97
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "the campaign's epics exist only as hand-written prose in DESIGN's arc sections; no data declaration, no rollup view - arc-level questions (is the loop useful per arc, where is the loop now) need a human reading the season entries; operator directive seq 5 approves the rollup as data with the records untouched"
+    expected_band: "WIN if .rumpun/epics.yaml declares the campaign's arcs (id, title, goal, member seasons) AND rumpun epics renders the rollup (per-epic season span and verdict counts derived from runs state and harvest verdicts) AND duplicate members across epics lint-error AND a member without run state renders honestly AND no ledger byte changes AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s58 commits; the rollup is additive tooling over untouched records"
+    eval_window: "w2 pins + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: epic-rollup
+    collab: build
+    prompt: prompts/dev/w1-epics.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: epic-pins
+    collab: build
+    prompt: prompts/dev/w2-epic-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

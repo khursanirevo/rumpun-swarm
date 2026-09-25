@@ -1,0 +1,46 @@
+# seasons/s95.yaml — drafted by evolve v0 from s94; filled by harness 2026-09-18 (the spend line lands + the season grammar accepts fix)
+id: s95
+parent: s94
+goal: "the visibility fix lands and the grammar stops euphemizing: every harvested season emits a spend line derived from its writer table (the s94 cost contract's forward fix), the composer's label split renders live over the real ledger, and the season grammar accepts fix as a first-class repair type instead of the retune euphemism"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the spend line (offline-pinnable) and runs the composer fresh - the label split rendering live, the spend lines appearing, plain ledgers byte-identical; one author joins fix to the change-type enum with the three-shape pins (fix applies, the old eight unchanged, unknown refuses) and retires the RESUME mapping line; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s94-harvest@8bfda61d4156175e5fe42ac95632f56bbe63b9383752bb2bc4d801dae6f28b98"
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "s94 best: the governance questions answered with evidence (suite floor holds) - but the cost contract's forward fix is unlanded (no spend line exists), the label split's live render has never been seen, and the grammar still forces filed-defect repairs into the retune euphemism"
+    expected_band: "WIN if the spend-line pins hold and the fresh composer run renders the label split live with the spend lines appearing (plain ledgers byte-identical re-verified) AND the grammar pins hold (fix applies clean, the old eight unchanged, unknown refuses) AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s95 commits; the spend line is additive; the grammar change is additive (the old types stay valid)"
+    eval_window: "both pins files + merged-tree full pytest + the fresh render in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: spend-line
+    collab: build
+    prompt: prompts/dev/w1-spend-line.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: grammar-fix
+    collab: build
+    prompt: prompts/dev/w2-grammar-fix.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

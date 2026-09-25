@@ -1,0 +1,51 @@
+# falsify output — SEALED BEFORE EXECUTION, s1 manual run, 2026-09-14
+- experiment_id: E1_spawn_exit
+  metric: exit_files_code_0
+  direction: ">="
+  threshold: 2
+  dataset: /tmp/rumpun-s1-smoke
+  confidence_rule: direct observation of exit files and state.json; single run
+  consequence: kill
+- experiment_id: E2_crash_detect
+  metric: crash_detected_seconds
+  direction: "<="
+  threshold: 5
+  dataset: /tmp/rumpun-s1-smoke
+  confidence_rule: status output observed after kill; single run
+  consequence: kill
+- experiment_id: E3_stop
+  metric: stop_exit_code
+  direction: "=="
+  threshold: 0
+  dataset: /tmp/rumpun-s1-smoke
+  confidence_rule: stop exit code + status stopped_operator + no alive pids; single run
+  consequence: kill
+- experiment_id: E4_stall
+  metric: stall_stop_seconds
+  direction: "<="
+  threshold: 75
+  dataset: /tmp/rumpun-s1-smoke
+  confidence_rule: season state file status field; single run
+  consequence: kill
+- experiment_id: E5_budget
+  metric: budget_stop_seconds
+  direction: "<="
+  threshold: 75
+  dataset: /tmp/rumpun-s1-smoke
+  confidence_rule: season state file status field; single run
+  consequence: kill
+- experiment_id: E6_routes_resolve
+  metric: routes_constructed_ok
+  direction: "=="
+  threshold: 3
+  dataset: repo .rumpun/rumpun.yaml routes
+  confidence_rule: command strings inspected for markers (z.ai template, env-strip, -m slug); no model execution
+  consequence: kill
+- experiment_id: E7_regression
+  metric: lint_graph_pass
+  direction: "=="
+  threshold: 1
+  dataset: repo + fresh temp scaffold
+  confidence_rule: exit codes; single run
+  consequence: kill
+overall: WIN requires every experiment inside its threshold; any MISS = LOSS for that experiment and season verdict LOSS

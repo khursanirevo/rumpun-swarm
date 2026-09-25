@@ -1,0 +1,5 @@
+{"module": "akar.py", "writer": "w1", "lines": 129, "ruff": "pass", "import": "pass", "smoke": "append+find+duplicate-reject+sha256 digest OK in temp project", "integrated": true}
+{"module": "harvest.py", "writer": "w2", "lines": 63, "ruff": "pass", "import": "pass", "smoke": "pending live harvest of s2 below", "integrated": true}
+{"module": "evolve.py", "writer": "w3", "lines": 152, "ruff": "pass", "import": "pass", "smoke": "draft s3 from s2 OK; apply blocked on empty fields as required; apply passed after fill", "integrated": true, "harness_patch": "one line: musim path convention (root is .rumpun dir)"}
+{"module": "report.py", "writer": "w4", "lines": 143, "ruff": "pass", "import": "pass", "smoke": "render_report(s2) produced .rumpun/rimba/s2/report.html", "integrated": true}
+{"season_meta": "4 writers glm route, exited 0 at 548s, budget 20min each, none stalled"}

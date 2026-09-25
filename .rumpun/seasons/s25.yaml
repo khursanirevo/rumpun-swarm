@@ -1,0 +1,47 @@
+# musim/s25.yaml — drafted by evolve v0 from s24; filled by harness from audit-13 (zero candidates: the recorded backlog is empty) + the cross-season verification gap (operator standing order: continuous loop)
+id: s25
+parent: s24
+goal: "cross-season regression replay: every recorded repro script runs against current main as one maintained gate, so eight merge reconciliations of drift get one honest matrix"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author builds the corpus runner (discover repro scripts under akar evidence, normalize their source-tree argument, execute against current main, emit a PASS/FAIL/DRIFT matrix); one author fixes what the matrix breaks or records honest drift per broken script; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-13@90926b6da1b7a103d4921e65ac5d9bae8144ba4de632c8f77517395081716941
+    - akar:s24-harvest@05b4e5586d9d7882507d709d24211945eed7a2d38eede3452ba534c6080b4842
+  primary_change:
+    type: add
+    node: gate
+    baseline: "every season s16-s24 verified its work point-in-time against its own patched copies; current main has since drifted through 8 documented merge reconciliations and has never re-run the historical repro corpus (s18 h6 loop + warn repro, s19 h2/h3, s20 h5/h9, s22 m1/m5, s23 m2/m8, s24 progress) - no gate proves those behaviors still hold on main"
+    expected_band: "WIN if the runner executes every discoverable repro script against current main and emits a matrix naming script, verdict, and first failing line AND every script either passes or carries an honest DRIFT record with the diff that broke it AND the unit suite is green (123+ tests) AND the matrix is committed as a ledger artifact; LOSS otherwise"
+    rollback: "git revert s25 commits; the runner is additive tooling"
+    eval_window: "the replay matrix itself + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: corpus-runner
+    collab: build
+    prompt: prompts/dev/w1-replay-corpus.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: replay-fixes
+    collab: build
+    prompt: prompts/dev/w2-replay-fixes.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,53 @@
+diff --git a/src/rumpun/audit.py b/src/rumpun/audit.py
+index 1469ff4..d4fb5da 100644
+--- a/src/rumpun/audit.py
++++ b/src/rumpun/audit.py
+@@ -48,7 +48,11 @@ wrote. A missing runner, a nonzero exit, a timeout, or an exit 0
+ without the promised matrix raises AuditError naming the runner: a
+ stale or partial matrix is never ingested. The runner's captured
+ streams are never echoed into the record; only the fresh matrix's
+-verdict counts land there.
++verdict counts land there. The s43 coverage finding rides fresh
++ingestion: one line, "corpus coverage: N repro scripts PASS of M
++discovered (K SKIP)", whose numbers cover every discovered script and
++which stays present at 0 PASS; the "all green on main" suffix is
++emitted only when no discovered script skipped.
+ """
+ 
+ from __future__ import annotations
+@@ -708,6 +712,7 @@ def _findings_and_candidates(
+                 row for row in matrix_rows if row[1] == "FAIL" or "REGRESSION" in row[3]
+             ]
+             corpus_passes = sum(1 for row in matrix_rows if row[1] == "PASS")
++            corpus_skips = sum(1 for row in matrix_rows if row[1] == "SKIP")
+             # DRIFT arming (s43 w1, from usefulness-decade-4 residual 8): a
+             # DRIFT row is a script whose assumptions moved — the reviewer's
+             # own probe going stale — and it escaped the mismatch arming. One
+@@ -735,15 +740,26 @@ def _findings_and_candidates(
+                 )
+             if corpus_matrix is not None:
+                 counts = Counter(row[1] for row in matrix_rows)
++                # s43 w2 contract (s52 w1, audit-38): the green claim is honest
++                # only when every discovered script passed; any SKIP retires
++                # it — the coverage finding below carries the full denominator.
+                 green = (
+                     ""
+-                    if corpus_fails or corpus_drifts
++                    if corpus_fails or corpus_drifts or corpus_skips
+                     else " — all green on main, no candidates"
+                 )
+                 lines.append(
+                     f"corpus: fresh matrix, {counts['PASS']} PASS, {counts['FAIL']} FAIL, "
+                     f"{counts['DRIFT']} DRIFT, {counts['SKIP']} SKIP{green}"
+                 )
++                # s43 w2 coverage finding: one line covering every discovered
++                # script, present even at 0 PASS (the honest floor). Finding
++                # only — the gap arms zero candidates; the "candidates: none"
++                # line stays when nothing else triggers.
++                lines.append(
++                    f"corpus coverage: {corpus_passes} repro scripts PASS of "
++                    f"{len(matrix_rows)} discovered ({corpus_skips} SKIP)"
++                )
+             elif corpus_passes:
+                 lines.append(
+                     f"corpus: {corpus_passes} repro scripts green on main (no candidates)"

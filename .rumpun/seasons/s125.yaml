@@ -1,0 +1,46 @@
+# seasons/s125.yaml — drafted by evolve v0 from s124; fill primary_change + evidence, then apply
+id: s125
+parent: s124
+goal: "the feed-the-surfaces pass: stalled lanes surface on the board where the operator reads, and the route catalog states which model each writer route actually serves"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author extends the board sync to consume the heartbeat events and the stall marks (a stalled lane's card carries the stall after a sync, idempotent, nothing invented) with red-first pins; one author updates the glm route template to the catalog's current glm version and aligns the route surfaces (models --write parity, the guide's route claims) with one bounded probe before landing; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s124-harvest@cb37186680b4d3d2d378e03ba9066c70bb6f96f3d9d5632575b482d43bba6b05"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: execute
+    baseline: "s124 best (both fable writers exited 0 at 1802.4s; the heartbeat and the reconciliation landed with both lanes committing their own work and the attestation firing in production; merged-tree suite 700/700; measured by the sealed harvest record s124-harvest)"
+    expected_band: "WIN if a stalled lane's board card carries the stall mark after a sync (pinned red-first), the glm route template names the catalog's current glm version with one bounded probe proving it before landing and the route surfaces agreeing, and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s125 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the board state and the route surfaces read from the writers notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: board-stall-sync
+    collab: build
+    prompt: prompts/dev/w1-board-stall-sync.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: route-catalog
+    collab: build
+    prompt: prompts/dev/w2-route-catalog.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

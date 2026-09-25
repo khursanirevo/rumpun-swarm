@@ -1,0 +1,48 @@
+# musim/s29.yaml — drafted by evolve v0 from s28; filled by harness from audit-17 + s28's L1 verification (the one review finding still open)
+id: s29
+parent: s28
+goal: "L1 closure: discovery page links and filenames derive from one collision-free mapping, so every record id produces a working link and distinct ids never share a page"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author fixes render_discoveries to use the slug mapping for BOTH links and writes, with a deterministic collision suffix; one spec-first tester pins the mapping contract; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-17@1af87c0ab350473d289e461502281c087b556cfd69563139a27742caaf70a591
+    - akar:s28-harvest@22c5bc8062fb19da801c20c2d7276a81c487ea8f963e207aefc001f933fe168e
+    - akar:codex-review-2026-09-14@23bcca3defbf8c9645b74143ad7536ae173c21ef6cd7cd30f48915a81ff709cd
+  primary_change:
+    type: retune
+    node: report
+    baseline: "render_discoveries writes page filenames from a slugified id (lowercase, non-alphanumeric to hyphen) but builds hrefs from the RAW id: an id containing uppercase or underscores produces a broken link, and two distinct ids can slugify onto one filename and overwrite each other's pages (review finding L1, confirmed still present on main by s28 w2's verification)"
+    expected_band: "WIN if every rendered discovery link resolves to an existing page for ids containing uppercase, underscores, and dots (repro fixture) AND two distinct ids that slugify identically render two distinct pages with no overwrite (repro) AND the existing lowercase ids' links and pages are byte-identical to current output (regression) AND the suite is green (133+ tests); LOSS otherwise"
+    rollback: "git revert s29 commits; the mapping is internal to render_discoveries"
+    eval_window: "repro pins + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: link-mapping
+    collab: build
+    prompt: prompts/dev/w1-link-mapping.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: link-pins
+    collab: build
+    prompt: prompts/dev/w2-link-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

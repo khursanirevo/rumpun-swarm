@@ -1,0 +1,48 @@
+# musim/s13.yaml — drafted by evolve v0 from s12; filled by harness from audit-1 follow-up (operator-approved extensions)
+id: s13
+parent: s12
+goal: "extend reflection to routes and bands: per-route outcome tables, LOSS-band masking detection, budget-cap flag"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author extends audit.py with three deterministic trigger sets; one spec-first tester pins the contract; shared build lane"
+  evidence:
+    - akar:audit-1@2977e26f47b253ec7d618853cbc38ab3edcb896d543a6e35093e61928950bf77
+    - akar:glm-toolless-spawn@dbfd74ccd9bd076e3a1de5c0afd244cd461f2ffcfb794dda98764a0a7bf257f9
+    - akar:s4-harvest@277013812e8a0842bd7dd5ba4052aa583879e51cc1c9e4713b69ee78861609f4
+  primary_change:
+    type: add
+    node: audit
+    baseline: "audit-1 covers phase liveness only; route outcomes (tool-less 7 of 24, recorded as anecdotes) and band calibration (s4/s5/s6 LOSS seasons shipped integrated modules) are unreflected; campaign_cost_cap unset since start (P9)"
+    expected_band: "WIN if run_audit reports per-route outcome tables with cited seasons AND flags LOSS seasons that shipped integrated modules AND flags the unset budget cap AND the suite is green; LOSS otherwise. Lane events recorded, not gating."
+    rollback: "git revert s13 commits and remove musim/s13.yaml"
+    eval_window: "s13 season suite + merged-tree pytest + live audit-2 run on the real ledger"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: glm
+    lane: route-reflect
+    collab: build
+    prompt: prompts/dev/w1-route-reflect.md
+    knowledge: partial
+    budget: {minutes: 25}
+  - name: w2
+    route: glm
+    lane: route-tests
+    collab: build
+    prompt: prompts/dev/w2-route-reflect-tests.md
+    knowledge: partial
+    budget: {minutes: 25}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

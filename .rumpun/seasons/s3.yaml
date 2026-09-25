@@ -1,0 +1,83 @@
+# musim/s3.yaml — drafted by evolve v0 from s2; filled by harness 2026-09-14
+id: s3
+parent: s2
+goal: "ship the collab lane mechanism, a pytest suite, and the first README via three parallel glm writers"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "parallel module authors, harness integrates and evaluates"
+  evidence:
+    - akar:s2-harvest@57932326d952190e
+  primary_change:
+    type: add
+    node: execute
+    baseline: "s2 integrated akar/harvest/evolve/report 4/4 WIN; engine v0 watches fight seasons only; no tests, no README"
+    expected_band: "WIN if collab.py, pytest suite, and README integrate and pytest is green on the merged tree; LOSS otherwise"
+    rollback: "git revert s3 commits and remove musim/s3.yaml"
+    eval_window: "s3 season suite plus merged-tree pytest run"
+  pipeline:
+    - phase: analyze
+      primitive: analyze
+      agent: analyst
+      prompt: prompts/base/analyze.md
+      writes: errors.jsonl
+    - phase: rank_gaps
+      primitive: rank_gaps
+      agent: analyst
+      prompt: prompts/base/rank_gaps.md
+      reads: errors.jsonl
+      writes: gaps.yaml
+      top_n: 3
+    - phase: hypothesize
+      primitive: hypothesize
+      agent: swarm
+      prompt: prompts/base/hypothesize.md
+      reads: gaps.yaml
+      writes: hypotheses.yaml
+      per: gap
+      max_concurrent: 3
+    - phase: plan
+      primitive: plan
+      agent: planner
+      prompt: prompts/base/plan.md
+      reads: hypotheses.yaml
+      writes: experiments.yaml
+    - phase: falsify
+      primitive: falsify
+      agent: critic
+      prompt: prompts/base/falsify.md
+      reads: experiments.yaml
+      writes: falsification.yaml
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      reads: falsification.yaml
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: [falsification.yaml, results.jsonl]
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: glm
+    lane: lane-mech
+    prompt: prompts/dev/w1-lane.md
+    knowledge: none
+    budget: {minutes: 20}
+  - name: w2
+    route: glm
+    lane: tests
+    prompt: prompts/dev/w2-tests.md
+    knowledge: none
+    budget: {minutes: 20}
+  - name: w3
+    route: glm
+    lane: readme
+    prompt: prompts/dev/w3-readme.md
+    knowledge: none
+    budget: {minutes: 20}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

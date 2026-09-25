@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rumpun"
+version = "1.48.0"
+description = "Bootstrap a self-evolving multi-agent swarm in this folder — YAML-first, season-based evidence-cited evolution"
+readme = "DESIGN.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "sani" }]
+keywords = ["multi-agent", "swarm", "self-evolving", "yaml", "cli"]
+classifiers = [
+  "Environment :: Console",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = ["pyyaml>=6.0"]
+
+[project.scripts]
+rumpun = "rumpun.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]

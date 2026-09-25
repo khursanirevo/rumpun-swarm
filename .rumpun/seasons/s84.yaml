@@ -1,0 +1,46 @@
+# seasons/s84.yaml — drafted by evolve v0 from s83; filled by harness 2026-09-17 (the composer reads its own resolution trail, issue #6)
+id: s84
+parent: s83
+goal: "the audit stops re-fighting old wars: the composer reads its own resolution trail before emitting a candidate - a resolved candidate cannot re-enter the backlog - and the suppression is pinned adversarially so it cannot eat a fresh candidate either (issue #6)"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author reproduces the re-emergence over the current ledger, fixes the smallest surface (the trail check before emission - drop or resolved: markers, per the code's shape), and verifies audit-43's lines stay buried; one author pins the contract adversarially over fixture ledgers (complete/partial/no trail, deterministic matching, the output shape); fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s83-harvest@3b21b3ba1c5d1ad5cb4f801b2a7ade5e5efac7a9afe2ac2baaa416301b361733"
+  primary_change:
+    type: rewire
+    node: tooling
+    baseline: "s83 best: the distill gate placement fixed and the findings retired (suite 401/401) - but the audit composer still re-emits resolved candidates every run (issue #6: audit-44 re-emitted audit-43's three resolved residuals verbatim), so the backlog refights old wars"
+    expected_band: "WIN if the reproduction is measured before the fix AND the suppression pins hold adversarially (resolved never re-emerges, fresh always emits, partial per the landed shape, no silent either way) AND audit-43's lines stay buried on the fresh composer run AND the suite floor holds; LOSS otherwise"
+    rollback: "git revert the s84 commits; the composer's trail check is additive"
+    eval_window: "both pins files + merged-tree full pytest + the fresh composer run in w1 notes.md"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: composer-trail
+    collab: build
+    prompt: prompts/dev/w1-composer-trail.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: composer-trail-pins
+    collab: build
+    prompt: prompts/dev/w2-composer-trail-pins.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

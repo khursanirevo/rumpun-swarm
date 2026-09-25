@@ -1,0 +1,2 @@
+{"module": "README.md (final sync)", "writer": "w1", "diff": "exactly three intended changes: stub section removed, evolution loop documented (plan/apply/approve/reject/rollback), board --json correction (verified live by writer)", "gates": "31/31 suite; grep 'Not implemented' = 0", "smoke": "harness fresh-project dry run: init scaffolded, models --write filled routes, seeded s1 lint-clean after documented edits, season list OK, no quota spent", "integrated": true}
+{"season_meta": "1 writer glm route, completed 230s, exit 0, no tool-less spawns"}

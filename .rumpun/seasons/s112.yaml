@@ -1,0 +1,46 @@
+# seasons/s112.yaml — drafted by evolve v0 from s111; fill primary_change + evidence, then apply
+id: s112
+parent: s111
+goal: "the accountability pass: a writer that exits without its notes gets marked by the engine, not the brief, and the audit view names where the second opinion dissents from the judge"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the notes gate (a writer exit without runs/<sid>/<w>/notes.md marks that unit INCOMPLETE in the engine state and results) with red-first pins; one author extends the member render with the dissent mark (a member whose latest panel verdict diverges from its harvest verdict names both) with red-first pins; fable route, 60-minute budgets"
+  evidence:
+    - "ledger:s111-harvest@c958540e856f043fcd1a2f3aeacb548d2b35b7d9d5f5d9c5a2f4e19f55d98d11"
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: tooling
+    baseline: "s111 best (both fable writers exited 0 at 1603.3s; the panel mark renders over the real campaign with the sums preserved; the composer digest pin landed with the live recompute matching all four values; merged-tree suite 570/570; measured by the sealed harvest record s111-harvest)"
+    expected_band: "WIN if a writer exit without notes.md marks INCOMPLETE in the engine state and results (pinned red-first), the member render names every member whose latest panel verdict diverges from its harvest verdict over the real ledger (pinned red-first), and the merged-tree full suite is green; LOSS if any pin reds for the wrong reason or a known red regresses; NEUTRAL if the operator blocks a front (the band authorizes it)"
+    rollback: "git revert the s112 commits; the ledger and the season state survive untouched"
+    eval_window: "both lanes' pins plus the merged-tree full pytest; the gate mark and the dissent marks read from the writers notes.md and the gate's own state output"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: notes-gate
+    collab: build
+    prompt: prompts/dev/w1-notes-gate.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: panel-dissent
+    collab: build
+    prompt: prompts/dev/w2-panel-dissent.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

@@ -1,0 +1,47 @@
+# seasons/s52.yaml — drafted by evolve v0 from s51; filled by harness 2026-09-16 (the audit coverage finding)
+id: s52
+parent: s51
+goal: "the loop's reflection reads its own corpus honestly: run_audit emits the corpus coverage finding (N PASS of M discovered, K SKIP) that the s43 pins pinned red, turning the three standing s43 coverage pins green"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands the coverage emission in run_audit's matrix ingestion path (exactly one finding line of the s43 spec shape, present at 0 PASS, the gap arms zero candidates, no all-green claim while skips dominate) with cli wiring unchanged; one tester turns the s43 pins green unchanged and adds one additions-only mixed-matrix arithmetic pin; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:s51-harvest@10473dfad1e91d5c9fd32de19063d47d6f4f70af0368fdc0e22bf35e0713773e
+    - akar:audit-38@790b2c0f8dd7225c107c57c50a387369d6e61cc3ba993ee8492c57c18feaf6a6
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "the audit ingests the corpus matrix but never reports coverage: audit.py has no 'corpus coverage:' emission in any commit, and the three s43 coverage pins have stood red since s43 (suite floor 223/227 + race flakes)"
+    expected_band: "WIN if the three s43 coverage pins pass unchanged against the landed emission (exactly one finding line covering every discovered script, present at 0 PASS, zero candidates armed from the gap, no all-green claim while skips dominate) AND w2's mixed-matrix arithmetic pin passes AND the suite floor holds (the known reds drop to race flakes only); LOSS otherwise"
+    rollback: "git revert the s52 commits; the emission is additive tooling"
+    eval_window: "the s43 pins solo + w2's pin + merged-tree full pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: audit-coverage
+    collab: build
+    prompt: prompts/dev/w1-audit-coverage.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: coverage-pins-green
+    collab: build
+    prompt: prompts/dev/w2-coverage-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

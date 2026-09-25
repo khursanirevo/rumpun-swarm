@@ -1,0 +1,56 @@
+# seasons/s218.yaml — drafted by evolve v0 from s217; fill primary_change + evidence, then apply
+id: s218
+parent: s217
+goal: "the steady-state cycle repeating: the light lanes re-run current and the rehearsals re-confirm fresh, the maintenance cadence holding while the operator decides"
+metric: "light-lane re-proofs"
+mode: fight
+methodology:
+  approach: "one author re-runs the light lanes (the guards fresh, one bounded glm-5.3 probe re-confirmed) naming any drift; one author re-runs the rehearsals fresh naming any drift; fable route, 60-minute budgets"
+  evidence: ["ledger:s217-harvest@02e89a0350dd81a82872ae23b264cb0358bff57f82410f51742e9338005b357d"]
+  primary_change:
+    type: add            # add | fix | remove | rewire | retune (P12/P34 grammar)
+    node: execute
+    baseline: "s217 best (both fable writers exited 0 at 1279.3s; guards 148/148 green fresh, rehearsals 12/12 green fresh, probe stderr byte-identical to s216, drift none, merged suite green except the known s38 red solo-classified; measured by the sealed harvest record s217-harvest)"
+    expected_band: "WIN if every light lane and rehearsal re-runs green with an explicit drift-or-none statement and the merged suite passes; LOSS if any fresh re-run contradicts a sealed result; NEUTRAL if only operator-gated items block"
+    rollback: "git revert the s218 commits; the ledger and season state survive untouched"
+    eval_window: "both lanes re-runs plus the merged-tree suite; the verb outputs read from the writers notes.md"
+  pipeline:
+    - phase: lint-sweep
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: sweep.jsonl
+    - phase: route-probes
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      writes: probes.jsonl
+    - phase: rehearsals
+      primitive: execute
+      agents: writers
+      prompt: prompts/base/execute.md
+      reads: [sweep.jsonl, probes.jsonl]
+      writes: rehearsals.jsonl
+    - phase: decision-gate
+      primitive: evaluate
+      agents: writers
+      prompt: prompts/base/evaluate.md
+      reads: rehearsals.jsonl
+      writes: gate-report.jsonl
+writers:
+  - name: w1
+    route: fable
+    lane: light-lanes-70
+    collab: build
+    prompt: prompts/dev/w1-light-lanes-70.md
+    knowledge: partial
+    budget: {minutes: 60}
+  - name: w2
+    route: fable
+    lane: rehearsals-69
+    collab: build
+    prompt: prompts/dev/w2-rehearsals-69.md
+    knowledge: partial
+    budget: {minutes: 60}
+stop:
+  "on": [all_exited, {stall_minutes: 30}, budget_exhausted]

@@ -1,0 +1,3 @@
+{"unit": "w1 evolve approve/reject", "verdict": "WIN", "implies": "operator P33 decisions land in akar; reject contains the draft under musim/rejected/; double-apply exits clean; w1 ran overlay verification before submit"}
+{"unit": "w2 spec-first tests", "verdict": "INVALID", "implies": "tool-less spawn #6; harness applied the test scope"}
+{"season": "s8", "verdict": "WIN", "metric": "modules_integrated", "band": "WIN = approve records without touching the draft AND reject moves + records AND suite green", "observed": "all three met (24/24; scratch-project smoke of all six exit paths)", "implies": "stub registry down to evolve rollback only; s9 closes it"}

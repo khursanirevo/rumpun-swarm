@@ -1,0 +1,150 @@
+DISTILLED_TEMPLATES: tuple[DistilledPrior, ...] = (
+    DistilledPrior(
+        key="season-yaml",
+        title="The season declaration",
+        evidence=_evidence(r"season yaml", r"primary_change"),
+        body="""\
+# The season declaration
+
+## What it is
+
+One file declares a unit of work: identity and parent, goal, the metric
+it is judged by, the declared change with its evidence citations, and
+the expected band written before the run. The band states the clauses
+that make the outcome a win; the clauses are each checkable after the
+run, and anything unmet is recorded honestly.
+
+## The skeleton
+
+    id: <unit id>
+    parent: <the unit this one builds on, or none for a seed>
+    goal: <one sentence, plain>
+    metric: <the measure this unit is judged by>
+    methodology:
+      evidence:
+        - <record kind>:<record id>@<content digest>
+      primary_change:
+        type: <add, remove, rewire, retune>
+        baseline: <what stood before, and how it shows in the metric>
+        expected_band: "WIN if <clauses, each checkable after the run>"
+
+## How to apply
+
+- Write the band before the run; grading against a band invented after
+  the run proves nothing.
+- Every evidence citation names the record and the digest that seals it.
+- The declaration is the unit's contract; views render from it, never
+  the reverse.
+""",
+    ),
+    DistilledPrior(
+        key="harvest-note",
+        title="The harvest record",
+        evidence=_evidence(r"\bharvest\b", r"implies:"),
+        body="""\
+# The harvest record
+
+## What it is
+
+The record a unit closes with. Fixed rows carry who ran, on what route,
+in what state, with what exit code and duration; then the verdict, the
+implies line, and the digest sealing the record's bytes.
+
+## The skeleton
+
+    # evidence record: <unit id>-harvest
+    id: <unit id>-harvest
+    date: <YYYY-MM-DD>
+    title: <the unit's title>
+    verdict: <win or loss, as graded against the sealed band>
+    implies: <what the outcome implies for the next unit>
+    sha256: <digest of the record's bytes>
+
+## How to apply
+
+- Write it at close, not later; a late record is a claim without a seal.
+- The implies line is the successor's first input.
+- Losses carry the same fields as wins; the digest seal is unconditional.
+""",
+    ),
+    DistilledPrior(
+        key="pins-header",
+        title="The pins file header",
+        evidence=_evidence(r"\bpins\b", r"red-checked"),
+        body="""\
+# The pins file header
+
+## What it is
+
+A pins file opens with the contract it pins: the band clauses it covers,
+the spec sources by record id and digest, the interface it declares for
+the implementer, and the measured red set. The header is the reference
+both sides reconcile against at merge.
+
+## The skeleton
+
+    '''<suite> pins — <what is pinned> (spec-first, red today).
+
+    The band this file pins: <the clauses, verbatim from the season
+    declaration>.
+    Spec sources: <the season yaml>, <the evidence records>, the
+    declared interface.
+    Pinned interface (declared for the implementer; reconcile at graft):
+    - <verb or function>: <the exact contract>.
+    Leak classes banned from the content: <the publish rules that apply>.
+
+    Every pin fails on its own assertion, never on an escaping
+    exception.
+    '''
+
+## How to apply
+
+- Declare the interface before implementation exists; reconcile at
+  merge, with evidence, when the readings diverge.
+- Name the measured red set; pins that were never red test nothing.
+- Helpers carry a unit-local prefix so nothing collides at merge.
+""",
+    ),
+    DistilledPrior(
+        key="evidence-record",
+        title="The evidence record shape",
+        evidence=_evidence(r"akar", r"sha256:"),
+        body="""\
+# The evidence record
+
+## What it is
+
+One append-only record per event worth citing later: a header naming the
+record kind, identity and date, the scope it covered, findings as plain
+lines, and a content digest sealing the bytes. Records are never edited
+after the seal; a correction lands as a new record citing the old one.
+
+## The skeleton
+
+    # evidence record: <kind>
+    id: <kind><number>
+    date: <YYYY-MM-DD>
+    title: <one line>
+    scope: <what the reflection covered>
+    finding: <one plain line per finding, counts included>
+    sha256: <digest of the record's bytes>
+
+## How to apply
+
+- The digest seals the record's own bytes, appended last; the seal is
+  the tamper evidence.
+- Findings state the facts with counts; candidates arm from findings by
+  rule, not by prose.
+- Citations name the record id plus a digest prefix; the id is stable
+  forever.
+""",
+    ),
+)
+
+DISTILLED_SECTIONS: tuple[tuple[str, tuple[DistilledPrior, ...]], ...] = (
+    ("", DISTILLED_PRIORS),
+    ("patterns", DISTILLED_PATTERNS),
+    ("templates", DISTILLED_TEMPLATES),
+)
+
+

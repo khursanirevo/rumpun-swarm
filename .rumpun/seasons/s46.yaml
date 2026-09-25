@@ -1,0 +1,47 @@
+# musim/s46.yaml — drafted by evolve v0 from s45; filled by harness from audit-34 + the plugin/hub arc's install step (operator standing order: continuous loop)
+id: s46
+parent: s45
+goal: "plugin install and use: rumpun plugin install verifies a pack's digest and copies its priors into the campaign, plugin list shows installed packs, and init --plugin scaffolds from the pack's templates"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author lands install/list/use in plugin.py + cli (digest-verified install into the campaign's plugins dir, init --plugin resolving the pack's templates and lint profile); one spec-first tester pins the install contract; shared build lane; fable route, 40-minute budgets"
+  evidence:
+    - akar:audit-34@4f9d23f966a0142214c034687e7eb2aeaf0b52e17e4834e3c6c70d0437b6f9be
+    - akar:s44-harvest@e585de8e6973fc444626587a197057eb7361407f7fc943dd5210e5dcc898f438
+  primary_change:
+    type: add
+    node: tooling
+    baseline: "the pack format and plugin lint exist (s44), but nothing installs a pack into a campaign or scaffolds from one: plugins are lint-able artifacts, not yet usable - the hub arc's install step is missing"
+    expected_band: "WIN if plugin install verifies the pack digest and copies priors/ into the campaign (repro: install then the campaign's plugins dir holds the pack) AND plugin list shows installed packs (repro) AND init --plugin kaggle-base scaffolds from the pack's templates and lint profile (repro: the scaffolded campaign lints clean and its prompts resolve to the pack) AND the suite is green (188+ tests); LOSS otherwise"
+    rollback: "git revert s46 commits; the install machinery is additive"
+    eval_window: "repro pins + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: plugin-install
+    collab: build
+    prompt: prompts/dev/w1-plugin-install.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: plugin-install-pins
+    collab: build
+    prompt: prompts/dev/w2-plugin-install-pins.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]

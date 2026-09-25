@@ -1,0 +1,48 @@
+# musim/s18.yaml — drafted by evolve v0 from s17; filled by harness from audit-6 + s17-harvest + codex-review-2026-09-14 (operator standing order: continuous loop)
+id: s18
+parent: s17
+goal: "gate hardening, resumed: finalize locking (H1), benih name containment (H4), akar append serialization (H6), plus the warning-transition fix; 40-minute budgets"
+metric: modules_integrated
+mode: fight
+methodology:
+  approach: "one author finishes H1 + H6 from the s17 salvage (evidence s17 w1-akar.py draft) and fixes the warning to fire on transition only; one author lands H4 containment and pins all four spec-first from the s17 test draft (evidence s17 w2-test_rumpun.py); shared build lane; fable route"
+  evidence:
+    - akar:audit-6@ff0381072d53dc8b431b587feceb59d3efb94b88b5762d4b7362028b4e5f7d50
+    - akar:s17-harvest@b2f4ab65fa102991d087d59d584cb2b33ea6c43fd995f4ebc495dc7f3e86014c
+    - akar:codex-review-2026-09-14@23bcca3defbf8c9645b74143ad7536ae173c21ef6cd7cd30f48915a81ff709cd
+  primary_change:
+    type: retune
+    node: gate
+    baseline: "identical to s17's baseline (all three defects reproduced by the external review) plus one new: the file-tool warning fires per sighting instead of per transition (observed live in s17's own spawn stream); s17 died at the 25-minute budget with H6 drafted and the test draft written, H1/H4 unstarted"
+    expected_band: "WIN if a stop under concurrent spawn leaves zero live untracked agents (repro test) AND lint rejects traversal names, _season, and unsafe shapes AND concurrent same-id akar appends admit exactly one writer AND the file-tool warning fires once per agent (transition only) AND the suite is green (70+ tests); LOSS otherwise"
+    rollback: "git revert s18 commits; all four fixes are behavior tightening inside existing modules"
+    eval_window: "concurrency repro tests from the review's reproductions + warning-count assertion + merged-tree pytest"
+  pipeline:
+    - phase: execute
+      primitive: execute
+      agents: benih
+      prompt: prompts/base/execute.md
+      writes: results.jsonl
+    - phase: evaluate
+      primitive: evaluate
+      agent: judge
+      prompt: prompts/base/evaluate.md
+      reads: results.jsonl
+      writes: verdicts.jsonl
+benih:
+  - name: w1
+    route: fable
+    lane: gate-locking-2
+    collab: build
+    prompt: prompts/dev/w1-gate-finish.md
+    knowledge: partial
+    budget: {minutes: 40}
+  - name: w2
+    route: fable
+    lane: gate-containment-2
+    collab: build
+    prompt: prompts/dev/w2-gate-finish.md
+    knowledge: partial
+    budget: {minutes: 40}
+stop:
+  "on": [all_exited, {stall_minutes: 15}, budget_exhausted]
